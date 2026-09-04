@@ -376,6 +376,17 @@
 
 /* ---- mobile scaffolding -------------------------------------------- */
 #ucfd-root .ucfd-mobbar { display: none; }
+/* Between 900 and 1250 px the results panel is an overlay drawer and the
+   mobile bar is not shown, so it needs its own trigger on the viewport. */
+#ucfd-root .ucfd-drawertab { display: none; }
+#ucfd-root.ucfd-w-md .ucfd-drawertab {
+  display: inline-flex; align-items: center; gap: 6px;
+  position: absolute; top: 100px; right: 12px; z-index: 13;
+}
+#ucfd-root.ucfd-w-md .ucfd-drawertab svg { width: 13px; height: 13px; }
+/* the open panel carries its own Close button, so the tab would only sit on
+   top of the legend */
+#ucfd-root.ucfd-panel-open .ucfd-drawertab { display: none; }
 #ucfd-root .ucfd-drawerclose { display: none; }
 
 #ucfd-root.ucfd-w-md { grid-template-columns: var(--ucfd-rail) minmax(0, 1fr); grid-template-areas: "head head" "rail stage" "foot foot"; }
@@ -677,6 +688,11 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <button class="ucfd-vbtn" type="button" data-view="eye" aria-pressed="false">Eye level</button>
       </div>
       <canvas class="ucfd-compass" id="ucfd-compass" width="160" height="160" aria-hidden="true"></canvas>
+      <button class="ucfd-vbtn ucfd-drawertab" type="button" id="ucfd-results-tab"
+              aria-pressed="false" aria-controls="ucfd-panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        Results
+      </button>
       <div class="ucfd-scalebar" aria-hidden="true">
         <span class="ucfd-mono" id="ucfd-scale-label">50 m</span>
         <div class="ucfd-scaleline" id="ucfd-scale-line" style="width:70px"></div>
@@ -3814,23 +3830,28 @@ function bindUI() {
   });
   on($('ucfd-probe-clear'), 'click', function () { state.probes = []; renderProbes(); });
 
-  /* mobile drawers */
+  /* drawers: the results panel is reachable from the viewport tab at tablet
+     widths and from the bottom bar on a phone */
   on($('ucfd-mob-controls'), 'click', function () {
-    $('ucfd-panel').classList.remove('is-open');
+    setPanelOpen(false);
     $('ucfd-rail').classList.toggle('is-open');
   });
   on($('ucfd-mob-results'), 'click', function () {
     $('ucfd-rail').classList.remove('is-open');
-    $('ucfd-panel').classList.toggle('is-open');
+    setPanelOpen(!$('ucfd-panel').classList.contains('is-open'));
+  });
+  on($('ucfd-results-tab'), 'click', function () {
+    setPanelOpen(!$('ucfd-panel').classList.contains('is-open'));
   });
   on($('ucfd-panel-close'), 'click', function (e) {
     e.preventDefault(); e.stopPropagation();
-    $('ucfd-panel').classList.remove('is-open');
+    setPanelOpen(false);
   });
 
   on(document, 'keydown', function (e) {
     if (e.target && /input|select|textarea/i.test(e.target.tagName)) { return; }
-    if (e.key === 'Escape') { closeTour(); }
+    if (e.key === 'Escape') { closeTour(); setPanelOpen(false); }
+    else if (e.key === 'r' || e.key === 'R') { setPanelOpen(!$('ucfd-panel').classList.contains('is-open')); }
     else if (e.key === ' ') { setRunning(!state.running); e.preventDefault(); }
     else if (e.key === '1') { setView('iso'); }
     else if (e.key === '2') { setView('plan'); }
@@ -3869,6 +3890,13 @@ function syncControls() {
   });
   markPreset('prevailing');
 }
+/* Open or close the results drawer and keep its triggers in step. */
+function setPanelOpen(open) {
+  var tab = $('ucfd-results-tab');
+  $('ucfd-panel').classList.toggle('is-open', !!open);
+  root.classList.toggle('ucfd-panel-open', !!open);
+  if (tab) { tab.setAttribute('aria-pressed', String(!!open)); }
+}
 function updateSliceNote(ax) {
   var S = site(), t = state.slicePos[ax];
   if (ax === 'x') {
@@ -3889,10 +3917,8 @@ function applyResponsive() {
   var w = root.clientWidth;
   root.classList.toggle('ucfd-w-sm', w < 900);
   root.classList.toggle('ucfd-w-md', w >= 900 && w < 1250);
-  if (w >= 900) {
-    $('ucfd-rail').classList.remove('is-open');
-    if (w >= 1250) { $('ucfd-panel').classList.remove('is-open'); }
-  }
+  if (w >= 900) { $('ucfd-rail').classList.remove('is-open'); }
+  if (w >= 1250) { setPanelOpen(false); }
   resize();
   if (window.parent !== window) {
     try { window.parent.postMessage({ type: 'ucfd-height', height: root.scrollHeight }, '*'); } catch (e) { /* cross origin */ }
