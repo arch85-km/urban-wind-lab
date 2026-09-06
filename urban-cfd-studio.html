@@ -533,6 +533,19 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
 <body>
 
 <div id="ucfd-root" role="application" aria-label="Urban CFD Studio - interactive wind analysis">
+  <script>
+  /* Runs while the element is still being parsed, so the very first paint
+     already uses the right palette instead of flashing dark then correcting.
+     The main script below re-applies the same choice and owns it from there. */
+  (function () {
+    var el = document.currentScript.parentElement, t = null;
+    try { t = localStorage.getItem('ucfd-theme'); } catch (e) { t = null; }
+    if (t !== 'light' && t !== 'dark') {
+      t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+    }
+    el.setAttribute('data-theme', t);
+  })();
+  </script>
 
   <!-- ============================ HEADER ============================ -->
   <header class="ucfd-head">
@@ -3823,10 +3836,10 @@ function exportPNG() {
  * ------------------------------------------------------------------ */
 var TOUR = [
   { el: 'ucfd-g-wind', title: 'Set the wind', text: 'Reference speed is defined at 10 m above ground, the height weather stations report. The dial sets the direction the wind blows FROM, in the meteorological convention. Terrain roughness shapes the vertical profile that enters the domain.' },
+  { el: 'ucfd-g-model', title: 'Bring in your own massing', text: 'Import an OBJ of your scheme. It is voxelised onto the lattice, so keep it to closed massing volumes and remember that detail finer than one cell is not resolved.' },
+  { el: 'ucfd-g-weather', title: 'Bring in real weather', text: 'Import an EnergyPlus EPW file and the annual wind rose is built from all 8,760 hourly records. Click any sector to drive the simulation from that direction at its mean, 90th percentile or peak speed.' },
   { el: 'ucfd-g-analysis', title: 'Cut the model open', text: 'Switch on section planes normal to X, Y or Z and slide them through the site. Each plane carries its axis colour. The colour field selector swaps between speed, the individual Ux / Uy / Uz components, pressure coefficient and the amplification factor.' },
   { el: 'ucfd-legend', title: 'Read the legend', text: 'Speed uses a sequential ramp from zero; signed quantities such as Uz and Cp use a diverging ramp centred on zero, so blue and red mean opposite directions. Lock the range to compare two design options on one scale.' },
-  { el: 'ucfd-g-weather', title: 'Bring in real weather', text: 'Import an EnergyPlus EPW file and the annual wind rose is built from all 8,760 hourly records. Click any sector to drive the simulation from that direction at its mean, 90th percentile or peak speed.' },
-  { el: 'ucfd-g-model', title: 'Bring in your own massing', text: 'Import an OBJ of your scheme. It is voxelised onto the lattice, so keep it to closed massing volumes and remember that detail finer than one cell is not resolved.' },
   { el: 'ucfd-stage', title: 'Probe and present', text: 'Click anywhere to pin a probe, click again for a second one and compare the two. Export a captioned PNG for your report — it records the wind, the lattice and the convergence residual.' }
 ];
 var tourStep = 0;
@@ -3841,11 +3854,33 @@ function closeTour() {
   $('ucfd-tour').setAttribute('aria-hidden', 'true');
   try { localStorage.setItem('ucfd-tour-seen', '1'); } catch (e) { /* private mode */ }
 }
+/* Bring a tour target into view before measuring it: open the drawer it lives
+   in, expand its group and scroll it inside the rail. Without this the target
+   can be scrolled out of sight and the highlight lands on whatever section
+   happens to be on screen instead. */
+function tourReveal(target) {
+  var small = root.classList.contains('ucfd-w-sm');
+  var medium = root.classList.contains('ucfd-w-md');
+  var inRail = !!(target.closest && target.closest('#ucfd-rail'));
+  var inPanel = !!(target.closest && target.closest('#ucfd-panel'));
+  if (small) { $('ucfd-rail').classList.toggle('is-open', inRail); }
+  if (small || medium) { setPanelOpen(inPanel); }
+
+  if (target.tagName === 'DETAILS') { target.open = true; }
+  var det = target.closest ? target.closest('details') : null;
+  if (det) { det.open = true; }
+
+  var sc = target.closest ? target.closest('.ucfd-rail, .ucfd-panel') : null;
+  if (sc) {
+    var tr = target.getBoundingClientRect(), cr = sc.getBoundingClientRect();
+    sc.scrollTop += (tr.top - cr.top) - 14;
+  }
+}
+
 function showTourStep() {
   var T = TOUR[tourStep];
   var target = $(T.el);
   var ring = $('ucfd-tourring'), card = $('ucfd-tourcard');
-  var stage = root.getBoundingClientRect();
   $('ucfd-tourstep').textContent = 'Step ' + (tourStep + 1) + ' of ' + TOUR.length;
   $('ucfd-tourtitle').textContent = T.title;
   $('ucfd-tourtext').textContent = T.text;
@@ -3854,27 +3889,54 @@ function showTourStep() {
   $('ucfd-tourdots').innerHTML = dots;
   $('ucfd-tournext').textContent = tourStep === TOUR.length - 1 ? 'Start exploring' : 'Next';
 
-  if (target) {
-    var g = target.getBoundingClientRect();
-    var h = Math.min(g.height, stage.height * 0.62);
-    var x = g.left - stage.left - 6, y = clamp(g.top - stage.top - 6, 8, stage.height - h - 20);
-    ring.style.display = 'block';
-    ring.style.left = x + 'px';
-    ring.style.top = y + 'px';
-    ring.style.width = (g.width + 12) + 'px';
-    ring.style.height = (h + 12) + 'px';
-    ring.style.opacity = '1';
-    var cardW = Math.min(330, stage.width - 32);
-    var cardX = x + g.width + 22;
-    if (cardX + cardW > stage.width - 12) { cardX = x - cardW - 22; }
-    cardX = clamp(cardX, 12, Math.max(12, stage.width - cardW - 12));
-    card.style.left = cardX + 'px';
-    card.style.top = clamp(y + 10, 12, Math.max(12, stage.height - 280)) + 'px';
-  } else {
+  if (!target) {
     ring.style.display = 'none';
     card.style.left = '50%';
     card.style.top = '50%';
+    return;
   }
+  tourReveal(target);
+
+  /* Measure after revealing. The highlight is trimmed to the band between the
+     header and the footer so it never rides over either. */
+  var stage = root.getBoundingClientRect();
+  var head = root.querySelector('.ucfd-head').getBoundingClientRect();
+  var foot = root.querySelector('.ucfd-foot').getBoundingClientRect();
+  var g = target.getBoundingClientRect();
+  var top = Math.max(g.top, head.bottom);
+  var bottom = Math.min(g.bottom, foot.top);
+  var h = Math.max(44, bottom - top);
+
+  /* ring sits 6px outside the target, then is kept within the app box */
+  var x = clamp(g.left - stage.left - 6, 2, Math.max(2, stage.width - 20));
+  var y = clamp(top - stage.top - 6, 2, Math.max(2, stage.height - 20));
+  var w = Math.min(g.width + 12, stage.width - x - 2);
+  var hh = Math.min(h + 12, stage.height - y - 2);
+  ring.style.display = 'block';
+  ring.style.left = x + 'px';
+  ring.style.top = y + 'px';
+  ring.style.width = w + 'px';
+  ring.style.height = hh + 'px';
+  ring.style.opacity = '1';
+
+  /* Park the card beside the highlight; centre it when the highlight covers
+     most of the app (the closing step rings the whole viewport). */
+  var cardW = Math.min(330, stage.width - 32);
+  var cardH = card.offsetHeight || 210;
+  var wide = (w * hh) > (stage.width * stage.height * 0.5);
+  var right = x + w + 16, left = x - cardW - 16;
+  var cardX, cardY;
+  if (wide || stage.width < 620) {
+    cardX = (stage.width - cardW) / 2;
+    cardY = wide ? (stage.height - cardH) / 2
+                 : ((y + hh + 20 + cardH < stage.height - 16) ? y + hh + 20 : Math.max(16, y - cardH - 20));
+  } else {
+    cardX = (right + cardW <= stage.width - 12) ? right
+          : (left >= 12 ? left : clamp(right, 12, Math.max(12, stage.width - cardW - 12)));
+    cardY = clamp(y + 8, 16, Math.max(16, stage.height - cardH - 24));
+  }
+  card.style.left = Math.round(cardX) + 'px';
+  card.style.top = Math.round(cardY) + 'px';
 }
 
 /* ------------------------------------------------------------------ *
