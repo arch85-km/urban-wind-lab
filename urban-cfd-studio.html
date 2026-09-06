@@ -23,7 +23,7 @@
   --ucfd-line-soft: #1a242f;
   --ucfd-text:      #e8eef6;
   --ucfd-dim:       #93a6ba;
-  --ucfd-faint:     #61748a;
+  --ucfd-faint:     #7789a0;
   --ucfd-accent:    #37b6ff;
   --ucfd-accent-2:  #6fe3c4;
   --ucfd-warn:      #ffb340;
@@ -33,6 +33,32 @@
   --ucfd-x:         #ff5b6b;
   --ucfd-y:         #4ade80;
   --ucfd-z:         #58a6ff;
+  /* surfaces that have to invert between the dark and light presentations */
+  --ucfd-head-a:    #121b25;
+  --ucfd-head-b:    #0d151d;
+  --ucfd-foot-bg:   #0b1219;
+  --ucfd-line-hover:#33475a;
+  --ucfd-thumb-ring:#0b1219;
+  --ucfd-glass:     #0d151ecc;
+  --ucfd-glass-solid:#0e1822f2;
+  --ucfd-veil:      #04080c99;
+  --ucfd-veil-ring: #04080cbb;
+  --ucfd-switch-on: #17466b;
+  --ucfd-sw-x:      #4a1a20;
+  --ucfd-sw-y:      #14401f;
+  --ucfd-sw-z:      #15304f;
+  --ucfd-tag-x:     #4a2028;
+  --ucfd-tag-y:     #1d4429;
+  --ucfd-tag-z:     #1c3550;
+  --ucfd-live-bg:   #0e2419;
+  --ucfd-live-bd:   #1e5f43;
+  --ucfd-steady-bg: #0d1e2e;
+  --ucfd-steady-bd: #1d4f78;
+  --ucfd-bad-bg:    #2a0f14;
+  --ucfd-bad-bd:    #6b2530;
+  --ucfd-warn-bg:   #251a08f2;
+  --ucfd-warn-bd:   #6a4a12;
+  --ucfd-shadow:    #000;
   --ucfd-radius:    9px;
   --ucfd-rail:      312px;
   --ucfd-panelw:    306px;
@@ -63,6 +89,55 @@
 }
 #ucfd-root.ucfd-embedded { height: var(--ucfd-embed-h, 760px); max-height: none; }
 
+/* ---- light presentation --------------------------------------------
+   Same layout and the same data colours; only the chrome inverts, so a
+   projector in a bright room stays legible. */
+#ucfd-root[data-theme="light"] {
+  --ucfd-bg:        #e9edf2;
+  --ucfd-stage:     #dfe6ed;
+  --ucfd-panel:     #ffffff;
+  --ucfd-panel-2:   #f2f5f9;
+  --ucfd-raise:     #dde5ed;
+  --ucfd-line:      #ccd6e0;
+  --ucfd-line-soft: #e6ecf2;
+  --ucfd-text:      #14202c;
+  --ucfd-dim:       #4d6275;
+  --ucfd-faint:     #5d6f83;
+  --ucfd-accent:    #0a6ebd;
+  --ucfd-accent-2:  #0d8f74;
+  --ucfd-warn:      #9a5a00;
+  --ucfd-bad:       #c02434;
+  --ucfd-good:      #147a48;
+  --ucfd-x:         #cf2b3a;
+  --ucfd-y:         #17803f;
+  --ucfd-z:         #1665c8;
+  --ucfd-head-a:    #ffffff;
+  --ucfd-head-b:    #f2f5f9;
+  --ucfd-foot-bg:   #f2f5f9;
+  --ucfd-line-hover:#a9b9c8;
+  --ucfd-thumb-ring:#ffffff;
+  --ucfd-glass:     #ffffffd9;
+  --ucfd-glass-solid:#ffffffF2;
+  --ucfd-veil:      #16202b8c;
+  --ucfd-veil-ring: #16202baa;
+  --ucfd-switch-on: #bcdcf5;
+  --ucfd-sw-x:      #f7d3d6;
+  --ucfd-sw-y:      #ccebd6;
+  --ucfd-sw-z:      #cfe2fa;
+  --ucfd-tag-x:     #f0c3c7;
+  --ucfd-tag-y:     #bfe3cd;
+  --ucfd-tag-z:     #c3d9f5;
+  --ucfd-live-bg:   #e4f6ec;
+  --ucfd-live-bd:   #9ed7b8;
+  --ucfd-steady-bg: #e5f0fb;
+  --ucfd-steady-bd: #a3cbeb;
+  --ucfd-bad-bg:    #fdeaec;
+  --ucfd-bad-bd:    #eeb5bb;
+  --ucfd-warn-bg:   #fdf3e0f2;
+  --ucfd-warn-bd:   #e6c98d;
+  --ucfd-shadow:    #64748b;
+}
+
 /* ---- typography primitives ------------------------------------- */
 #ucfd-root h1, #ucfd-root h2, #ucfd-root h3, #ucfd-root p, #ucfd-root ul, #ucfd-root li, #ucfd-root figure {
   margin: 0; padding: 0; font-weight: inherit; font-size: inherit; list-style: none;
@@ -75,7 +150,7 @@
 /* ---- header ----------------------------------------------------- */
 #ucfd-root .ucfd-head {
   grid-area: head; display: flex; align-items: center; gap: 16px;
-  padding: 10px 16px; background: linear-gradient(180deg, #121b25 0%, #0d151d 100%);
+  padding: 10px 16px; background: linear-gradient(180deg, var(--ucfd-head-a) 0%, var(--ucfd-head-b) 100%);
   border-bottom: 1px solid var(--ucfd-line); min-height: 56px;
 }
 #ucfd-root .ucfd-brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
@@ -87,15 +162,27 @@
 #ucfd-root .ucfd-mark svg { width: 21px; height: 21px; display: block; }
 #ucfd-root .ucfd-title { font-size: 14.5px; font-weight: 650; letter-spacing: .02em; white-space: nowrap; }
 #ucfd-root .ucfd-sub { font-size: 10.5px; color: var(--ucfd-faint); white-space: nowrap; letter-spacing: .05em; text-transform: uppercase; }
-#ucfd-root .ucfd-chips { display: flex; gap: 7px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+#ucfd-root .ucfd-chips { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+#ucfd-root .ucfd-themebtn {
+  display: inline-flex; align-items: center; gap: 6px; margin-left: auto; flex: none;
+  padding: 5px 10px; font: inherit; font-size: 11.5px; color: var(--ucfd-dim); cursor: pointer;
+  background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line); border-radius: 100px;
+  transition: color .13s, border-color .13s;
+}
+#ucfd-root .ucfd-themebtn:hover { color: var(--ucfd-text); border-color: var(--ucfd-line-hover); }
+#ucfd-root .ucfd-themebtn:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
+#ucfd-root .ucfd-themebtn svg { width: 14px; height: 14px; flex: none; }
+#ucfd-root .ucfd-icon-light { display: none; }
+#ucfd-root[data-theme="light"] .ucfd-icon-light { display: block; }
+#ucfd-root[data-theme="light"] .ucfd-icon-dark { display: none; }
 #ucfd-root .ucfd-chip {
   display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 9px; border-radius: 100px;
   background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line); font-size: 11px; color: var(--ucfd-dim); white-space: nowrap;
 }
 #ucfd-root .ucfd-chip b { color: var(--ucfd-text); font-weight: 600; }
-#ucfd-root .ucfd-chip.is-live { border-color: #1e5f43; background: #0e2419; color: var(--ucfd-good); }
-#ucfd-root .ucfd-chip.is-steady { border-color: #1d4f78; background: #0d1e2e; color: var(--ucfd-accent); }
-#ucfd-root .ucfd-chip.is-bad { border-color: #6b2530; background: #2a0f14; color: var(--ucfd-bad); }
+#ucfd-root .ucfd-chip.is-live { border-color: var(--ucfd-live-bd); background: var(--ucfd-live-bg); color: var(--ucfd-good); }
+#ucfd-root .ucfd-chip.is-steady { border-color: var(--ucfd-steady-bd); background: var(--ucfd-steady-bg); color: var(--ucfd-accent); }
+#ucfd-root .ucfd-chip.is-bad { border-color: var(--ucfd-bad-bd); background: var(--ucfd-bad-bg); color: var(--ucfd-bad); }
 #ucfd-root .ucfd-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; align-self: center; }
 #ucfd-root .ucfd-chip.is-live .ucfd-dot { animation: ucfd-pulse 1.4s ease-in-out infinite; }
 @keyframes ucfd-pulse { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
@@ -142,10 +229,10 @@
 #ucfd-root input[type=range]::-moz-range-track { height: 4px; border-radius: 4px; background: var(--ucfd-raise); }
 #ucfd-root input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%;
-  background: var(--ucfd-accent); border: 2px solid #0b1219; box-shadow: 0 0 0 1px var(--ucfd-accent);
+  background: var(--ucfd-accent); border: 2px solid var(--ucfd-thumb-ring); box-shadow: 0 0 0 1px var(--ucfd-accent);
 }
 #ucfd-root input[type=range]::-moz-range-thumb {
-  width: 12px; height: 12px; border-radius: 50%; background: var(--ucfd-accent); border: 2px solid #0b1219; box-shadow: 0 0 0 1px var(--ucfd-accent);
+  width: 12px; height: 12px; border-radius: 50%; background: var(--ucfd-accent); border: 2px solid var(--ucfd-thumb-ring); box-shadow: 0 0 0 1px var(--ucfd-accent);
 }
 #ucfd-root input[type=range]:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 3px; border-radius: 4px; }
 #ucfd-root input[type=range].ucfd-x::-webkit-slider-thumb { background: var(--ucfd-x); box-shadow: 0 0 0 1px var(--ucfd-x); }
@@ -168,6 +255,10 @@
   border: 1px solid var(--ucfd-line); border-radius: 6px; -webkit-appearance: none; appearance: none; cursor: pointer; font-family: inherit;
 }
 #ucfd-root select:focus { outline: none; border-color: var(--ucfd-accent); }
+/* the caret lives inside a data URL, which cannot read a custom property */
+#ucfd-root[data-theme="light"] select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 4.5L6 8.5L10 4.5' fill='none' stroke='%234d6275' stroke-width='1.6' stroke-linecap='round'/></svg>");
+}
 
 #ucfd-root .ucfd-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
@@ -175,7 +266,7 @@
   background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line); border-radius: 7px; cursor: pointer;
   transition: background .13s ease, border-color .13s ease, color .13s ease; white-space: nowrap; text-align: center;
 }
-#ucfd-root .ucfd-btn:hover { background: var(--ucfd-raise); border-color: #33475a; }
+#ucfd-root .ucfd-btn:hover { background: var(--ucfd-raise); border-color: var(--ucfd-line-hover); }
 #ucfd-root .ucfd-btn:active { transform: translateY(1px); }
 #ucfd-root .ucfd-btn:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 #ucfd-root .ucfd-btn[disabled] { opacity: .42; cursor: not-allowed; }
@@ -204,23 +295,23 @@
   content: ""; position: absolute; top: 2.5px; left: 2.5px; width: 12px; height: 12px; border-radius: 50%;
   background: var(--ucfd-faint); transition: transform .15s ease, background .15s ease;
 }
-#ucfd-root .ucfd-toggle input:checked + .ucfd-switch { background: #17466b; }
+#ucfd-root .ucfd-toggle input:checked + .ucfd-switch { background: var(--ucfd-switch-on); }
 #ucfd-root .ucfd-toggle input:checked + .ucfd-switch::after { transform: translateX(13px); background: var(--ucfd-accent); }
 #ucfd-root .ucfd-toggle input:focus-visible + .ucfd-switch { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 #ucfd-root .ucfd-toggle .ucfd-tlabel { font-size: 12px; color: var(--ucfd-text); }
-#ucfd-root .ucfd-toggle.ucfd-ax-x input:checked + .ucfd-switch { background: #4a1a20; }
+#ucfd-root .ucfd-toggle.ucfd-ax-x input:checked + .ucfd-switch { background: var(--ucfd-sw-x); }
 #ucfd-root .ucfd-toggle.ucfd-ax-x input:checked + .ucfd-switch::after { background: var(--ucfd-x); }
-#ucfd-root .ucfd-toggle.ucfd-ax-y input:checked + .ucfd-switch { background: #14401f; }
+#ucfd-root .ucfd-toggle.ucfd-ax-y input:checked + .ucfd-switch { background: var(--ucfd-sw-y); }
 #ucfd-root .ucfd-toggle.ucfd-ax-y input:checked + .ucfd-switch::after { background: var(--ucfd-y); }
-#ucfd-root .ucfd-toggle.ucfd-ax-z input:checked + .ucfd-switch { background: #15304f; }
+#ucfd-root .ucfd-toggle.ucfd-ax-z input:checked + .ucfd-switch { background: var(--ucfd-sw-z); }
 #ucfd-root .ucfd-toggle.ucfd-ax-z input:checked + .ucfd-switch::after { background: var(--ucfd-z); }
 #ucfd-root .ucfd-axtag {
   margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: .08em; padding: 1px 6px; border-radius: 4px;
   background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line);
 }
-#ucfd-root .ucfd-axtag.x { color: var(--ucfd-x); border-color: #4a2028; }
-#ucfd-root .ucfd-axtag.y { color: var(--ucfd-y); border-color: #1d4429; }
-#ucfd-root .ucfd-axtag.z { color: var(--ucfd-z); border-color: #1c3550; }
+#ucfd-root .ucfd-axtag.x { color: var(--ucfd-x); border-color: var(--ucfd-tag-x); }
+#ucfd-root .ucfd-axtag.y { color: var(--ucfd-y); border-color: var(--ucfd-tag-y); }
+#ucfd-root .ucfd-axtag.z { color: var(--ucfd-z); border-color: var(--ucfd-tag-z); }
 
 /* ---- direction dial --------------------------------------------- */
 #ucfd-root .ucfd-dialwrap { display: flex; align-items: center; gap: 13px; }
@@ -242,21 +333,21 @@
 }
 #ucfd-root .ucfd-vbtn {
   padding: 6px 10px; font-size: 11.5px; font-family: inherit; color: var(--ucfd-dim); cursor: pointer;
-  background: #0d151ecc; backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  background: var(--ucfd-glass); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
   border: 1px solid var(--ucfd-line); border-radius: 6px; transition: color .13s, border-color .13s;
 }
-#ucfd-root .ucfd-vbtn:hover { color: var(--ucfd-text); border-color: #33475a; }
+#ucfd-root .ucfd-vbtn:hover { color: var(--ucfd-text); border-color: var(--ucfd-line-hover); }
 #ucfd-root .ucfd-vbtn[aria-pressed="true"] { color: var(--ucfd-accent); border-color: var(--ucfd-accent); }
 #ucfd-root .ucfd-vbtn:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 
 #ucfd-root .ucfd-compass {
   position: absolute; top: 12px; right: 12px; width: 76px; height: 76px;
-  background: #0d151ec9; backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  background: var(--ucfd-glass); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
   border: 1px solid var(--ucfd-line); border-radius: 50%;
 }
 #ucfd-root .ucfd-scalebar {
   position: absolute; bottom: 12px; left: 12px; display: flex; flex-direction: column; gap: 3px;
-  font-size: 10.5px; color: var(--ucfd-dim); background: #0d151eb8; padding: 6px 9px; border-radius: 6px;
+  font-size: 10.5px; color: var(--ucfd-dim); background: var(--ucfd-glass); padding: 6px 9px; border-radius: 6px;
   border: 1px solid var(--ucfd-line); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
 }
 #ucfd-root .ucfd-scaleline { height: 4px; border: 1px solid var(--ucfd-dim); border-top: 0; }
@@ -267,12 +358,12 @@
 
 #ucfd-root .ucfd-probecard {
   position: absolute; min-width: 168px; padding: 9px 11px; border-radius: 8px; font-size: 11.5px;
-  background: #0e1822f2; border: 1px solid var(--ucfd-line); box-shadow: 0 10px 28px -12px #000c, 0 0 0 1px #0006;
+  background: var(--ucfd-glass-solid); border: 1px solid var(--ucfd-line); box-shadow: 0 10px 28px -12px #0000004d, 0 0 0 1px #00000014;
   backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px); transform: translate(-50%, calc(-100% - 14px));
 }
 #ucfd-root .ucfd-probecard::after {
   content: ""; position: absolute; left: 50%; bottom: -5px; width: 8px; height: 8px; margin-left: -4px;
-  background: #0e1822; border-right: 1px solid var(--ucfd-line); border-bottom: 1px solid var(--ucfd-line); transform: rotate(45deg);
+  background: var(--ucfd-glass-solid); border-right: 1px solid var(--ucfd-line); border-bottom: 1px solid var(--ucfd-line); transform: rotate(45deg);
 }
 #ucfd-root .ucfd-probehead { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
 #ucfd-root .ucfd-probetag {
@@ -290,12 +381,12 @@
 #ucfd-root .ucfd-toast {
   position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(8px);
   padding: 9px 15px; border-radius: 8px; font-size: 12px; max-width: min(440px, 88%);
-  background: #16222ef2; border: 1px solid var(--ucfd-line); box-shadow: 0 12px 32px -14px #000;
+  background: var(--ucfd-glass-solid); border: 1px solid var(--ucfd-line); box-shadow: 0 12px 32px -14px #00000059;
   opacity: 0; transition: opacity .22s ease, transform .22s ease; pointer-events: none;
 }
 #ucfd-root .ucfd-toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
-#ucfd-root .ucfd-toast.is-warn { border-color: #6a4a12; background: #251a08f2; color: var(--ucfd-warn); }
-#ucfd-root .ucfd-toast.is-bad { border-color: #6b2530; background: #2a0f14f2; color: var(--ucfd-bad); }
+#ucfd-root .ucfd-toast.is-warn { border-color: var(--ucfd-warn-bd); background: var(--ucfd-warn-bg); color: var(--ucfd-warn); }
+#ucfd-root .ucfd-toast.is-bad { border-color: var(--ucfd-bad-bd); background: var(--ucfd-bad-bg); color: var(--ucfd-bad); }
 
 #ucfd-root .ucfd-loading {
   position: absolute; inset: 0; display: grid; place-items: center; background: var(--ucfd-stage); z-index: 6;
@@ -344,7 +435,7 @@
 /* ---- footer ------------------------------------------------------- */
 #ucfd-root .ucfd-foot {
   grid-area: foot; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  padding: 7px 16px; background: #0b1219; border-top: 1px solid var(--ucfd-line);
+  padding: 7px 16px; background: var(--ucfd-foot-bg); border-top: 1px solid var(--ucfd-line);
   font-size: 10.5px; color: var(--ucfd-faint); min-height: 32px;
 }
 #ucfd-root .ucfd-foot b { color: var(--ucfd-dim); font-weight: 600; }
@@ -356,10 +447,10 @@
 #ucfd-root .ucfd-tour.is-open { display: block; }
 /* No backdrop-filter here: it would force a readback of the live WebGL
    canvas on every frame while the tour is open. */
-#ucfd-root .ucfd-tourveil { position: absolute; inset: 0; background: #04080c99; }
+#ucfd-root .ucfd-tourveil { position: absolute; inset: 0; background: var(--ucfd-veil); }
 #ucfd-root .ucfd-tourring {
   position: absolute; border: 2px solid var(--ucfd-accent); border-radius: 10px; pointer-events: none;
-  box-shadow: 0 0 0 9999px #04080cbb, 0 0 22px -2px var(--ucfd-accent); transition: all .28s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 0 9999px var(--ucfd-veil-ring), 0 0 22px -2px var(--ucfd-accent); transition: all .28s cubic-bezier(.4,0,.2,1);
 }
 #ucfd-root .ucfd-tourcard {
   position: absolute; width: min(330px, calc(100% - 32px)); padding: 16px 17px; border-radius: 11px;
@@ -423,6 +514,8 @@
 }
 #ucfd-root.ucfd-w-sm .ucfd-mobbar > button { flex: 1 1 0; }
 #ucfd-root.ucfd-w-sm .ucfd-chips { display: none; }
+#ucfd-root.ucfd-w-sm .ucfd-themebtn { margin-left: auto; padding: 5px 8px; }
+#ucfd-root.ucfd-w-sm .ucfd-themebtn span { display: none; }
 #ucfd-root.ucfd-w-sm .ucfd-compass { width: 58px; height: 58px; }
 #ucfd-root.ucfd-w-sm .ucfd-foot .ucfd-hide-sm { display: none; }
 #ucfd-root.ucfd-w-sm .ucfd-viewbar { top: 8px; left: 8px; }
@@ -454,6 +547,16 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <div class="ucfd-sub">Pedestrian wind analysis &middot; Lattice&#8209;Boltzmann</div>
       </div>
     </div>
+    <button class="ucfd-themebtn" type="button" id="ucfd-theme" aria-pressed="false"
+            title="Switch between the dark and light presentation" aria-label="Switch to the light presentation">
+      <svg class="ucfd-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"/>
+      </svg>
+      <svg class="ucfd-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 14.4A8.4 8.4 0 0 1 9.6 4 8.4 8.4 0 1 0 20 14.4z"/>
+      </svg>
+      <span id="ucfd-theme-label">Light</span>
+    </button>
     <div class="ucfd-chips" id="ucfd-chips">
       <span class="ucfd-chip" id="ucfd-chip-state"><i class="ucfd-dot"></i><span>Initialising</span></span>
       <span class="ucfd-chip" title="Solver lattice resolution">Grid <b id="ucfd-chip-grid">&mdash;</b></span>
@@ -994,6 +1097,11 @@ function diverging(t) {
   }
   return DIVERGING_STOPS[4][1].slice();
 }
+/* '#rrggbb' plus an alpha, for canvas strokes and fills */
+function hexA(hex, a) {
+  var n = parseInt(hex.slice(1), 16);
+  return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+}
 function rgbCss(c) {
   return 'rgb(' + Math.round(c[0] * 255) + ',' + Math.round(c[1] * 255) + ',' + Math.round(c[2] * 255) + ')';
 }
@@ -1002,6 +1110,58 @@ function rampCss(fn, steps) {
   for (var i = 0; i <= n; i++) { parts.push(rgbCss(fn(i / n)) + ' ' + (100 * i / n).toFixed(1) + '%'); }
   return 'linear-gradient(90deg,' + parts.join(',') + ')';
 }
+
+/* Colours for the surfaces CSS cannot reach: the WebGL scene, the three 2D
+   canvases and the exported PNG. Data colours (viridis, the diverging ramp and
+   the Lawson categories) are deliberately identical in both presentations so a
+   result reads the same either way. */
+var THEMES = {
+  dark: {
+    clear: [0.055, 0.071, 0.090],
+    skyLow: [0.075, 0.098, 0.125], skyMid: [0.106, 0.145, 0.192], skyHigh: [0.043, 0.059, 0.086],
+    skyGlow: 0.09,
+    groundNear: [0.063, 0.078, 0.098], groundFar: [0.129, 0.153, 0.180],
+    gridTint: [0.34, 0.47, 0.58], gridGain: 1.0,
+    siteEdge: [0.16, 0.38, 0.52], haze: [0.055, 0.071, 0.090],
+    albedo: [0.560, 0.600, 0.650], ambient: [0.13, 0.17, 0.23], rim: [0.10, 0.16, 0.22],
+    keyLight: 0.66, fillLight: 0.34, aoFloor: 0.70,
+    box: [0.16, 0.28, 0.38, 0.5],
+    windArrow: [0.22, 0.71, 1.0, 0.95], windArrowFaint: [0.22, 0.71, 1.0, 0.28],
+    north: [0.85, 0.9, 0.95, 0.8],
+    sliceEdgeX: [1.0, 0.357, 0.42], sliceEdgeY: [0.29, 0.87, 0.50], sliceEdgeZ: [0.35, 0.65, 1.0],
+    comfortEdge: [0.45, 0.55, 0.65],
+    tracerOpacity: 0.66,
+    ui: { face: '#16202b', line: '#24323f', tick: '#2c3a49', tickMajor: '#61748a',
+          text: '#93a6ba', textFaint: '#4d5f72', needle: '#e8eef6', needleBack: '#7d8ea1',
+          accent: '#37b6ff', hub: '#0b1219', ring: '#1e2a36', spoke: '#1a242f',
+          petalEdge: 'rgba(8,12,18,0.7)' },
+    shot: { bg: '#0b1219', bar: '#0d151d', rule: '#24323f',
+            title: '#e8eef6', body: '#93a6ba', faint: '#4d5f72' }
+  },
+  light: {
+    clear: [0.878, 0.902, 0.925],
+    skyLow: [0.878, 0.906, 0.937], skyMid: [0.816, 0.859, 0.906], skyHigh: [0.729, 0.792, 0.859],
+    skyGlow: 0.05,
+    groundNear: [0.859, 0.882, 0.906], groundFar: [0.784, 0.816, 0.847],
+    gridTint: [-0.22, -0.18, -0.13], gridGain: 1.0,
+    siteEdge: [0.09, 0.35, 0.58], haze: [0.855, 0.886, 0.918],
+    albedo: [0.925, 0.933, 0.945], ambient: [0.10, 0.11, 0.13], rim: [0.05, 0.09, 0.14],
+    keyLight: 0.42, fillLight: 0.52, aoFloor: 0.78,
+    box: [0.35, 0.44, 0.52, 0.55],
+    windArrow: [0.04, 0.42, 0.70, 0.95], windArrowFaint: [0.04, 0.42, 0.70, 0.30],
+    north: [0.18, 0.24, 0.31, 0.85],
+    sliceEdgeX: [0.78, 0.13, 0.20], sliceEdgeY: [0.06, 0.45, 0.22], sliceEdgeZ: [0.06, 0.36, 0.72],
+    comfortEdge: [0.35, 0.42, 0.50],
+    tracerOpacity: 0.80,
+    ui: { face: '#f2f5f9', line: '#ccd6e0', tick: '#b9c6d3', tickMajor: '#74869a',
+          text: '#4d6275', textFaint: '#8b9bab', needle: '#14202c', needleBack: '#93a3b3',
+          accent: '#0a6ebd', hub: '#ffffff', ring: '#dde5ed', spoke: '#e6ecf2',
+          petalEdge: 'rgba(255,255,255,0.85)' },
+    shot: { bg: '#eef1f5', bar: '#ffffff', rule: '#ccd6e0',
+            title: '#14202c', body: '#4d6275', faint: '#8b9bab' }
+  }
+};
+function theme() { return THEMES[state.theme] || THEMES.dark; }
 
 /* Lawson LDDC pedestrian comfort categories, thresholds in m/s. */
 var LAWSON = [
@@ -1138,13 +1298,11 @@ function Renderer(canvas) {
     '}',
     'precision highp float;\n' +
     'in vec2 vUv; out vec4 oColor;\n' +
+    'uniform vec3 uLow, uMid, uHigh; uniform float uGlow;\n' +
     'void main(){\n' +
     '  float t = clamp(vUv.y, 0.0, 1.0);\n' +
-    '  vec3 low  = vec3(0.075, 0.098, 0.125);\n' +
-    '  vec3 mid  = vec3(0.106, 0.145, 0.192);\n' +
-    '  vec3 high = vec3(0.043, 0.059, 0.086);\n' +
-    '  vec3 c = t < 0.55 ? mix(low, mid, t / 0.55) : mix(mid, high, (t - 0.55) / 0.45);\n' +
-    '  float glow = exp(-pow((vUv.x - 0.5) * 2.1, 2.0)) * exp(-pow((t - 0.42) * 3.4, 2.0)) * 0.09;\n' +
+    '  vec3 c = t < 0.55 ? mix(uLow, uMid, t / 0.55) : mix(uMid, uHigh, (t - 0.55) / 0.45);\n' +
+    '  float glow = exp(-pow((vUv.x - 0.5) * 2.1, 2.0)) * exp(-pow((t - 0.42) * 3.4, 2.0)) * uGlow;\n' +
     '  oColor = vec4(c + glow, 1.0);\n' +
     '}'
   );
@@ -1161,6 +1319,7 @@ function Renderer(canvas) {
     'precision highp float;\n' +
     'in vec3 vWorld; out vec4 oColor;\n' +
     'uniform vec3 uCam; uniform vec2 uHalf; uniform float uShowGrid;\n' +
+    'uniform vec3 uNear, uFar, uGridTint, uSiteEdge, uHaze;\n' +
     'float gridLine(vec2 p, float step, float w){\n' +
     '  vec2 g = abs(fract(p / step - 0.5) - 0.5) * step;\n' +
     '  vec2 fw = fwidth(p) * w;\n' +
@@ -1170,19 +1329,19 @@ function Renderer(canvas) {
     'void main(){\n' +
     '  float d = length(vWorld.xy - uCam.xy);\n' +
     '  float fade = 1.0 - smoothstep(uHalf.x * 1.1, uHalf.x * 3.2, length(vWorld.xy));\n' +
-    '  vec3 base = mix(vec3(0.063, 0.078, 0.098), vec3(0.129, 0.153, 0.180), fade);\n' +
+    '  vec3 base = mix(uNear, uFar, fade);\n' +
     '  if (uShowGrid > 0.5) {\n' +
     '    float g10 = gridLine(vWorld.xy, 10.0, 1.0) * 0.16;\n' +
     '    float g50 = gridLine(vWorld.xy, 50.0, 1.2) * 0.30;\n' +
-    '    base += vec3(0.34, 0.47, 0.58) * (g10 + g50) * fade;\n' +
+    '    base += uGridTint * (g10 + g50) * fade;\n' +
     '  }\n' +
     /* site boundary highlight */
     '  vec2 e = abs(vWorld.xy) - uHalf;\n' +
     '  float edge = 1.0 - smoothstep(0.0, fwidth(vWorld.x) * 1.6, abs(max(e.x, e.y)));\n' +
-    '  base = mix(base, vec3(0.16, 0.38, 0.52), edge * 0.8);\n' +
+    '  base = mix(base, uSiteEdge, edge * 0.8);\n' +
     '  float atmo = 1.0 - smoothstep(uHalf.x * 2.0, uHalf.x * 3.4, d);\n' +
     '  oColor = vec4(base, 1.0);\n' +
-    '  oColor.rgb = mix(vec3(0.055, 0.071, 0.090), oColor.rgb, clamp(atmo + 0.25, 0.0, 1.0));\n' +
+    '  oColor.rgb = mix(uHaze, oColor.rgb, clamp(atmo + 0.25, 0.0, 1.0));\n' +
     '}'
   );
 
@@ -1195,12 +1354,13 @@ function Renderer(canvas) {
     GLSL_FIELD + '\n' +
     'in vec3 vWorld; in vec3 vNrm; out vec4 oColor;\n' +
     'uniform vec3 uCam; uniform float uCp; uniform float uProbeCount; uniform vec3 uProbeA; uniform vec3 uProbeB;\n' +
+    'uniform vec3 uAlbedo, uAmbient, uRim; uniform float uKey, uFill, uAoFloor;\n' +
     'void main(){\n' +
     '  vec3 n = normalize(vNrm);\n' +
     '  vec3 ldir = normalize(vec3(-0.42, 0.55, 0.72));\n' +
     '  float diff = max(dot(n, ldir), 0.0);\n' +
     '  float sky = 0.5 + 0.5 * n.z;\n' +
-    '  vec3 albedo = vec3(0.560, 0.600, 0.650);\n' +
+    '  vec3 albedo = uAlbedo;\n' +
     '  if (uCp > 0.5) {\n' +
     /* sample the fluid cell just outside the surface */
     '    vec3 sp = vWorld + n * (uSize.x / uGridN.x) * 1.25;\n' +
@@ -1208,12 +1368,12 @@ function Renderer(canvas) {
     '    float t = (f.w - uRange.x) / max(uRange.y - uRange.x, 1e-6);\n' +
     '    albedo = diverging(t);\n' +
     '  }\n' +
-    '  vec3 col = albedo * (0.34 + 0.66 * diff) + vec3(0.13, 0.17, 0.23) * sky;\n' +
+    '  vec3 col = albedo * (uFill + uKey * diff) + uAmbient * sky;\n' +
     '  vec3 vdir = normalize(uCam - vWorld);\n' +
     '  float rim = pow(1.0 - max(dot(n, vdir), 0.0), 3.0);\n' +
-    '  col += vec3(0.10, 0.16, 0.22) * rim * 0.65;\n' +
+    '  col += uRim * rim * 0.65;\n' +
     /* ambient occlusion approximation: darken near the ground */
-    '  col *= mix(0.70, 1.0, clamp(vWorld.z / 14.0, 0.0, 1.0));\n' +
+    '  col *= mix(uAoFloor, 1.0, clamp(vWorld.z / 14.0, 0.0, 1.0));\n' +
     /* highlight ring around a pinned probe */
     '  if (uProbeCount > 0.5) {\n' +
     '    float dA = distance(vWorld, uProbeA);\n' +
@@ -2206,7 +2366,7 @@ var state = {
   slicePos: { x: 0.5, y: 0.5, z: 1.5 / DOMAIN_H },
   comfort: false, particles: true, facade: false, showGrid: true,
   density: 2, rangeLock: false, range: [0, 1],
-  probes: [], epw: null, epwMetric: 'mean',
+  probes: [], epw: null, epwMetric: 'mean', theme: 'dark',
   stats: null, pixelRatio: 1
 };
 var DENSITIES = [8000, 20000, 40000, 80000, 150000];
@@ -2388,10 +2548,10 @@ function lineSeg(a, b, col) {
 }
 function buildOverlayLines() {
   lineReset();
-  var g = state.grid, hx = g.lx / 2, hy = g.ly / 2;
+  var g = state.grid, hx = g.lx / 2, hy = g.ly / 2, T = theme();
 
   /* domain box */
-  var box = [0.16, 0.28, 0.38, 0.5];
+  var box = T.box;
   var c = [[-hx, -hy], [hx, -hy], [hx, hy], [-hx, hy]];
   for (var i = 0; i < 4; i++) {
     var p = c[i], q = c[(i + 1) % 4];
@@ -2405,7 +2565,7 @@ function buildOverlayLines() {
   var z = 30, reach = hx * 1.16;
   var tail = [-w[0] * reach, -w[1] * reach, z];
   var head = [-w[0] * reach * 0.55, -w[1] * reach * 0.55, z];
-  var col = [0.22, 0.71, 1.0, 0.95];
+  var col = T.windArrow;
   lineSeg(tail, head, col);
   var perp = [-w[1], w[0]];
   var barb = reach * 0.09;
@@ -2417,14 +2577,14 @@ function buildOverlayLines() {
     var off = s * reach * 0.22;
     var a2 = [tail[0] + perp[0] * off, tail[1] + perp[1] * off, z];
     var b2 = [head[0] + perp[0] * off, head[1] + perp[1] * off, z];
-    lineSeg(a2, b2, [0.22, 0.71, 1.0, 0.28]);
+    lineSeg(a2, b2, T.windArrowFaint);
   }
 
   /* north arrow on the ground at the north edge */
   var ny = hy * 1.06;
-  lineSeg([0, ny - 18, 0.3], [0, ny, 0.3], [0.85, 0.9, 0.95, 0.8]);
-  lineSeg([0, ny, 0.3], [-5, ny - 8, 0.3], [0.85, 0.9, 0.95, 0.8]);
-  lineSeg([0, ny, 0.3], [5, ny - 8, 0.3], [0.85, 0.9, 0.95, 0.8]);
+  lineSeg([0, ny - 18, 0.3], [0, ny, 0.3], T.north);
+  lineSeg([0, ny, 0.3], [-5, ny - 8, 0.3], T.north);
+  lineSeg([0, ny, 0.3], [5, ny - 8, 0.3], T.north);
 
   /* probe pins */
   var pcol = [[0.20, 0.66, 0.98, 1], [0.99, 0.66, 0.24, 1]];
@@ -2448,12 +2608,12 @@ function slicePlane(axis) {
   var S = site(), t = state.slicePos[axis];
   var w = S.hi[0] - S.lo[0], d = S.hi[1] - S.lo[1], h = S.hi[2] - S.lo[2];
   if (axis === 'x') {
-    return { p0: [S.lo[0] + t * w, S.lo[1], S.lo[2]], ex: [0, d, 0], ey: [0, 0, h], edge: [1.0, 0.357, 0.42] };
+    return { p0: [S.lo[0] + t * w, S.lo[1], S.lo[2]], ex: [0, d, 0], ey: [0, 0, h], edge: theme().sliceEdgeX };
   }
   if (axis === 'y') {
-    return { p0: [S.lo[0], S.lo[1] + t * d, S.lo[2]], ex: [w, 0, 0], ey: [0, 0, h], edge: [0.29, 0.87, 0.50] };
+    return { p0: [S.lo[0], S.lo[1] + t * d, S.lo[2]], ex: [w, 0, 0], ey: [0, 0, h], edge: theme().sliceEdgeY };
   }
-  return { p0: [S.lo[0], S.lo[1], slicePlaneZ()], ex: [w, 0, 0], ey: [0, d, 0], edge: [0.35, 0.65, 1.0] };
+  return { p0: [S.lo[0], S.lo[1], slicePlaneZ()], ex: [w, 0, 0], ey: [0, d, 0], edge: theme().sliceEdgeZ };
 }
 /* the Z slider is calibrated against the full domain height so 1.5 m stays
    at 1.5 m whatever model is loaded */
@@ -2471,14 +2631,19 @@ function drawScene(now) {
   var range = state.range;
   var speedRange = state.speedRange || [0, Math.max(1, state.speed * 1.6)];
 
+  var T = theme();
   gl.viewport(0, 0, R.width, R.height);
-  gl.clearColor(0.055, 0.071, 0.090, 1);
+  gl.clearColor(T.clear[0], T.clear[1], T.clear[2], 1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   /* sky */
   gl.disable(gl.DEPTH_TEST);
   gl.depthMask(false);
   gl.useProgram(R.progSky);
+  gl.uniform3fv(R.progSky.u.uLow, T.skyLow);
+  gl.uniform3fv(R.progSky.u.uMid, T.skyMid);
+  gl.uniform3fv(R.progSky.u.uHigh, T.skyHigh);
+  gl.uniform1f(R.progSky.u.uGlow, T.skyGlow);
   gl.bindVertexArray(quadVAO);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   gl.enable(gl.DEPTH_TEST);
@@ -2498,6 +2663,11 @@ function drawScene(now) {
   gl.uniform3fv(pg.u.uCam, eye);
   gl.uniform2fv(pg.u.uHalf, [g.lx / 2, g.ly / 2]);
   gl.uniform1f(pg.u.uShowGrid, state.showGrid ? 1 : 0);
+  gl.uniform3fv(pg.u.uNear, T.groundNear);
+  gl.uniform3fv(pg.u.uFar, T.groundFar);
+  gl.uniform3fv(pg.u.uGridTint, T.gridTint);
+  gl.uniform3fv(pg.u.uSiteEdge, T.siteEdge);
+  gl.uniform3fv(pg.u.uHaze, T.haze);
   gl.bindVertexArray(groundVAO);
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -2516,6 +2686,12 @@ function drawScene(now) {
     gl.uniform3fv(pb.u.uOrigin, origin);
     gl.uniform3fv(pb.u.uSize, size);
     gl.uniform3fv(pb.u.uGridN, gn);
+    gl.uniform3fv(pb.u.uAlbedo, T.albedo);
+    gl.uniform3fv(pb.u.uAmbient, T.ambient);
+    gl.uniform3fv(pb.u.uRim, T.rim);
+    gl.uniform1f(pb.u.uKey, T.keyLight);
+    gl.uniform1f(pb.u.uFill, T.fillLight);
+    gl.uniform1f(pb.u.uAoFloor, T.aoFloor);
     gl.uniform1f(pb.u.uProbeCount, state.probes.length);
     gl.uniform3fv(pb.u.uProbeA, state.probes[0] ? state.probes[0].p : [1e6, 1e6, 1e6]);
     gl.uniform3fv(pb.u.uProbeB, state.probes[1] ? state.probes[1].p : [1e6, 1e6, 1e6]);
@@ -2537,7 +2713,7 @@ function drawScene(now) {
   });
   if (state.comfort) {
     var S2 = site();
-    var cp2 = { p0: [S2.lo[0], S2.lo[1], 1.5], ex: [S2.hi[0] - S2.lo[0], 0, 0], ey: [0, S2.hi[1] - S2.lo[1], 0], edge: [0.45, 0.55, 0.65] };
+    var cp2 = { p0: [S2.lo[0], S2.lo[1], 1.5], ex: [S2.hi[0] - S2.lo[0], 0, 0], ey: [0, S2.hi[1] - S2.lo[1], 0], edge: theme().comfortEdge };
     cp2.mode = 6; cp2.range = [0, 1]; cp2.alpha = 0.97;
     cp2.centre = [(S2.lo[0] + S2.hi[0]) / 2, (S2.lo[1] + S2.hi[1]) / 2, 1.5];
     planes.push(cp2);
@@ -2587,7 +2763,7 @@ function drawScene(now) {
       life: life, uref: uref
     });
     particles.draw({
-      vp: matVP, life: life, opacity: 0.66, speedRange: speedRange,
+      vp: matVP, life: life, opacity: T.tracerOpacity, speedRange: speedRange,
       origin: origin, size: size, gridN: gn, uref: uref
     });
     gl.depthMask(true);
@@ -2961,15 +3137,15 @@ function refreshProbeData() {
 
 /* ---- direction dial -------------------------------------------------- */
 function drawDial() {
-  var cv = $('ucfd-dial'), ctx = cv.getContext('2d');
+  var cv = $('ucfd-dial'), ctx = cv.getContext('2d'), T = theme().ui;
   var W = cv.width, H = cv.height, cx = W / 2, cy = H / 2, r = W * 0.42;
   ctx.clearRect(0, 0, W, H);
   ctx.save();
   ctx.translate(cx, cy);
 
   ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
-  ctx.fillStyle = '#16202b'; ctx.fill();
-  ctx.strokeStyle = '#24323f'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = T.face; ctx.fill();
+  ctx.strokeStyle = T.line; ctx.lineWidth = 2; ctx.stroke();
 
   for (var i = 0; i < 16; i++) {
     var a = i * 22.5 * Math.PI / 180;
@@ -2977,11 +3153,11 @@ function drawDial() {
     ctx.beginPath();
     ctx.moveTo(Math.sin(a) * (r - (major ? 13 : 7)), -Math.cos(a) * (r - (major ? 13 : 7)));
     ctx.lineTo(Math.sin(a) * (r - 2), -Math.cos(a) * (r - 2));
-    ctx.strokeStyle = major ? '#61748a' : '#2c3a49';
+    ctx.strokeStyle = major ? T.tickMajor : T.tick;
     ctx.lineWidth = major ? 2.4 : 1.6;
     ctx.stroke();
   }
-  ctx.fillStyle = '#93a6ba';
+  ctx.fillStyle = T.text;
   ctx.font = '600 17px ui-sans-serif, system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('N', 0, -r + 24);
@@ -2993,14 +3169,14 @@ function drawDial() {
   var ang = state.dir * Math.PI / 180;
   var sx = Math.sin(ang), sy = -Math.cos(ang);
   var grad = ctx.createLinearGradient(sx * r, sy * r, -sx * r * 0.2, -sy * r * 0.2);
-  grad.addColorStop(0, 'rgba(55,182,255,0.15)');
-  grad.addColorStop(1, 'rgba(55,182,255,1)');
+  grad.addColorStop(0, hexA(T.accent, 0.15));
+  grad.addColorStop(1, T.accent);
   ctx.strokeStyle = grad; ctx.lineWidth = 6; ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(sx * (r - 10), sy * (r - 10));
   ctx.lineTo(-sx * r * 0.28, -sy * r * 0.28);
   ctx.stroke();
-  ctx.fillStyle = '#37b6ff';
+  ctx.fillStyle = T.accent;
   ctx.beginPath();
   var hx = -sx * r * 0.30, hy = -sy * r * 0.30, px = -sy, py = sx, hs = 12;
   ctx.moveTo(hx - sx * hs, hy - sy * hs);
@@ -3009,14 +3185,14 @@ function drawDial() {
   ctx.closePath(); ctx.fill();
 
   ctx.beginPath(); ctx.arc(sx * (r - 10), sy * (r - 10), 7, 0, Math.PI * 2);
-  ctx.fillStyle = '#0b1219'; ctx.fill();
-  ctx.strokeStyle = '#37b6ff'; ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = T.hub; ctx.fill();
+  ctx.strokeStyle = T.accent; ctx.lineWidth = 3; ctx.stroke();
   ctx.restore();
 }
 
 /* ---- viewport compass ------------------------------------------------ */
 function drawCompass() {
-  var cv = $('ucfd-compass'), ctx = cv.getContext('2d');
+  var cv = $('ucfd-compass'), ctx = cv.getContext('2d'), T = theme().ui;
   var W = cv.width, cx = W / 2, cy = W / 2, r = W * 0.36;
   ctx.clearRect(0, 0, W, W);
   ctx.save(); ctx.translate(cx, cy);
@@ -3024,28 +3200,28 @@ function drawCompass() {
   var rot = -(camera.az + Math.PI / 2);
   ctx.rotate(rot);
   ctx.beginPath(); ctx.arc(0, 0, r + 12, 0, Math.PI * 2);
-  ctx.strokeStyle = '#24323f'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.strokeStyle = T.line; ctx.lineWidth = 2; ctx.stroke();
   for (var i = 0; i < 8; i++) {
     var a = i * Math.PI / 4;
     ctx.beginPath();
     ctx.moveTo(Math.sin(a) * (r + 2), -Math.cos(a) * (r + 2));
     ctx.lineTo(Math.sin(a) * (r + 10), -Math.cos(a) * (r + 10));
-    ctx.strokeStyle = '#3b4c5e'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = T.tick; ctx.lineWidth = 2; ctx.stroke();
   }
   ctx.beginPath();
   ctx.moveTo(0, -r); ctx.lineTo(r * 0.32, r * 0.2); ctx.lineTo(0, r * 0.02); ctx.closePath();
-  ctx.fillStyle = '#e8eef6'; ctx.fill();
+  ctx.fillStyle = T.needle; ctx.fill();
   ctx.beginPath();
   ctx.moveTo(0, -r); ctx.lineTo(-r * 0.32, r * 0.2); ctx.lineTo(0, r * 0.02); ctx.closePath();
-  ctx.fillStyle = '#7d8ea1'; ctx.fill();
+  ctx.fillStyle = T.needleBack; ctx.fill();
   /* wind indicator */
   var ang = state.dir * Math.PI / 180;
   ctx.beginPath();
   ctx.arc(0, 0, r + 12, ang - Math.PI / 2 - 0.22, ang - Math.PI / 2 + 0.22);
-  ctx.strokeStyle = '#37b6ff'; ctx.lineWidth = 4; ctx.stroke();
+  ctx.strokeStyle = T.accent; ctx.lineWidth = 4; ctx.stroke();
   ctx.restore();
   ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
-  ctx.fillStyle = '#93a6ba';
+  ctx.fillStyle = T.text;
   ctx.font = '700 15px ui-sans-serif, system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('N', 0, -r - 22);
@@ -3118,7 +3294,7 @@ function parseEPW(text) {
 }
 
 function drawRose() {
-  var cv = $('ucfd-rose'), ctx = cv.getContext('2d');
+  var cv = $('ucfd-rose'), ctx = cv.getContext('2d'), T = theme().ui;
   var W = cv.width, cx = W / 2, cy = W / 2, R0 = W * 0.40;
   ctx.clearRect(0, 0, W, W);
   var epw = state.epw;
@@ -3131,11 +3307,11 @@ function drawRose() {
   for (var r = 1; r <= rings; r++) {
     var rad = R0 * r / rings;
     ctx.beginPath(); ctx.arc(0, 0, rad, 0, Math.PI * 2);
-    ctx.strokeStyle = r === rings ? '#2c3a49' : '#1e2a36';
+    ctx.strokeStyle = r === rings ? T.tick : T.ring;
     ctx.lineWidth = 2; ctx.stroke();
     if (epw) {
       var pctv = (epw.maxFreq * 100) * r / rings;
-      ctx.fillStyle = '#4d5f72';
+      ctx.fillStyle = T.textFaint;
       ctx.fillText(pctv.toFixed(0) + '%', 0, -rad + 13);
     }
   }
@@ -3145,7 +3321,7 @@ function drawRose() {
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(Math.sin(a) * R0, -Math.cos(a) * R0);
-    ctx.strokeStyle = i % 4 === 0 ? '#2c3a49' : '#1a242f';
+    ctx.strokeStyle = i % 4 === 0 ? T.tick : T.spoke;
     ctx.lineWidth = i % 4 === 0 ? 2 : 1;
     ctx.stroke();
   }
@@ -3169,7 +3345,7 @@ function drawRose() {
         ctx.closePath();
         ctx.fillStyle = rgbCss(viridis(0.12 + b * 0.20));
         ctx.fill();
-        ctx.strokeStyle = 'rgba(8,12,18,0.7)'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.strokeStyle = T.petalEdge; ctx.lineWidth = 1.5; ctx.stroke();
       }
     }
   }
@@ -3181,12 +3357,12 @@ function drawRose() {
   ctx.moveTo(0, 0);
   ctx.arc(0, 0, R0 * 1.06, ca - ch - Math.PI / 2, ca + ch - Math.PI / 2);
   ctx.closePath();
-  ctx.strokeStyle = '#37b6ff'; ctx.lineWidth = 3; ctx.stroke();
-  ctx.fillStyle = 'rgba(55,182,255,0.10)'; ctx.fill();
+  ctx.strokeStyle = T.accent; ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = hexA(T.accent, 0.10); ctx.fill();
 
   /* cardinal labels */
   ctx.font = '700 22px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillStyle = '#93a6ba';
+  ctx.fillStyle = T.text;
   var labels = [['N', 0], ['E', 90], ['S', 180], ['W', 270]];
   for (var L = 0; L < 4; L++) {
     var la = labels[L][1] * Math.PI / 180;
@@ -3203,11 +3379,11 @@ function drawRose() {
     for (var k = 0; k < 5; k++) {
       ctx.fillStyle = rgbCss(viridis(0.12 + k * 0.20));
       ctx.fillRect(x, y - 7, 14, 14);
-      ctx.fillStyle = '#7d8ea1';
+      ctx.fillStyle = T.text;
       ctx.fillText(SPEED_BIN_LABELS[k], x + 19, y);
       x += 19 + ctx.measureText(SPEED_BIN_LABELS[k]).width + 14;
     }
-    ctx.fillStyle = '#4d5f72';
+    ctx.fillStyle = T.textFaint;
     ctx.textAlign = 'left';
     ctx.fillText('m/s', x, y);
   }
@@ -3604,21 +3780,22 @@ function exportPNG() {
   out.width = canvas.width;
   out.height = canvas.height + barH;
   var ctx = out.getContext('2d');
-  ctx.fillStyle = '#0b1219';
+  var SH = theme().shot;
+  ctx.fillStyle = SH.bg;
   ctx.fillRect(0, 0, out.width, out.height);
   ctx.drawImage(canvas, 0, 0);
 
-  ctx.fillStyle = '#0d151d';
+  ctx.fillStyle = SH.bar;
   ctx.fillRect(0, canvas.height, out.width, barH);
-  ctx.fillStyle = '#24323f';
+  ctx.fillStyle = SH.rule;
   ctx.fillRect(0, canvas.height, out.width, Math.max(1, Math.round(dpr)));
 
   var pad = 20 * dpr, y = canvas.height + 28 * dpr;
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-  ctx.fillStyle = '#e8eef6';
+  ctx.fillStyle = SH.title;
   ctx.font = '600 ' + (16 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
   ctx.fillText('Urban CFD Studio · ' + state.modelName, pad, y);
-  ctx.fillStyle = '#93a6ba';
+  ctx.fillStyle = SH.body;
   ctx.font = '400 ' + (12.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
   var line2 = fmt(state.speed, 1) + ' m/s at 10 m from ' + Math.round(state.dir) + '° (' + cardinal(state.dir) + ')' +
     ' · z₀ ' + state.z0 + ' m · lattice ' + state.grid.nx + '×' + state.grid.ny + '×' + state.grid.nz +
@@ -3626,7 +3803,7 @@ function exportPNG() {
     state.residual.toExponential(1) + ' · ' + (state.comfort ? 'Lawson comfort' : FIELD_MODES[state.mode].name);
   ctx.fillText(line2, pad, y + 22 * dpr);
   ctx.textAlign = 'right';
-  ctx.fillStyle = '#4d5f72';
+  ctx.fillStyle = SH.faint;
   ctx.font = '400 ' + (11 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
   ctx.fillText('© Karam Al-Obaidi · D3Q19 LBM · comparative early-stage analysis', out.width - pad, y + 11 * dpr);
 
@@ -3840,6 +4017,9 @@ function bindUI() {
     $('ucfd-rail').classList.remove('is-open');
     setPanelOpen(!$('ucfd-panel').classList.contains('is-open'));
   });
+  on($('ucfd-theme'), 'click', function () {
+    applyTheme(state.theme === 'light' ? 'dark' : 'light', true);
+  });
   on($('ucfd-results-tab'), 'click', function () {
     setPanelOpen(!$('ucfd-panel').classList.contains('is-open'));
   });
@@ -3852,6 +4032,7 @@ function bindUI() {
     if (e.target && /input|select|textarea/i.test(e.target.tagName)) { return; }
     if (e.key === 'Escape') { closeTour(); setPanelOpen(false); }
     else if (e.key === 'r' || e.key === 'R') { setPanelOpen(!$('ucfd-panel').classList.contains('is-open')); }
+    else if (e.key === 'd' || e.key === 'D') { applyTheme(state.theme === 'light' ? 'dark' : 'light', true); }
     else if (e.key === ' ') { setRunning(!state.running); e.preventDefault(); }
     else if (e.key === '1') { setView('iso'); }
     else if (e.key === '2') { setView('plan'); }
@@ -3890,6 +4071,35 @@ function syncControls() {
   });
   markPreset('prevailing');
 }
+/* Switch the whole presentation - chrome, viewport and exports - between the
+   dark and light palettes. Data colours are untouched by design. */
+function applyTheme(name, remember) {
+  state.theme = (name === 'light') ? 'light' : 'dark';
+  root.setAttribute('data-theme', state.theme);
+  var light = state.theme === 'light';
+  var btn = $('ucfd-theme');
+  if (btn) {
+    btn.setAttribute('aria-pressed', String(light));
+    btn.setAttribute('aria-label', light ? 'Switch to the dark presentation' : 'Switch to the light presentation');
+    $('ucfd-theme-label').textContent = light ? 'Dark' : 'Light';
+  }
+  /* when the widget owns the page, the page behind it has to match */
+  if (document.body.classList.contains('ucfd-standalone')) {
+    var bg = light ? '#e9edf2' : '#080c12';
+    document.documentElement.style.background = bg;
+    document.body.style.background = bg;
+  }
+  drawDial(); drawCompass(); drawRose(); renderLegend();
+  if (remember) { try { localStorage.setItem('ucfd-theme', state.theme); } catch (e) { /* private mode */ } }
+}
+function initialTheme() {
+  var saved = null;
+  try { saved = localStorage.getItem('ucfd-theme'); } catch (e) { saved = null; }
+  if (saved === 'light' || saved === 'dark') { return saved; }
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) { return 'light'; }
+  return 'dark';
+}
+
 /* Open or close the results drawer and keep its triggers in step. */
 function setPanelOpen(open) {
   var tab = $('ucfd-results-tab');
@@ -4005,6 +4215,17 @@ function boot() {
 
   bindUI();
   bindCamera();
+  applyTheme(initialTheme(), false);
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: light)');
+    var follow = function (e) {
+      var chosen = null;
+      try { chosen = localStorage.getItem('ucfd-theme'); } catch (err) { chosen = null; }
+      if (!chosen) { applyTheme(e.matches ? 'light' : 'dark', false); }
+    };
+    if (mq.addEventListener) { mq.addEventListener('change', follow); }
+    else if (mq.addListener) { mq.addListener(follow); }
+  }
   syncControls();
   setView('iso');
   updateWindReadouts();
@@ -4062,6 +4283,7 @@ function boot() {
     version: '1.0.0',
     state: state,
     setWind: function (speed, dir) { setSpeed(speed); setDirection(dir); },
+    setTheme: function (t) { applyTheme(t, true); },
     setField: function (m) { if (FIELD_MODES[m]) { state.mode = m; $('ucfd-field').value = m; analyseField(); renderLegend(); } },
     exportPNG: exportPNG,
     solverMode: function () { return solver.mode; },
