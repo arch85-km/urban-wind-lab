@@ -303,6 +303,41 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 4.5L6 8.5L10 4.5' fill='none' stroke='%234d6275' stroke-width='1.6' stroke-linecap='round'/></svg>");
 }
 
+/* ---- custom dropdown -------------------------------------------------
+   Chrome draws a native <select> popup as a separate operating-system window
+   and fills it before compositing its contents, which flashes black under a
+   dark scheme on Windows. This menu is ordinary markup, painted by the page
+   compositor with everything else, so that cannot happen. */
+#ucfd-root .ucfd-native-hidden { display: none !important; }
+#ucfd-root .ucfd-select {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  padding: 7px 9px; font: inherit; font-size: 12px; color: var(--ucfd-text);
+  background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line);
+  border-radius: 6px; cursor: pointer;
+}
+#ucfd-root .ucfd-select:hover { border-color: var(--ucfd-line-hover); }
+#ucfd-root .ucfd-select:focus-visible { outline: none; border-color: var(--ucfd-accent); box-shadow: 0 0 0 2px var(--ucfd-steady-bg); }
+#ucfd-root .ucfd-select[aria-expanded="true"] { border-color: var(--ucfd-accent); }
+#ucfd-root .ucfd-select-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#ucfd-root .ucfd-select-caret { width: 12px; height: 12px; flex: none; opacity: .75; transition: transform .15s ease; }
+#ucfd-root .ucfd-select[aria-expanded="true"] .ucfd-select-caret { transform: rotate(180deg); }
+
+#ucfd-root .ucfd-menu {
+  position: absolute; z-index: 26; min-width: 120px; max-height: 264px; overflow-y: auto;
+  padding: 4px; background: var(--ucfd-panel); border: 1px solid var(--ucfd-line);
+  border-radius: 8px; box-shadow: 0 14px 34px -14px #00000073, 0 0 0 1px #00000014;
+  scrollbar-width: thin; scrollbar-color: var(--ucfd-raise) transparent;
+}
+#ucfd-root .ucfd-menu[hidden] { display: none !important; }
+#ucfd-root .ucfd-menu-item {
+  display: flex; align-items: center; gap: 7px; padding: 7px 8px; border-radius: 5px;
+  font-size: 12px; color: var(--ucfd-text); cursor: pointer; white-space: nowrap;
+}
+#ucfd-root .ucfd-menu-item:hover, #ucfd-root .ucfd-menu-item.is-active { background: var(--ucfd-raise); }
+#ucfd-root .ucfd-menu-item[aria-selected="true"] { color: var(--ucfd-accent); }
+#ucfd-root .ucfd-menu-tick { width: 12px; height: 12px; flex: none; opacity: 0; }
+#ucfd-root .ucfd-menu-item[aria-selected="true"] .ucfd-menu-tick { opacity: 1; }
+
 #ucfd-root .ucfd-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   padding: 8px 11px; font-size: 12px; font-weight: 550; font-family: inherit; color: var(--ucfd-text);
@@ -3684,6 +3719,7 @@ function applyPreset(name) {
   if (!P) { return; }
   setSpeed(P.speed);
   $('ucfd-terrain').value = String(P.z0);
+  syncSelectViews();
   setRoughness(P.z0);
   markPreset(name);
   toast('Preset: ' + name + ' · ' + fmt(P.speed, 1) + ' m/s at 10 m');
@@ -3756,6 +3792,14 @@ function setRunning(run) {
 function onSolverMessage(m) {
   if (m.type === 'field') {
     var incoming = new Float32Array(m.buffer);
+    if (m.nx !== state.grid.nx || m.ny !== state.grid.ny || m.nz !== state.grid.nz) {
+      /* solved on the previous lattice and overtaken by a resolution change:
+         hand the buffer back and wait for one that matches */
+      if (solver.mode === 'worker' && incoming.buffer.byteLength) {
+        solver.post({ type: 'recycle', buffer: incoming.buffer }, [incoming.buffer]);
+      }
+      return;
+    }
     var old = state.field;
     state.field = incoming;
     state.step = m.step;
@@ -4251,7 +4295,7 @@ function bindUI() {
 
   on(document, 'keydown', function (e) {
     if (e.target && /input|select|textarea/i.test(e.target.tagName)) { return; }
-    if (e.key === 'Escape') { closeTour(); setPanelOpen(false); }
+    if (e.key === 'Escape') { if (openMenu) { closeMenu(); return; } closeTour(); setPanelOpen(false); }
     else if (e.key === 'r' || e.key === 'R') { setPanelOpen(!$('ucfd-panel').classList.contains('is-open')); }
     else if (e.key === 'd' || e.key === 'D') { applyTheme(state.theme === 'light' ? 'dark' : 'light', true); }
     else if (e.key === ' ') { setRunning(!state.running); e.preventDefault(); }
@@ -4272,6 +4316,181 @@ function bindUI() {
     else { toast('Drop an .obj model or an .epw weather file.', 'warn'); }
   });
 }
+/* ------------------------------------------------------------------ *
+ * Custom dropdowns                                                     *
+ *                                                                      *
+ * Each <select> stays in the DOM as the model - every other part of the *
+ * app still reads its .value and listens for its change event - and is  *
+ * hidden behind a button and an in-page listbox. A native popup is an   *
+ * operating-system window that Chrome fills before compositing, which   *
+ * is what flashed black on Windows; this one is ordinary markup.        *
+ * ------------------------------------------------------------------ */
+var CARET_SVG = '<svg class="ucfd-select-caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 4.5L6 8.5L10 4.5"/></svg>';
+var TICK_SVG = '<svg class="ucfd-menu-tick" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5l2.5 2.5 4.5-5.5"/></svg>';
+var openMenu = null;
+
+function enhanceSelects() {
+  var sels = root.querySelectorAll('select');
+  for (var i = 0; i < sels.length; i++) { enhanceSelect(sels[i], i); }
+  on(document, 'pointerdown', function (e) {
+    if (openMenu && !openMenu.menu.contains(e.target) && e.target !== openMenu.trigger &&
+        !openMenu.trigger.contains(e.target)) { closeMenu(); }
+  }, true);
+  on(window, 'resize', function () { closeMenu(); });
+  /* Follow the trigger while its container scrolls, and close only once it has
+     actually scrolled out of view. Closing on any scroll would defeat opening
+     by keyboard: focusing a trigger that is off screen scrolls it into view,
+     and that scroll event lands just after the menu opens. */
+  on($('ucfd-rail'), 'scroll', onContainerScroll);
+  on($('ucfd-panel'), 'scroll', onContainerScroll);
+}
+
+function onContainerScroll() {
+  if (!openMenu) { return; }
+  var sc = openMenu.trigger.closest('.ucfd-rail, .ucfd-panel');
+  if (sc) {
+    var t = openMenu.trigger.getBoundingClientRect(), c = sc.getBoundingClientRect();
+    if (t.bottom < c.top + 4 || t.top > c.bottom - 4) { closeMenu(); return; }
+  }
+  openMenu.place();
+}
+
+function closeMenu() {
+  if (!openMenu) { return; }
+  openMenu.menu.hidden = true;
+  openMenu.trigger.setAttribute('aria-expanded', 'false');
+  openMenu.trigger.removeAttribute('aria-activedescendant');
+  openMenu = null;
+}
+
+function enhanceSelect(sel, index) {
+  var trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'ucfd-select';
+  trigger.id = sel.id + '-trigger';
+  trigger.setAttribute('role', 'combobox');
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  trigger.setAttribute('aria-expanded', 'false');
+  var label = document.createElement('span');
+  label.className = 'ucfd-select-label';
+  trigger.appendChild(label);
+  trigger.insertAdjacentHTML('beforeend', CARET_SVG);
+
+  /* carry the visible label over from whatever labels the select */
+  var lab = root.querySelector('label[for="' + sel.id + '"]');
+  if (lab) { trigger.setAttribute('aria-label', lab.textContent.replace(/\s+/g, ' ').trim()); }
+  else if (sel.getAttribute('aria-label')) { trigger.setAttribute('aria-label', sel.getAttribute('aria-label')); }
+
+  var menu = document.createElement('div');
+  menu.className = 'ucfd-menu';
+  menu.id = sel.id + '-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.hidden = true;
+  trigger.setAttribute('aria-controls', menu.id);
+
+  var items = [];
+  for (var o = 0; o < sel.options.length; o++) {
+    var opt = sel.options[o];
+    var item = document.createElement('div');
+    item.className = 'ucfd-menu-item';
+    item.id = sel.id + '-opt-' + o;
+    item.setAttribute('role', 'option');
+    item.setAttribute('data-value', opt.value);
+    item.innerHTML = TICK_SVG + '<span>' + opt.innerHTML + '</span>';
+    menu.appendChild(item);
+    items.push(item);
+  }
+
+  sel.classList.add('ucfd-native-hidden');
+  sel.setAttribute('tabindex', '-1');
+  sel.setAttribute('aria-hidden', 'true');
+  sel.parentNode.insertBefore(trigger, sel.nextSibling);
+  root.appendChild(menu);
+
+  var active = -1;
+  function syncView() {
+    label.textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : '';
+    for (var k = 0; k < items.length; k++) {
+      items[k].setAttribute('aria-selected', String(k === sel.selectedIndex));
+    }
+  }
+  function setActive(k) {
+    if (active >= 0 && items[active]) { items[active].classList.remove('is-active'); }
+    active = clamp(k, 0, items.length - 1);
+    items[active].classList.add('is-active');
+    trigger.setAttribute('aria-activedescendant', items[active].id);
+    var it = items[active], top = it.offsetTop, bottom = top + it.offsetHeight;
+    if (top < menu.scrollTop) { menu.scrollTop = top; }
+    else if (bottom > menu.scrollTop + menu.clientHeight) { menu.scrollTop = bottom - menu.clientHeight; }
+  }
+  function place() {
+    var r = trigger.getBoundingClientRect(), b = root.getBoundingClientRect();
+    menu.style.width = r.width + 'px';
+    menu.style.left = clamp(r.left - b.left, 4, Math.max(4, b.width - r.width - 4)) + 'px';
+    menu.hidden = false;                       /* measure with it laid out */
+    var h = menu.offsetHeight;
+    var below = r.bottom - b.top + 4, above = r.top - b.top - h - 4;
+    var top = (below + h <= b.height - 6 || above < 4) ? below : above;
+    /* a trigger scrolled out of the rail would otherwise place the menu
+       outside the app entirely */
+    menu.style.top = clamp(top, 4, Math.max(4, b.height - h - 4)) + 'px';
+  }
+  function open() {
+    if (openMenu && openMenu.menu !== menu) { closeMenu(); }
+    syncView();
+    place();
+    trigger.setAttribute('aria-expanded', 'true');
+    setActive(sel.selectedIndex < 0 ? 0 : sel.selectedIndex);
+    openMenu = { menu: menu, trigger: trigger, place: place };
+  }
+  function choose(k) {
+    if (sel.selectedIndex !== k) {
+      sel.selectedIndex = k;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    syncView();
+    closeMenu();
+    trigger.focus();
+  }
+
+  on(trigger, 'click', function (e) {
+    e.preventDefault();
+    if (openMenu && openMenu.menu === menu) { closeMenu(); } else { open(); }
+  });
+  on(menu, 'click', function (e) {
+    var it = e.target.closest ? e.target.closest('.ucfd-menu-item') : null;
+    if (it) { choose(items.indexOf(it)); }
+  });
+  on(menu, 'pointermove', function (e) {
+    var it = e.target.closest ? e.target.closest('.ucfd-menu-item') : null;
+    if (it) { setActive(items.indexOf(it)); }
+  });
+  on(trigger, 'keydown', function (e) {
+    var isOpen = openMenu && openMenu.menu === menu;
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (!isOpen) { open(); e.preventDefault(); return; }
+    }
+    if (!isOpen) { return; }
+    if (e.key === 'ArrowDown') { setActive(active + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { setActive(active - 1); e.preventDefault(); }
+    else if (e.key === 'Home') { setActive(0); e.preventDefault(); }
+    else if (e.key === 'End') { setActive(items.length - 1); e.preventDefault(); }
+    else if (e.key === 'Enter' || e.key === ' ') { choose(active); e.preventDefault(); }
+    else if (e.key === 'Escape') { closeMenu(); trigger.focus(); e.preventDefault(); }
+    else if (e.key === 'Tab') { closeMenu(); }
+  });
+  /* programmatic writes elsewhere in the app still drive the label */
+  on(sel, 'change', syncView);
+  sel.ucfdSync = syncView;
+  syncView();
+}
+
+/* Called after any code sets select.value directly. */
+function syncSelectViews() {
+  var sels = root.querySelectorAll('select');
+  for (var i = 0; i < sels.length; i++) { if (sels[i].ucfdSync) { sels[i].ucfdSync(); } }
+}
+
 /* Push the initial state into the form controls so the markup and the
    defaults can never drift apart. */
 function syncControls() {
@@ -4291,6 +4510,7 @@ function syncControls() {
     updateSliceNote(ax);
   });
   markPreset('prevailing');
+  syncSelectViews();
 }
 /* Switch the whole presentation - chrome, viewport and exports - between the
    dark and light palettes. Data colours are untouched by design. */
@@ -4439,6 +4659,7 @@ function boot() {
 
   bindUI();
   bindCamera();
+  enhanceSelects();
   applyTheme(initialTheme(), false);
   if (window.matchMedia) {
     var mq = window.matchMedia('(prefers-color-scheme: light)');
@@ -4508,7 +4729,7 @@ function boot() {
     state: state,
     setWind: function (speed, dir) { setSpeed(speed); setDirection(dir); },
     setTheme: function (t) { applyTheme(t, true); },
-    setField: function (m) { if (FIELD_MODES[m]) { state.mode = m; $('ucfd-field').value = m; analyseField(); renderLegend(); } },
+    setField: function (m) { if (FIELD_MODES[m]) { state.mode = m; $('ucfd-field').value = m; syncSelectViews(); analyseField(); renderLegend(); } },
     exportPNG: exportPNG,
     solverMode: function () { return solver.mode; },
     particlesResize: function (n) { particles.resize(n); },
