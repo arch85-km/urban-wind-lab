@@ -43,6 +43,11 @@
    ===================================================================== */
 #ucfd-root, #ucfd-root *, #ucfd-root *::before, #ucfd-root *::after { box-sizing: border-box; }
 #ucfd-root {
+  /* Native widgets - select popups, scrollbars, focus rings - are drawn by the
+     browser, not by these rules. Without this it builds them light-scheme while
+     the controls are dark, which is what makes a dropdown flash black in Chrome
+     before its options paint. Scoped here, so a host page is unaffected. */
+  color-scheme: dark;
   /* ---- palette -------------------------------------------------- */
   --ucfd-bg:        #080c12;
   --ucfd-stage:     #0a0f16;
@@ -123,6 +128,7 @@
    Same layout and the same data colours; only the chrome inverts, so a
    projector in a bright room stays legible. */
 #ucfd-root[data-theme="light"] {
+  color-scheme: light;
   --ucfd-bg:        #e9edf2;
   --ucfd-stage:     #dfe6ed;
   --ucfd-panel:     #ffffff;
@@ -285,6 +291,13 @@
   border: 1px solid var(--ucfd-line); border-radius: 6px; -webkit-appearance: none; appearance: none; cursor: pointer; font-family: inherit;
 }
 #ucfd-root select:focus { outline: none; border-color: var(--ucfd-accent); }
+/* background-image:none stops the caret data URL leaking into the popup and
+   tiling behind the options, which some Chrome versions do */
+#ucfd-root option, #ucfd-root optgroup {
+  background-color: var(--ucfd-panel);
+  color: var(--ucfd-text);
+  background-image: none;
+}
 /* the caret lives inside a data URL, which cannot read a custom property */
 #ucfd-root[data-theme="light"] select {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 4.5L6 8.5L10 4.5' fill='none' stroke='%234d6275' stroke-width='1.6' stroke-linecap='round'/></svg>");
@@ -4296,6 +4309,9 @@ function applyTheme(name, remember) {
     var bg = light ? '#e9edf2' : '#080c12';
     document.documentElement.style.background = bg;
     document.body.style.background = bg;
+    /* the standalone rule sits outside #ucfd-root and cannot read its
+       variables, so the page scheme is set here alongside the background */
+    document.documentElement.style.colorScheme = state.theme;
   }
   drawDial(); drawCompass(); drawRose(); renderLegend();
   if (remember) { try { localStorage.setItem('ucfd-theme', state.theme); } catch (e) { /* private mode */ } }
