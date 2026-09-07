@@ -35,6 +35,9 @@
 <style>
 /* =====================================================================
    URBAN CFD STUDIO
+   Copyright (c) Karam Al-Obaidi. MIT License - full text at the top of the
+   source file, or https://opensource.org/licenses/MIT
+
    All rules are scoped under #ucfd-root so the widget can be dropped into
    a WordPress theme without leaking styles or inheriting broken ones.
    ===================================================================== */
@@ -467,12 +470,6 @@
 }
 #ucfd-root .ucfd-foot b { color: var(--ucfd-dim); font-weight: 600; }
 #ucfd-root .ucfd-copy { color: var(--ucfd-dim); font-weight: 600; white-space: nowrap; }
-#ucfd-root .ucfd-copy a {
-  color: var(--ucfd-faint); font-weight: 500; text-decoration: none;
-  border-bottom: 1px dotted currentColor; margin-left: 3px;
-}
-#ucfd-root .ucfd-copy a:hover { color: var(--ucfd-accent); border-bottom-color: currentColor; }
-#ucfd-root .ucfd-copy a:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 #ucfd-root .ucfd-foot .ucfd-spacer { margin-left: auto; }
 
 /* ---- tour --------------------------------------------------------- */
@@ -941,7 +938,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
 
   <!-- ============================= FOOTER ============================= -->
   <footer class="ucfd-foot">
-    <span class="ucfd-copy">&copy; Karam Al&#8209;Obaidi <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener license" title="Released under the MIT License - free to use, adapt and redistribute with this notice">MIT</a></span>
+    <span class="ucfd-copy">&copy; Karam Al&#8209;Obaidi</span>
     <span><b>Teaching tool.</b> Early&#8209;stage comparative analysis &mdash; not a substitute for validated CFD or wind&#8209;tunnel testing.</span>
     <span class="ucfd-hide-sm">D3Q19 LBM &middot; Smagorinsky LES &middot; ABL log&#8209;law inlet</span>
     <span class="ucfd-spacer ucfd-mono" id="ucfd-foot-status">Ready</span>
