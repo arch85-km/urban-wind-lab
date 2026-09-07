@@ -1,9 +1,36 @@
 <!DOCTYPE html>
+<!--
+  Urban CFD Studio - interactive lattice-Boltzmann wind analysis for 3D urban context.
+
+  Copyright (c) Karam Al-Obaidi
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+  This file bundles no third-party code and makes no network requests of any
+  kind: the renderer, the solver and both file parsers are written from scratch.
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Urban CFD Studio - an interactive lattice-Boltzmann wind analysis tool for 3D urban context, built for architecture teaching.">
+<link rel="license" href="https://opensource.org/licenses/MIT">
 <title>Urban CFD Studio &mdash; Interactive Wind Analysis for Urban Design</title>
 <style>
 /* =====================================================================
@@ -440,6 +467,12 @@
 }
 #ucfd-root .ucfd-foot b { color: var(--ucfd-dim); font-weight: 600; }
 #ucfd-root .ucfd-copy { color: var(--ucfd-dim); font-weight: 600; white-space: nowrap; }
+#ucfd-root .ucfd-copy a {
+  color: var(--ucfd-faint); font-weight: 500; text-decoration: none;
+  border-bottom: 1px dotted currentColor; margin-left: 3px;
+}
+#ucfd-root .ucfd-copy a:hover { color: var(--ucfd-accent); border-bottom-color: currentColor; }
+#ucfd-root .ucfd-copy a:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 #ucfd-root .ucfd-foot .ucfd-spacer { margin-left: auto; }
 
 /* ---- tour --------------------------------------------------------- */
@@ -908,7 +941,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
 
   <!-- ============================= FOOTER ============================= -->
   <footer class="ucfd-foot">
-    <span class="ucfd-copy">&copy; Karam Al&#8209;Obaidi</span>
+    <span class="ucfd-copy">&copy; Karam Al&#8209;Obaidi <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener license" title="Released under the MIT License - free to use, adapt and redistribute with this notice">MIT</a></span>
     <span><b>Teaching tool.</b> Early&#8209;stage comparative analysis &mdash; not a substitute for validated CFD or wind&#8209;tunnel testing.</span>
     <span class="ucfd-hide-sm">D3Q19 LBM &middot; Smagorinsky LES &middot; ABL log&#8209;law inlet</span>
     <span class="ucfd-spacer ucfd-mono" id="ucfd-foot-status">Ready</span>
