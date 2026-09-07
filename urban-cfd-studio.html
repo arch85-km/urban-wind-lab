@@ -457,6 +457,31 @@
 #ucfd-root .ucfd-kv span:last-child { text-align: right; }
 #ucfd-root .ucfd-empty { font-size: 11.5px; color: var(--ucfd-faint); line-height: 1.55; }
 #ucfd-root .ucfd-rose { width: 100%; height: auto; display: block; cursor: pointer; touch-action: manipulation; }
+#ucfd-root .ucfd-eq {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 10.5px; line-height: 1.7; color: var(--ucfd-text);
+  border-left: 2px solid var(--ucfd-raise);
+  padding: 7px 10px; border-radius: 0 5px 5px 0; margin: 4px 0;
+  overflow-x: auto; white-space: nowrap;
+  /* A formula wider than the panel scrolls. The two `local` layers paint the
+     panel colour at each end and the two `scroll` layers leave a soft edge
+     behind, so a shadow appears only on the side that has more to show. */
+  background:
+    linear-gradient(to right, var(--ucfd-panel-2) 40%, transparent) left center local,
+    linear-gradient(to left,  var(--ucfd-panel-2) 40%, transparent) right center local,
+    radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.28), transparent) left center scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.28), transparent) right center scroll,
+    var(--ucfd-panel-2);
+  background-repeat: no-repeat;
+  background-size: 34px 100%, 34px 100%, 14px 100%, 14px 100%, auto;
+}
+#ucfd-root .ucfd-eq::-webkit-scrollbar { height: 6px; }
+#ucfd-root .ucfd-eq::-webkit-scrollbar-thumb { background: var(--ucfd-raise); border-radius: 6px; }
+#ucfd-root .ucfd-eq b { color: var(--ucfd-accent); font-weight: 600; }
+#ucfd-root .ucfd-subhead {
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ucfd-faint); font-weight: 650; margin-top: 4px;
+}
 #ucfd-root .ucfd-note {
   font-size: 10.5px; line-height: 1.5; color: var(--ucfd-faint); padding: 8px 10px;
   background: var(--ucfd-panel-2); border-left: 2px solid var(--ucfd-raise); border-radius: 0 5px 5px 0;
@@ -901,6 +926,59 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <canvas class="ucfd-rose" id="ucfd-rose" width="560" height="560"></canvas>
         <div class="ucfd-hint" id="ucfd-rose-hint">Import an EPW file to plot the annual wind rose. Click any sector to drive the simulation from that direction.</div>
         <div id="ucfd-epw-meta"></div>
+      </div>
+    </details>
+
+    <details class="ucfd-group" id="ucfd-g-method">
+      <summary>Method</summary>
+      <div class="ucfd-body">
+        <div class="ucfd-hint">Every figure in this panel comes from a flow solve running in this
+          browser tab. Nothing is precomputed or looked up.</div>
+
+        <div class="ucfd-subhead">Flow solver</div>
+        <div class="ucfd-hint">A <b>D3Q19 lattice&#8209;Boltzmann</b> scheme: 19 discrete velocities per
+          cell, advanced by streaming and a BGK collision, with a Smagorinsky sub&#8209;grid model
+          supplying the turbulent viscosity (large&#8209;eddy style closure).</div>
+        <div class="ucfd-eq">f<sub>q</sub>(x+e<sub>q</sub>, t+1) = f<sub>q</sub>(x,t) &minus; &omega;&nbsp;[&nbsp;f<sub>q</sub> &minus; f<sub>q</sub><sup>eq</sup>&nbsp;]</div>
+        <div class="ucfd-eq">f<sub>q</sub><sup>eq</sup> = w<sub>q</sub>&thinsp;&rho;&thinsp;[ 1 + 3(e<sub>q</sub>&middot;u) + 4.5(e<sub>q</sub>&middot;u)&sup2; &minus; 1.5|u|&sup2; ]</div>
+        <div class="ucfd-eq">&tau; = &frac12;( &tau;&#8320; + &radic;( &tau;&#8320;&sup2; + 18&radic;2&thinsp;C&sup2;&thinsp;|&Pi;| / &rho; ) )</div>
+        <div class="ucfd-hint">&Pi; is the second moment of the non&#8209;equilibrium distribution, so the
+          eddy viscosity rises exactly where the flow is being sheared.</div>
+
+        <div class="ucfd-subhead">Boundary conditions</div>
+        <div class="ucfd-kv"><span>Upwind faces</span><span>ABL log&#8209;law inlet</span></div>
+        <div class="ucfd-eq">U(z) = U&#8321;&#8320; &middot; ln((z+z&#8320;)/z&#8320;) / ln((10+z&#8320;)/z&#8320;)</div>
+        <div class="ucfd-kv"><span>Downwind faces</span><span>Zero gradient</span></div>
+        <div class="ucfd-kv"><span>Domain top</span><span>Driven free stream</span></div>
+        <div class="ucfd-kv"><span>Ground &amp; buildings</span><span>Half&#8209;way bounce&#8209;back</span></div>
+        <div class="ucfd-hint">The inlet is applied to whichever faces face upwind, so any wind
+          azimuth is solved without rebuilding the model.</div>
+
+        <div class="ucfd-subhead">Geometry</div>
+        <div class="ucfd-hint">Triangles are voxelised onto the lattice by a surface pass plus a
+          parity fill, producing the solid mask the bounce&#8209;back uses. Anything finer than one cell
+          is not resolved.</div>
+
+        <div class="ucfd-subhead">Reported quantities</div>
+        <div class="ucfd-eq">|U| = &radic;(u&sup2; + v&sup2; + w&sup2;)&nbsp;&nbsp;&nbsp;amplification = |U| / U&#8321;&#8320;</div>
+        <div class="ucfd-eq">C<sub>p</sub> = (p &minus; p<sub>ref</sub>) / (&frac12;&rho;U&#8321;&#8320;&sup2;) = 2(&rho;<sub>lat</sub>&minus;1) / (3&thinsp;u<sub>ref</sub>&sup2;)</div>
+        <div class="ucfd-hint">Comfort classes apply the Lawson LDDC thresholds to the solved local
+          speed on the 1.5&nbsp;m plane.</div>
+
+        <div class="ucfd-subhead">Scaling</div>
+        <div class="ucfd-hint">The solve runs in lattice units at a fixed reference velocity and the
+          field is stored normalised, as U/U&#8321;&#8320; and C<sub>p</sub>. Both are Reynolds&#8209;independent for
+          sharp&#8209;edged bluff bodies, which is why changing the wind speed rescales the result
+          instantly while changing direction or roughness starts a new solve.</div>
+
+        <div class="ucfd-subhead">Live parameters</div>
+        <div id="ucfd-method-live"></div>
+
+        <div class="ucfd-note"><b>Not modelled.</b> Isothermal &mdash; no buoyancy, stack effect or
+          solar heating. No surrounding terrain, vegetation or porosity. Turbulence is a sub&#8209;grid
+          model on a coarse lattice, not a resolved LES or a validated RANS closure. A certified
+          comfort assessment uses gust&#8209;equivalent speeds weighted by the annual frequency of every
+          wind direction; this shows one direction at a time.</div>
       </div>
     </details>
 
@@ -2282,7 +2360,9 @@ function SolverBody(scope) {
     scope.postMessage({
       type: 'field', buffer: out.buffer, step: S.step, residual: residual,
       umax: umax, fluid: fluid, msPerStep: S.msPerStep,
-      nx: nx, ny: ny, nz: nz, dx: S.dx, diverged: S.diverged
+      nx: nx, ny: ny, nz: nz, dx: S.dx, diverged: S.diverged,
+      /* the method panel reads these rather than keeping its own copies */
+      lattice: { uref: UREF_LAT, tau0: TAU0, csmag: Math.sqrt(CS2), zref: ZREF, q: Q }
     }, [out.buffer]);
     S.lastReport = nowFn();
   }
@@ -3131,6 +3211,40 @@ function renderStats() {
   $('ucfd-comfort-bars').innerHTML = html || '<div class="ucfd-empty">Waiting for the first solved field.</div>';
 }
 
+/* The live half of the Method panel. Every value is read back from the solver
+   rather than restated here, so the panel cannot drift from the code. */
+function renderMethod() {
+  var el = $('ucfd-method-live');
+  if (!el) { return; }
+  var g = state.grid, L = state.lattice;
+  var rows = [
+    ['Lattice', g.nx + ' × ' + g.ny + ' × ' + g.nz + ' cells'],
+    ['Cell size Δx', fmt(g.dx, 2) + ' m'],
+    ['Domain', g.lx + ' × ' + g.ly + ' × ' + Math.round(g.lz) + ' m']
+  ];
+  if (L) {
+    /* one lattice step in seconds: Δt = Δx · u_lat / U10 */
+    var dt = g.dx * L.uref / Math.max(state.speed, 0.01);
+    var mach = L.uref * Math.sqrt(3);
+    rows.push(['Velocity set', 'D' + '3Q' + L.q]);
+    rows.push(['Relaxation time τ₀', fmt(L.tau0, 3)]);
+    rows.push(['Smagorinsky C', fmt(L.csmag, 2)]);
+    rows.push(['Lattice Mach', fmt(mach, 3)]);
+    rows.push(['Reference height', fmt(L.zref, 0) + ' m']);
+    rows.push(['Time per step', fmt(dt, 3) + ' s']);
+    rows.push(['Flow time solved', fmt(state.step * dt, 1) + ' s']);
+  }
+  rows.push(['Steps solved', state.step.toLocaleString()]);
+  rows.push(['Residual', state.residual < 1 ? state.residual.toExponential(1) : '—']);
+  rows.push(['State', state.error ? 'stopped' : (state.converged ? 'steady' : (state.running ? 'converging' : 'paused'))]);
+
+  var html = '';
+  for (var i = 0; i < rows.length; i++) {
+    html += '<div class="ucfd-kv"><span>' + rows[i][0] + '</span><span class="ucfd-mono">' + rows[i][1] + '</span></div>';
+  }
+  el.innerHTML = html;
+}
+
 function renderProbes() {
   var list = $('ucfd-probe-list');
   var tags = ['A', 'B'];
@@ -3523,7 +3637,7 @@ function setSpeed(v, fromInput) {
      rescales the result: no new solve is needed. */
   analyseField();
   refreshProbeData();
-  renderStats(); renderLegend(); renderProbes();
+  renderStats(); renderLegend(); renderProbes(); renderMethod();
   markPreset(null);
 }
 function setDirection(deg, skipSolver) {
@@ -3607,6 +3721,7 @@ function setGrid(key) {
   });
   state.converged = false;
   updateChips();
+  renderMethod();
   toast('Lattice set to ' + state.grid.nx + '×' + state.grid.ny + '×' + state.grid.nz +
     ' · ' + fmt(state.grid.dx, 2) + ' m cells');
 }
@@ -3634,10 +3749,11 @@ function onSolverMessage(m) {
     state.residual = m.residual;
     state.msPerStep = m.msPerStep || state.msPerStep;
     state.converged = m.step > 260 && m.residual < 0.0022;
+    state.lattice = m.lattice || state.lattice;
     uploadField(incoming);
     analyseField();
     refreshProbeData();
-    renderStats(); renderLegend(); renderProbes();
+    renderStats(); renderLegend(); renderProbes(); renderMethod();
     updateChips();
     if (old && solver.mode === 'worker' && old.buffer.byteLength) {
       solver.post({ type: 'recycle', buffer: old.buffer }, [old.buffer]);
@@ -4323,7 +4439,7 @@ function boot() {
   updateWindReadouts();
   updateSliceNote('x'); updateSliceNote('y'); updateSliceNote('z');
   $('ucfd-pdensity-val').textContent = DENSITY_LABELS[state.density];
-  drawDial(); drawCompass(); drawRose(); renderLegend(); renderProbes();
+  drawDial(); drawCompass(); drawRose(); renderLegend(); renderProbes(); renderMethod();
   updateChips();
 
   if (window.ResizeObserver) {
