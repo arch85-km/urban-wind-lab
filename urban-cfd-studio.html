@@ -4101,6 +4101,23 @@ function tourReveal(target) {
   }
 }
 
+/* The ring and card are measured against the layout at the moment a step
+   opens, so any change of size - entering fullscreen, dragging the window,
+   rotating a tablet, a theme resizing the iframe - would strand them where the
+   target used to be. Re-run the step instead of only re-measuring: a resize can
+   cross a breakpoint, and then the target may sit in a drawer that has to be
+   opened again. Collapsed into one animation frame so a drag re-places once a
+   frame rather than once a tick, and a no-op while the tour is closed. */
+var tourPlaceQueued = false;
+function repositionTour() {
+  if (tourPlaceQueued || !$('ucfd-tour').classList.contains('is-open')) { return; }
+  tourPlaceQueued = true;
+  requestAnimationFrame(function () {
+    tourPlaceQueued = false;
+    if ($('ucfd-tour').classList.contains('is-open')) { showTourStep(); }
+  });
+}
+
 function showTourStep() {
   var T = TOUR[tourStep];
   var target = $(T.el);
@@ -4314,6 +4331,9 @@ function bindUI() {
     e.preventDefault(); e.stopPropagation();
     setPanelOpen(false);
   });
+
+  on(document, 'fullscreenchange', repositionTour);
+  on(document, 'webkitfullscreenchange', repositionTour);
 
   on(document, 'keydown', function (e) {
     if (e.target && /input|select|textarea/i.test(e.target.tagName)) { return; }
@@ -4596,6 +4616,7 @@ function applyResponsive() {
   if (w >= 900) { $('ucfd-rail').classList.remove('is-open'); }
   if (w >= 1250) { setPanelOpen(false); }
   resize();
+  repositionTour();
   if (window.parent !== window) {
     try { window.parent.postMessage({ type: 'ucfd-height', height: root.scrollHeight }, '*'); } catch (e) { /* cross origin */ }
   }
