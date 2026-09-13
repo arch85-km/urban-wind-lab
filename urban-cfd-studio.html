@@ -563,7 +563,11 @@
 #ucfd-root .ucfd-tourstep { font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--ucfd-accent); font-weight: 650; }
 #ucfd-root .ucfd-tourtitle { font-size: 15px; font-weight: 620; margin: 5px 0 7px; }
 #ucfd-root .ucfd-tourtext { font-size: 12.5px; color: var(--ucfd-dim); line-height: 1.55; }
-#ucfd-root .ucfd-tourfoot { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
+#ucfd-root .ucfd-tour-optout {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--ucfd-line-soft);
+}
+#ucfd-root .ucfd-tour-optout .ucfd-tlabel { font-size: 11.5px; color: var(--ucfd-dim); }
+#ucfd-root .ucfd-tourfoot { display: flex; align-items: center; gap: 8px; margin-top: 13px; }
 #ucfd-root .ucfd-tourdots { display: flex; gap: 5px; margin-right: auto; }
 #ucfd-root .ucfd-tourdots i { width: 5px; height: 5px; border-radius: 50%; background: var(--ucfd-raise); }
 #ucfd-root .ucfd-tourdots i.is-on { background: var(--ucfd-accent); }
@@ -1048,6 +1052,11 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
       <div class="ucfd-tourstep" id="ucfd-tourstep">Step 1 of 6</div>
       <div class="ucfd-tourtitle" id="ucfd-tourtitle"></div>
       <div class="ucfd-tourtext" id="ucfd-tourtext"></div>
+      <label class="ucfd-toggle ucfd-tour-optout">
+        <input type="checkbox" id="ucfd-tour-optout">
+        <span class="ucfd-switch"></span>
+        <span class="ucfd-tlabel">Don't show this on launch</span>
+      </label>
       <div class="ucfd-tourfoot">
         <div class="ucfd-tourdots" id="ucfd-tourdots"></div>
         <button class="ucfd-btn" type="button" id="ucfd-tourskip">Skip</button>
@@ -4046,8 +4055,21 @@ var TOUR = [
   { el: 'ucfd-stage', title: 'Probe and present', text: 'Click anywhere to pin a probe, click again for a second one and compare the two. Export a captioned PNG for your report — it records the wind, the lattice and the convergence residual.' }
 ];
 var tourStep = 0;
+/* The tour opens on every launch. Only the explicit opt-out stops it, so
+   skipping it once cannot switch it off for the next person at this machine.
+   Private mode simply means it always shows. */
+function tourOptedOut() {
+  try { return localStorage.getItem('ucfd-tour-optout') === '1'; } catch (e) { return false; }
+}
+function setTourOptOut(off) {
+  try {
+    if (off) { localStorage.setItem('ucfd-tour-optout', '1'); }
+    else { localStorage.removeItem('ucfd-tour-optout'); }
+  } catch (e) { /* private mode */ }
+}
 function openTour() {
   tourStep = 0;
+  $('ucfd-tour-optout').checked = tourOptedOut();
   $('ucfd-tour').className = 'ucfd-tour is-open';
   $('ucfd-tour').setAttribute('aria-hidden', 'false');
   showTourStep();
@@ -4055,7 +4077,6 @@ function openTour() {
 function closeTour() {
   $('ucfd-tour').className = 'ucfd-tour';
   $('ucfd-tour').setAttribute('aria-hidden', 'true');
-  try { localStorage.setItem('ucfd-tour-seen', '1'); } catch (e) { /* private mode */ }
 }
 /* Bring a tour target into view before measuring it: open the drawer it lives
    in, expand its group and scroll it inside the rail. Without this the target
@@ -4265,6 +4286,7 @@ function bindUI() {
   on($('ucfd-tour-btn'), 'click', openTour);
   on($('ucfd-shot'), 'click', exportPNG);
   on($('ucfd-tourskip'), 'click', closeTour);
+  on($('ucfd-tour-optout'), 'change', function (e) { setTourOptOut(e.target.checked); });
   on($('ucfd-tourveil'), 'click', closeTour);
   on($('ucfd-tournext'), 'click', function () {
     tourStep++;
@@ -4686,9 +4708,7 @@ function boot() {
   }
   applyResponsive();
 
-  var seen = false;
-  try { seen = localStorage.getItem('ucfd-tour-seen') === '1'; } catch (e) { seen = false; }
-  if (!seen) { setTimeout(openTour, 900); }
+  if (!tourOptedOut()) { setTimeout(openTour, 900); }
 
   var lastCompass = -1, emaFrame = 16, frameN = 0, downgrades = 0, prevT = 0;
   function frame(t) {
