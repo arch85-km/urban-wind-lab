@@ -232,6 +232,19 @@
 #ucfd-root .ucfd-themebtn:hover { color: var(--ucfd-text); border-color: var(--ucfd-line-hover); }
 #ucfd-root .ucfd-themebtn:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 #ucfd-root .ucfd-themebtn svg { width: 14px; height: 14px; flex: none; }
+#ucfd-root .ucfd-export { display: flex; align-items: center; gap: 6px; flex: none; }
+#ucfd-root .ucfd-exportbtn { margin-left: 0; }
+#ucfd-root .ucfd-shotsize {
+  font: inherit; font-size: 11px; color: var(--ucfd-dim); cursor: pointer;
+  background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line); border-radius: 100px;
+  padding: 5px 8px; max-width: 160px;
+}
+#ucfd-root .ucfd-shotsize:hover { color: var(--ucfd-text); border-color: var(--ucfd-line-hover); }
+#ucfd-root .ucfd-shotsize:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
+#ucfd-root .ucfd-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 #ucfd-root .ucfd-icon-light { display: none; }
 #ucfd-root[data-theme="light"] .ucfd-icon-light { display: block; }
 #ucfd-root[data-theme="light"] .ucfd-icon-dark { display: none; }
@@ -647,6 +660,9 @@
 #ucfd-root.ucfd-w-sm .ucfd-chips { display: none; }
 #ucfd-root.ucfd-w-sm .ucfd-themebtn { margin-left: auto; padding: 5px 8px; }
 #ucfd-root.ucfd-w-sm .ucfd-themebtn span { display: none; }
+#ucfd-root.ucfd-w-sm .ucfd-exportbtn { margin-left: 0; }
+#ucfd-root.ucfd-w-sm .ucfd-export { gap: 4px; }
+#ucfd-root.ucfd-w-sm .ucfd-shotsize { padding: 5px 6px; font-size: 10.5px; max-width: 92px; }
 #ucfd-root.ucfd-w-sm .ucfd-compass { width: 58px; height: 58px; }
 #ucfd-root.ucfd-w-sm .ucfd-foot .ucfd-hide-sm { display: none; }
 #ucfd-root.ucfd-w-sm .ucfd-viewbar { top: 8px; left: 8px; }
@@ -701,6 +717,22 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
       </svg>
       <span id="ucfd-theme-label">Light</span>
     </button>
+    <div class="ucfd-export">
+      <button class="ucfd-themebtn ucfd-exportbtn" type="button" id="ucfd-shot"
+              title="Export the current view as a PNG for your report"
+              aria-label="Export the current view as a PNG image">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+        </svg>
+        <span>Export PNG</span>
+      </button>
+      <label class="ucfd-sr" for="ucfd-shot-size">Export resolution</label>
+      <select class="ucfd-shotsize" id="ucfd-shot-size" title="Resolution of the exported image">
+        <option value="1" selected>Screen</option>
+        <option value="2">2&times; print</option>
+        <option value="3">3&times; print</option>
+      </select>
+    </div>
     <div class="ucfd-chips" id="ucfd-chips">
       <span class="ucfd-chip" id="ucfd-chip-state"><i class="ucfd-dot"></i><span>Initialising</span></span>
       <span class="ucfd-chip" title="Solver lattice resolution">Grid <b id="ucfd-chip-grid">&mdash;</b></span>
@@ -919,7 +951,8 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <div class="ucfd-kv"><span>Zoom</span><span>Scroll &middot; pinch</span></div>
         <div class="ucfd-kv"><span>Probe a point</span><span>Click the model</span></div>
         <div class="ucfd-btnrow"><button class="ucfd-btn" type="button" id="ucfd-tour-btn">Replay guided tour</button></div>
-        <div class="ucfd-btnrow"><button class="ucfd-btn" type="button" id="ucfd-shot">Export PNG for your report</button></div>
+        <div class="ucfd-hint">Export a PNG for your report from the button in the header, beside the
+          presentation switch. The size selector beside it sets the resolution.</div>
       </div>
     </details>
   </aside>
@@ -4021,10 +4054,82 @@ function handleEPW(file) {
 /* ------------------------------------------------------------------ *
  * 12. PNG export                                                      *
  * ------------------------------------------------------------------ */
+/* The exported figure is drawn here, not screen-grabbed: the legend lives in the
+   DOM panel and would otherwise be lost, and a report needs the scale beside
+   the picture. `scale` re-renders the scene larger rather than upscaling it. */
+function exportScale() {
+  var el = $('ucfd-shot-size');
+  var n = el ? parseFloat(el.value) : 1;
+  return (isFinite(n) && n >= 1) ? Math.min(n, 4) : 1;
+}
+
+/* Largest render the GL implementation will give us, in device pixels. */
+function maxRenderPx() {
+  try {
+    return Math.min(gl.getParameter(gl.MAX_RENDERBUFFER_SIZE) || 4096,
+                    gl.getParameter(gl.MAX_TEXTURE_SIZE) || 4096);
+  } catch (e) { return 4096; }
+}
+
+/* Dimensions an export would produce right now, so the picker can be honest. */
+function exportDims(scale) {
+  var r = canvas.getBoundingClientRect();
+  var dpr = Math.min(window.devicePixelRatio || 1, 2) * scale;
+  return { w: Math.max(1, Math.round(r.width * dpr)),
+           h: Math.max(1, Math.round(r.height * dpr)), dpr: dpr };
+}
+
+/* Label each option with the pixels it really yields, and disable any the GL
+   context cannot allocate. The aspect follows the window, so naming a paper
+   size here would be a lie; the pixel count is the honest thing to show. */
+function refreshShotSizes() {
+  var sel = $('ucfd-shot-size');
+  if (!sel) { return; }
+  var cap = maxRenderPx(), opts = sel.options;
+  for (var i = 0; i < opts.length; i++) {
+    var sc = parseFloat(opts[i].value);
+    var d = exportDims(sc);
+    var over = d.w > cap || d.h > cap;
+    var base = sc === 1 ? 'Screen' : (fmt(sc, 0) + '× print');
+    opts[i].textContent = base + ' · ' + d.w + '×' + d.h + (over ? ' (too large)' : '');
+    opts[i].disabled = over;
+  }
+  if (opts[sel.selectedIndex] && opts[sel.selectedIndex].disabled) { sel.value = '1'; }
+}
+
 function exportPNG() {
-  drawScene(performance.now());
-  var dpr = R.dpr;
-  var barH = Math.round(74 * dpr);
+  var scale = exportScale();
+  var dims = exportDims(scale);
+  var cap = maxRenderPx();
+  if (dims.w > cap || dims.h > cap) {
+    toast('That size needs ' + dims.w + '×' + dims.h + ' pixels; this device allows ' +
+          cap + '. Choose a smaller export.', 'warn');
+    return;
+  }
+
+  /* Re-render at the requested resolution. Tracers are GL_LINES, always one
+     physical pixel wide however large the frame, so at print scales they would
+     come out finer than they look on screen. Redrawing the frame a few times at
+     sub-pixel offsets thickens them back in proportion. */
+  var restoreW = canvas.width, restoreH = canvas.height, restoreDpr = R.dpr;
+  var passes = scale > 1 ? Math.min(3, Math.round(scale)) : 1;
+  if (scale !== 1) {
+    canvas.width = dims.w; canvas.height = dims.h;
+    R.width = dims.w; R.height = dims.h; R.dpr = dims.dpr;
+  }
+  try {
+    drawScene(performance.now());
+    for (var p = 1; p < passes; p++) { drawScene(performance.now()); }
+  } catch (err) {
+    resize(); drawScene(performance.now());
+    toast('The export could not be rendered at that size. Try a smaller one.', 'warn');
+    return;
+  }
+
+  var dpr = dims.dpr;
+  var comfort = !!state.comfort;
+  var mode = FIELD_MODES[state.mode];
+  var barH = Math.round((comfort ? 150 : 118) * dpr);
   var out = document.createElement('canvas');
   out.width = canvas.width;
   out.height = canvas.height + barH;
@@ -4039,34 +4144,89 @@ function exportPNG() {
   ctx.fillStyle = SH.rule;
   ctx.fillRect(0, canvas.height, out.width, Math.max(1, Math.round(dpr)));
 
-  var pad = 20 * dpr, y = canvas.height + 28 * dpr;
+  var pad = 20 * dpr, top = canvas.height;
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ctx.fillStyle = SH.title;
   ctx.font = '600 ' + (16 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText('Urban CFD Studio · ' + state.modelName, pad, y);
+  ctx.fillText('Urban CFD Studio · ' + state.modelName, pad, top + 24 * dpr);
+
   ctx.fillStyle = SH.body;
   ctx.font = '400 ' + (12.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  var line2 = fmt(state.speed, 1) + ' m/s at 10 m from ' + Math.round(state.dir) + '° (' + cardinal(state.dir) + ')' +
-    ' · z₀ ' + state.z0 + ' m · lattice ' + state.grid.nx + '×' + state.grid.ny + '×' + state.grid.nz +
+  ctx.fillText(fmt(state.speed, 1) + ' m/s at 10 m from ' + Math.round(state.dir) + '° (' +
+    cardinal(state.dir) + ')' + ' · z₀ ' + state.z0 + ' m · lattice ' +
+    state.grid.nx + '×' + state.grid.ny + '×' + state.grid.nz +
     ' (' + fmt(state.grid.dx, 2) + ' m) · ' + state.step.toLocaleString() + ' steps · residual ' +
-    state.residual.toExponential(1) + ' · ' + (state.comfort ? 'Lawson comfort' : FIELD_MODES[state.mode].name);
-  ctx.fillText(line2, pad, y + 22 * dpr);
-  ctx.textAlign = 'right';
+    state.residual.toExponential(1), pad, top + 45 * dpr);
+
+  /* Legend on its own row: the caption above must never be squeezed by it. */
+  var ly = top + 68 * dpr;
+  ctx.fillStyle = SH.title;
+  ctx.font = '600 ' + (11.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
+  if (comfort) {
+    ctx.fillText('Lawson pedestrian comfort · threshold exceeded', pad, ly);
+    ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
+    var cols = out.width > 900 * dpr ? 4 : 2;
+    var cw = (out.width - pad * 2) / cols;
+    for (var i = 0; i < LAWSON.length; i++) {
+      var L = LAWSON[i];
+      var cx = pad + (i % cols) * cw, cy = ly + 16 * dpr + Math.floor(i / cols) * 15 * dpr;
+      ctx.fillStyle = rgbCss(L.color);
+      ctx.fillRect(cx, cy - 4.5 * dpr, 9 * dpr, 9 * dpr);
+      ctx.fillStyle = SH.body;
+      ctx.fillText(L.label + '  ' + (L.max === Infinity ? '15+' : '< ' + L.max) + ' m/s',
+                   cx + 13 * dpr, cy);
+    }
+  } else {
+    ctx.fillText(mode.name + '  (' + mode.unit + ')', pad, ly);
+    var rampW = Math.min(360 * dpr, out.width - pad * 2);
+    var rampY = ly + 11 * dpr, rampH = 11 * dpr;
+    var fn = mode.ramp === 'viridis' ? viridis : diverging;
+    for (var x = 0; x < rampW; x++) {
+      ctx.fillStyle = rgbCss(fn(x / Math.max(1, rampW - 1)));
+      ctx.fillRect(pad + x, rampY, 1, rampH);
+    }
+    ctx.strokeStyle = SH.rule; ctx.lineWidth = Math.max(1, dpr * 0.5);
+    ctx.strokeRect(pad + 0.5, rampY + 0.5, rampW - 1, rampH - 1);
+    var r = state.range, mid = (r[0] + r[1]) / 2;
+    var dec = Math.abs(r[1] - r[0]) < 3 ? 2 : 1;
+    ctx.fillStyle = SH.faint;
+    ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
+    var ty = rampY + rampH + 10 * dpr;
+    ctx.textAlign = 'left';   ctx.fillText(fmt(r[0], dec), pad, ty);
+    ctx.textAlign = 'center'; ctx.fillText(fmt(mid, dec), pad + rampW / 2, ty);
+    ctx.textAlign = 'right';  ctx.fillText(fmt(r[1], dec), pad + rampW, ty);
+    ctx.textAlign = 'left';
+    if (state.rangeLock) {
+      ctx.fillText('range locked', pad + rampW + 12 * dpr, ty);
+    }
+  }
+
+  ctx.textAlign = 'left';
   ctx.fillStyle = SH.faint;
-  ctx.font = '400 ' + (11 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText('© Karam Al-Obaidi · D3Q19 LBM · comparative early-stage analysis', out.width - pad, y + 11 * dpr);
+  ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillText('© Karam Al-Obaidi · Teaching tool — not a substitute for validated CFD ' +
+               'or wind-tunnel testing', pad, top + barH - 14 * dpr);
 
   var a = document.createElement('a');
-  a.download = 'urban-cfd-' + Math.round(state.dir) + 'deg-' + fmt(state.speed, 1).replace('.', 'p') + 'ms.png';
+  a.download = 'urban-cfd-' + Math.round(state.dir) + 'deg-' + fmt(state.speed, 1).replace('.', 'p') + 'ms' +
+               (scale > 1 ? '-' + fmt(scale, 0) + 'x' : '') + '.png';
+  var url = null;
   try {
-    a.href = out.toDataURL('image/png');
-    a.click();
-    toast('Image exported.');
+    url = out.toDataURL('image/png');
   } catch (err) {
-    toast('The browser blocked the download. Right-click the viewport and choose "Save image as" instead.', 'warn');
+    url = null;
   }
+  if (scale !== 1) { resize(); drawScene(performance.now()); }
+  if (!url) {
+    toast('The browser could not encode an image that large. Try a smaller export size.', 'warn');
+    return;
+  }
+  a.href = url;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('Image exported · ' + out.width + '×' + out.height + ' px.');
 }
-
 /* ------------------------------------------------------------------ *
  * 13. Guided tour                                                     *
  * ------------------------------------------------------------------ */
@@ -4326,6 +4486,7 @@ function bindUI() {
   });
   on($('ucfd-tour-btn'), 'click', openTour);
   on($('ucfd-shot'), 'click', exportPNG);
+  refreshShotSizes();
   on($('ucfd-tourskip'), 'click', closeTour);
   on($('ucfd-tour-optout'), 'change', function (e) { setTourOptOut(e.target.checked); });
   on($('ucfd-tourveil'), 'click', closeTour);
@@ -4640,6 +4801,7 @@ function applyResponsive() {
   if (w >= 900) { $('ucfd-rail').classList.remove('is-open'); }
   if (w >= 1250) { setPanelOpen(false); }
   resize();
+  refreshShotSizes();
   repositionTour();
   if (window.parent !== window) {
     try { window.parent.postMessage({ type: 'ucfd-height', height: root.scrollHeight }, '*'); } catch (e) { /* cross origin */ }
