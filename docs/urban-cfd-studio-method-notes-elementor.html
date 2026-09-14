@@ -243,7 +243,7 @@
         above the tallest building, and in one direction the geometry reaches the boundary exactly.
         Confinement on that scale pushes flow over roofs and through gaps that would otherwise spill
         sideways. This page reports those measurements; it does not judge them against any published
-        guideline (see <a href="#ucfd-s07">§07, Limitations of this page</a>).</li>
+        guideline (see <a href="#ucfd-s07">Limitations of this page</a>).</li>
       <li><b>"Pedestrian level · 1.5 m" is a cell, not a height.</b> The plane is drawn at exactly
         1.5 m, but the statistics come from the nearest cell centre — 1.07 m to 1.88 m depending on
         resolution. And the comfort classes are Lawson thresholds applied to a <em>mean</em> speed
@@ -404,7 +404,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <p class="cs-note">Read these as facts about the model, not as a verdict. Published CFD practice
         does set minimum clearances and a maximum blockage, and these numbers are a long way from
         them — but the tool neither implements nor cites any such guidance, so this page does not
-        apply one either. <a href="#ucfd-s07">§07, Limitations of this page</a> says why, and what that costs you.</p>
+        apply one either. See <a href="#ucfd-s07">Limitations of this page</a> for why, and what it costs you.</p>
     </div>
   </div>
 
@@ -522,7 +522,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
           <tr><td>Lattice resolution</td><td class="cs-n">Fast / Balanced / Detailed</td><td>—</td><td class="cs-d">Balanced</td></tr>
           <tr><td>Scenario presets</td><td class="cs-n">4 / 8 / 18</td><td>m/s — breeze · prevailing · storm</td><td class="cs-d">Prevailing</td></tr>
         </tbody>
-        <caption>Only direction and roughness restart the solve. Changing the speed rescales the stored normalised field, as <a href="#ucfd-s02">§02, Units, scaling and the domain</a> explains.</caption>
+        <caption>Only direction and roughness restart the solve. Changing the speed rescales the stored normalised field, as <a href="#ucfd-s02">Units, scaling and the domain</a> explains.</caption>
       </table></div>
 
       <h4>Reading the result</h4>
@@ -542,7 +542,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
 
       <h4>Bringing in your own data</h4>
       <p><b>OBJ import</b> takes units in m, mm, cm, ft or in, with a Y-up toggle and a fit-to-site
-        toggle; the mesh is voxelised on the lattice as <a href="#ucfd-s04">§04, How exact the numbers are</a> describes. <b>EPW import</b> reads all
+        toggle; the mesh is voxelised on the lattice, as described under <a href="#ucfd-s04">How exact the numbers are</a>. <b>EPW import</b> reads all
         8 760 hourly records and builds a 16-sector rose, and a sector can be applied at its mean,
         90th-percentile or peak speed.</p>
 
@@ -622,7 +622,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       </div>
 
       <p class="cs-note">A caution for all three: <b>compare, do not quote</b>. The velocity ratios
-        between two runs are the finding; the absolute m/s values carry every limitation in <a href="#ucfd-s04">§04, How exact the numbers are</a>. And
+        between two runs are the finding; the absolute m/s values carry every limitation in <a href="#ucfd-s04">How exact the numbers are</a>. And
         let each run settle — the Steady state badge appears at about 4 s of simulated time, which is
         earlier than the flow has finished developing.</p>
     </div>
@@ -655,7 +655,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <p class="cs-note">This is a real limitation and worth being blunt about. This page can tell a
         student what the tool does; it cannot tell them whether that is good enough for any given
         purpose. Answering that means bringing your own guidance and applying it to the measurements
-        in <a href="#ucfd-s02">§02, Units, scaling and the domain</a> and <a href="#ucfd-s04">§04, How exact the numbers are</a> — which is, in fairness, a defensible exercise to set.</p>
+        in <a href="#ucfd-s02">Units, scaling and the domain</a> and in <a href="#ucfd-s04">How exact the numbers are</a> — which is, in fairness, a defensible exercise to set.</p>
       <p>Two figures were dropped for the same reason rather than being carried with an assumption:
         the <b>physical Reynolds number</b>, which would need the kinematic viscosity of air, a value
         the code never contains; and the <b>vortex-shedding period</b> behind the convergence
@@ -685,7 +685,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         good but not publisher-confirmed, and check them if you are citing formally.</p>
 
       <h3>And the tool itself is unvalidated</h3>
-      <p>Stated once more here because it belongs with the limitations rather than only in <a href="#ucfd-s04">§04, How exact the numbers are</a>: there
+      <p>Stated once more here because it belongs with the limitations rather than only in <a href="#ucfd-s04">How exact the numbers are</a>: there
         is no wind-tunnel comparison, no benchmark case, and no grid-independence study, in the tool
         or anywhere behind it. Its output has never been checked against a measured flow.</p>
     </div>
@@ -693,7 +693,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
 
   <div class="cs-footer">
     <p>Everything on this page was read from the tool's source code or computed from it;
-      <a href="#ucfd-s07">§07, Limitations of this page</a> says which figures are which, and by what method. Where a figure would have needed a value the code
+      <a href="#ucfd-s07">Limitations of this page</a> says which figures are which, and by what method. Where a figure would have needed a value the code
       does not contain, it was removed rather than estimated. Where the code did not settle a
       question, the page says so rather than inferring.</p>
     <p>For anything that must inform a real decision about a real site, use a validated solver and a
@@ -746,7 +746,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       everywhere else the step from a method's name to its originating paper is an inference made
       here. Neither inference is in serious doubt, but both are inferences. Against each entry is the
       exact term the code uses and where it uses it, so the mapping can be checked rather than
-      trusted. <a href="#ucfd-s07">§07, Limitations of this page</a> records the two gaps this rule leaves.</p>
+      trusted. <a href="#ucfd-s07">Limitations of this page</a> records the two gaps this rule leaves.</p>
 
     <p class="cs-ref">Bhatnagar, P. L., Gross, E. P., &amp; Krook, M. (1954). A model for collision
       processes in gases. I. Small amplitude processes in charged and neutral one-component systems.
@@ -768,7 +768,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       building complex before construction</i> (Report TVL 9025). Department of Aerospace
       Engineering, University of Bristol.<br>
       <span class="cs-mono">— code: “Lawson LDDC pedestrian comfort categories”.
-      <b>Attribution contested; see <a href="#ucfd-s07">§07</a>.</b> An unpublished university technical report: no DOI, no
+      <b>Attribution contested; see <a href="#ucfd-s07">Limitations of this page</a>.</b> An unpublished university technical report: no DOI, no
       publisher page, and it could not be checked against a library catalogue. Sources also differ
       over whether the LDDC criteria should be credited to this report or to the City of London.
       Verify before citing formally.</span></p>
@@ -792,7 +792,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       (Graduate Texts in Physics). Springer. ISBN 978-3-319-44647-9;
       <a href="https://doi.org/10.1007/978-3-319-44649-3" target="_blank" rel="noopener">https://doi.org/10.1007/978-3-319-44649-3</a><br>
       <span class="cs-mono">The current standard text. Covers the D3Q19 velocity set, the BGK
-      collision and the Smagorinsky closure in one place — everything <a href="#ucfd-s01">§01, What it computes</a> describes, derived
+      collision and the Smagorinsky closure in one place — everything described in <a href="#ucfd-s01">What it computes</a>, derived
       properly rather than summarised.</span></p>
 
     <p class="cs-ref">Lawson, T. V. (2001). <i>Building Aerodynamics</i>. Imperial College Press,
@@ -807,11 +807,11 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       their accuracy for wind comfort assessment. <i>Building and Environment, 100</i>, 50–81.
       <a href="https://pure.tue.nl/ws/files/16601170/BlockenPedestrian2016.pdf" target="_blank" rel="noopener">Open copy at pure.tue.nl</a><br>
       <span class="cs-mono">What a real pedestrian-wind study involves — domain sizing, grid
-      resolution, wall treatment, directional weighting, validation. Read alongside <a href="#ucfd-s04">§04, How exact the numbers are</a> and <a href="#ucfd-s07">§07, Limitations of this page</a> to
+      resolution, wall treatment, directional weighting, validation. Read alongside <a href="#ucfd-s04">How exact the numbers are</a> and <a href="#ucfd-s07">Limitations of this page</a> to
       see the distance between that and this tool.</span></p>
 
     <p class="cs-cite">Every entry in both lists was looked up rather than recalled, and each agrees
-      across several independent indexes. As <a href="#ucfd-s07">§07, Limitations of this page</a> records, publisher hosts were unreachable from the
+      across several independent indexes. As <a href="#ucfd-s07">Limitations of this page</a> records, publisher hosts were unreachable from the
       environment in which this page was written, so none has been confirmed against the
       authoritative record. Check volume numbers and page ranges before citing formally.</p>
   </div>
