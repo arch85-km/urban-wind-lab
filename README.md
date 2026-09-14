@@ -58,15 +58,15 @@ citing any figure.
 
 ## Citing it
 
-> Al-Obaidi, K. M. (2026). *Urban CFD Studio: a browser-based lattice-Boltzmann wind analysis
-> tool for 3D urban context* (Version 1.0.0) [Computer software].
+> Al-Obaidi, K. M. (2026). *Urban CFD Studio: An interactive lattice-Boltzmann tool for wind
+> analysis* (Version 1.0.0) [Computer software].
 > https://karam.me.uk/applications/urban-cfd-studio/
 
 ```bibtex
 @software{alobaidi2026urbancfdstudio,
   author  = {Al-Obaidi, Karam M.},
-  title   = {Urban CFD Studio: a browser-based lattice-Boltzmann wind
-             analysis tool for 3D urban context},
+  title   = {Urban CFD Studio: An interactive lattice-Boltzmann tool
+             for wind analysis},
   year    = {2026},
   version = {1.0.0},
   url     = {https://karam.me.uk/applications/urban-cfd-studio/},
