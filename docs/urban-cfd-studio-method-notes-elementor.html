@@ -641,7 +641,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <div><span class="cs-chip is-in">Read</span><dt>Read directly from the source</dt><dd>Constants and thresholds quoted as they appear in <span class="cs-mono">urban-cfd-studio.html</span>: τ₀ = 0.51, u_ref = 0.045, C = 0.14, the τ clamp at 1.6, the density guard 0.2 &lt; ρ &lt; 5, the badge test <span class="cs-mono">step &gt; 260 &amp;&amp; residual &lt; 0.0022</span>, the three lattice presets, the seven Lawson bands, the roughness options, the control ranges and defaults, and the statistics margins of 30 m in plan and 18 m in height.</dd></div>
         <div><span class="cs-chip is-part">Derived</span><dt>Computed by the author from the source</dt><dd>Δx and Δt per preset; the 4.0 s of simulated time at step 260; the sampled pedestrian heights 1.88 / 1.36 / 1.07 m; the lattice viscosity and lattice Reynolds number; the sample district's bounding box and clearances, obtained by running the tool's own <span class="cs-mono">buildSampleCity</span> generator; and the blockage percentages, obtained by projecting its 29 boxes onto the plane normal to each wind direction and rasterising the silhouette at 0.1 m. Arithmetic, not measurement — but arithmetic on the code's own values.</dd></div>
         <div><span class="cs-chip is-part">Observed</span><dt>Produced by driving the running solver</dt><dd>Behaviour that only appears at run time: that the solve does not terminate, that the badge can be reached before the flow has crossed the site, and that the reported sampled height changes with the resolution preset.</dd></div>
-        <div><span class="cs-chip is-out">Absent</span><dt>Estimated or assumed</dt><dd>Nothing. Where a figure would have required an assumption the code does not supply, it was removed rather than estimated — see the next two entries for what that cost.</dd></div>
+        <div><span class="cs-chip is-out">Absent</span><dt>Estimated or assumed</dt><dd>Nothing. Where a figure would have required an assumption the code does not supply, it was removed rather than estimated — see the next two entries for what that cost. The further-reading list at the foot of the page is deliberately inert in the same spirit: it is cited nowhere and supports nothing, so no figure above depends on a work the tool does not name.</dd></div>
       </dl>
 
       <h3>What this page deliberately does not do</h3>
@@ -662,9 +662,13 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         discussion, which would need a Strouhal number the code never mentions. Both would have
         strengthened the argument. Neither is in the source, so neither is here.</p>
 
-      <h3>Two gaps in the reference list</h3>
-      <p>The references below list only works the source code itself names. That rule leaves two
-        visible holes, and it is better to name them than to let a reader assume an oversight:</p>
+      <h3>Two gaps in the provenance list</h3>
+      <p>The references are in two blocks, and the distinction matters. The first records <b>where
+        the methods the code names come from</b> — it is not a record of what was consulted while the
+        tool was written, because the code does not say. The second is <b>further reading</b>, added
+        because provenance is a poor starting point for a student; nothing in it is named by the
+        code, and no claim on this page rests on it. The provenance rule leaves two visible holes,
+        and it is better to name them than to let a reader assume an oversight:</p>
       <ul>
         <li><b>The lattice has no citation.</b> The code uses the designation <span class="cs-mono">D3Q19</span> throughout but attributes it to no one, so no entry appears for it. The velocity set and its weights have a standard origin in the literature; this page does not assert which, because the code does not.</li>
         <li><b>The comfort thresholds have a contested citation.</b> The code says “Lawson LDDC” and names no document. The bands themselves are not in doubt — they are the standard LDDC set, and they match it band for band, as the table below shows. What is unsettled is whom to credit: some sources give Lawson's 1990 University of Bristol report TVL 9025, others attribute the criteria to the City of London, which adopted them for the Square Mile. The reference list uses the Lawson report and says so on the entry. Treat the attribution, not the numbers, as the open question.</li>
@@ -728,15 +732,21 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       change the numbers, and a speed quoted without them cannot be checked by anyone reading you. Say
       also whether the field had converged, and prefer a ratio between two runs to any single value.</p>
 
-    <h3>References</h3>
-    <p>This list contains <b>only works the source code itself names</b>. Nothing has been added to
-      round it out, and §07 explains the two gaps that rule leaves. Against each entry is the term the
-      code uses and where it uses it.</p>
-    <p>One step in that rule is worth stating rather than glossing. The code names a <em>work</em>
-      only once, as “(Hou et al.)”. Elsewhere it names <em>methods</em> — BGK, Smagorinsky — and the
-      originating papers below are this page's identification of them, not the code's. Neither
-      identification is in serious doubt, but both are inferences, and a page claiming strict
-      sourcing should say where it made one.</p>
+    <h3>Origins of the methods the code names</h3>
+    <p><b>The source code cites no literature.</b> It contains no bibliography, no citation and no
+      reading list. What it does contain are names: three methods
+      (<span class="cs-mono">D3Q19</span>, <span class="cs-mono">BGK</span>,
+      <span class="cs-mono">Smagorinsky</span>), one author group in a comment
+      (<span class="cs-mono">Hou et al.</span>), one set of comfort criteria
+      (<span class="cs-mono">Lawson LDDC</span>) and one file format
+      (<span class="cs-mono">EnergyPlus .epw</span>).</p>
+    <p>The entries below are <b>this page's identification of where those named things come from</b>.
+      They are not a record of what was read while the tool was written — the code does not say, and
+      neither will this page. Only once does the code name a work at all, as “(Hou et al.)”;
+      everywhere else the step from a method's name to its originating paper is an inference made
+      here. Neither inference is in serious doubt, but both are inferences. Against each entry is the
+      exact term the code uses and where it uses it, so the mapping can be checked rather than
+      trusted. §07 records the two gaps this rule leaves.</p>
 
     <p class="cs-ref">Bhatnagar, P. L., Gross, E. P., &amp; Krook, M. (1954). A model for collision
       processes in gases. I. Small amplitude processes in charged and neutral one-component systems.
@@ -769,6 +779,41 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       which is a third party's copy, not a Department of Energy host — the official documentation is
       distributed with EnergyPlus itself.<br>
       <span class="cs-mono">— code: “EnergyPlus .epw”, and the column layout the importer reads</span></p>
+
+    <h3>Further reading — not named by the code</h3>
+    <p>Nothing in this second list is named in the source, used by the tool, or relied on anywhere
+      on this page. <b>No claim above rests on any of it.</b> It is here for one reason: the list
+      above is a record of provenance, and provenance makes a poor starting point for a student. Two
+      paywalled mid-century papers, an unpublished university report and a documentation mirror will
+      not teach anyone the method. These will.</p>
+
+    <p class="cs-ref">Krüger, T., Kusumaatmaja, H., Kuzmin, A., Shardt, O., Silva, G., &amp;
+      Viggen, E. M. (2017). <i>The Lattice Boltzmann Method: Principles and Practice</i>
+      (Graduate Texts in Physics). Springer. ISBN 978-3-319-44647-9;
+      <a href="https://doi.org/10.1007/978-3-319-44649-3" target="_blank" rel="noopener">https://doi.org/10.1007/978-3-319-44649-3</a><br>
+      <span class="cs-mono">The current standard text. Covers the D3Q19 velocity set, the BGK
+      collision and the Smagorinsky closure in one place — everything §01 describes, derived
+      properly rather than summarised.</span></p>
+
+    <p class="cs-ref">Lawson, T. V. (2001). <i>Building Aerodynamics</i>. Imperial College Press,
+      286 pp. ISBN 1-86094-187-7.<br>
+      <span class="cs-mono"><b>Background, not the source of the tool's comfort bands.</b> Lawson's
+      published book, and obtainable, which the 1990 LDDC report is not — but the criteria set out
+      here is a <b>later and different</b> one. The tool implements the LDDC bands, attributed
+      above. Do not cite this book for them.</span></p>
+
+    <p class="cs-ref">Blocken, B., Stathopoulos, T., &amp; van Beeck, J. P. A. J. (2016).
+      Pedestrian-level wind conditions around buildings: review of wind-tunnel and CFD techniques and
+      their accuracy for wind comfort assessment. <i>Building and Environment, 100</i>, 50–81.
+      <a href="https://pure.tue.nl/ws/files/16601170/BlockenPedestrian2016.pdf" target="_blank" rel="noopener">Open copy at pure.tue.nl</a><br>
+      <span class="cs-mono">What a real pedestrian-wind study involves — domain sizing, grid
+      resolution, wall treatment, directional weighting, validation. Read alongside §04 and §07 to
+      see the distance between that and this tool.</span></p>
+
+    <p class="cs-cite">Every entry in both lists was looked up rather than recalled, and each agrees
+      across several independent indexes. As §07 records, publisher hosts were unreachable from the
+      environment in which this page was written, so none has been confirmed against the
+      authoritative record. Check volume numbers and page ranges before citing formally.</p>
   </div>
 
 </div>
