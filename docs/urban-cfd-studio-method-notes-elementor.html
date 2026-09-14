@@ -1,0 +1,686 @@
+<!-- ==========================================================================
+     Urban CFD Studio — Method Notes
+     Paste into an Elementor "HTML" widget (Elements > HTML).
+
+     Same stylesheet as the Construction Studio and Daylight Lab notes, byte for
+     byte, so the three pages sit together. Everything is scoped to .cs-doc, so
+     nothing here can touch the rest of your theme. To follow the visitor's
+     dark-mode setting, change the opening tag to <div class="cs-doc cs-auto-dark">.
+
+     Every figure on this page was read out of urban-cfd-studio.html or measured
+     by driving the running solver — none is estimated. Where the code does not
+     settle a question, the page says so.
+     © Karam Al-Obaidi
+     ========================================================================== -->
+
+<style>
+
+.cs-doc{
+  --cs-paper:#F1F2EE; --cs-surface:#FBFBF9; --cs-surface2:#E8EAE4;
+  --cs-ink:#16191B; --cs-ink2:#4C555A; --cs-ink3:#5F696E;
+  --cs-rule:#D6D9D1; --cs-rule2:#E5E7E1;
+  --cs-accent:#1D5A73; --cs-accent-soft:rgba(29,90,115,.10);
+  --cs-ok:#3F6B47;  --cs-ok-soft:rgba(63,107,71,.12);
+  --cs-warn:#8A6410;--cs-warn-soft:rgba(138,100,16,.13);
+  --cs-no:#8E3A32;  --cs-no-soft:rgba(142,58,50,.11);
+  /* Headings and body follow the site's own typeface. `inherit` resolves where
+     it is used — inside .cs-doc, whose parent is the Elementor container — so
+     this keeps working if the theme font ever changes.
+     The monospace stack must NOT inherit: the table number columns use
+     font-variant-numeric:tabular-nums and align on fixed-width digits, and the
+     formulas and BibTeX block depend on their spacing. */
+  /* The site pairs a sans for headings with a serif for body, so the page
+     does the same. Body inherits — CSS has no way to inherit "the theme's
+     HEADING font", so that one is named. If the site's heading face ever
+     changes, this is the single line to update.
+     Weights sit at 600 throughout: the site ships Poppins 400/500/600 and
+     Source Serif 4 400/600, so 700 and 800 do not exist and the browser
+     would either drop to 600 or synthesise a smeared bold. Size carries the
+     hierarchy instead. */
+  --cs-fd:"Poppins",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --cs-fb:inherit;
+  --cs-fm:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --cs-measure:90ch; --cs-rail:4.75rem;
+
+  background:var(--cs-paper); color:var(--cs-ink);
+  font-family:var(--cs-fb); font-size:17px; line-height:1.65; font-weight:400;
+  max-width:1040px; margin:0 auto; padding:0 20px 4rem;
+  -webkit-font-smoothing:antialiased; text-align:left;
+}
+@media (prefers-color-scheme:dark){
+  .cs-doc.cs-auto-dark{
+    --cs-paper:#121517; --cs-surface:#191D20; --cs-surface2:#21262A;
+    --cs-ink:#E9EBE6; --cs-ink2:#A6AFB4; --cs-ink3:#79838A;
+    --cs-rule:#2C3235; --cs-rule2:#232829;
+    --cs-accent:#74B6D0; --cs-accent-soft:rgba(116,182,208,.14);
+    --cs-ok:#7FB88C;  --cs-ok-soft:rgba(127,184,140,.14);
+    --cs-warn:#D6A748;--cs-warn-soft:rgba(214,167,72,.15);
+    --cs-no:#DD8479;  --cs-no-soft:rgba(221,132,121,.14);
+  }
+}
+
+/* local reset — only inside .cs-doc */
+.cs-doc *,.cs-doc *::before,.cs-doc *::after{box-sizing:border-box;}
+.cs-doc h1,.cs-doc h2,.cs-doc h3,.cs-doc h4,.cs-doc p,.cs-doc ul,.cs-doc ol,
+.cs-doc dl,.cs-doc dt,.cs-doc dd,.cs-doc table,.cs-doc figure{margin:0;padding:0;}
+.cs-doc ul,.cs-doc ol{list-style-position:outside;}
+.cs-doc li{margin:0;}
+.cs-doc img{max-width:100%;height:auto;}
+.cs-doc a{color:var(--cs-accent);text-decoration:underline;text-underline-offset:2px;}
+.cs-doc a:focus-visible{outline:2px solid var(--cs-accent);outline-offset:3px;}
+.cs-doc code,.cs-doc .cs-mono{font-family:var(--cs-fm);font-size:.855em;}
+/* Inline bold defaults to 700. A site that ships only 400/500/600 has no such
+   face, so the browser either drops to 600 or fakes one by smearing the 400.
+   Pin it to a weight that exists. */
+.cs-doc b,.cs-doc strong{font-weight:600;}
+.cs-doc code{background:var(--cs-accent-soft);color:var(--cs-accent);
+  padding:.1em .34em;border-radius:2px;border:0;}
+
+/* masthead */
+.cs-doc .cs-masthead{padding:3.5rem 0 2.25rem;border-bottom:2px solid var(--cs-ink);}
+.cs-doc .cs-eyebrow{font-family:var(--cs-fm);font-size:.70rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--cs-accent);margin:0 0 1.1rem;}
+.cs-doc h1{font-family:var(--cs-fd);font-weight:600;
+  font-size:clamp(2.1rem,6.2vw,3.35rem);line-height:1.02;letter-spacing:-.028em;
+  text-wrap:balance;margin:0 0 1.1rem;color:var(--cs-ink);}
+.cs-doc .cs-standfirst{max-width:var(--cs-measure);font-size:1.14rem;line-height:1.6;
+  color:var(--cs-ink2);margin:0;}
+.cs-doc .cs-standfirst strong{color:var(--cs-ink);font-weight:600;}
+.cs-doc .cs-byline{display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;margin-top:1.9rem;
+  font-family:var(--cs-fm);font-size:.74rem;letter-spacing:.04em;color:var(--cs-ink3);}
+.cs-doc .cs-byline b{color:var(--cs-ink2);font-weight:500;}
+
+/* trap notice */
+.cs-doc .cs-traps{margin:2.5rem 0;border:1px solid var(--cs-rule);
+  border-left:4px solid var(--cs-no);background:var(--cs-surface);padding:1.5rem 1.6rem;}
+.cs-doc .cs-traps h2{font-family:var(--cs-fd);font-size:.82rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--cs-no);margin:0 0 .9rem;}
+.cs-doc .cs-traps ol{margin:0;padding-left:1.15rem;display:grid;gap:.6rem;}
+.cs-doc .cs-traps li{max-width:var(--cs-measure);}
+
+/* sections */
+.cs-doc .cs-sec{padding:3.25rem 0 0;}
+.cs-doc .cs-sechead{display:grid;grid-template-columns:var(--cs-rail) 1fr;
+  align-items:baseline;gap:0 1rem;border-top:1px solid var(--cs-rule);
+  padding-top:1.4rem;margin-bottom:1.6rem;}
+.cs-doc .cs-secnum{font-family:var(--cs-fm);font-size:.95rem;font-weight:600;
+  color:var(--cs-accent);letter-spacing:.02em;font-variant-numeric:tabular-nums;}
+.cs-doc .cs-sechead h2{font-family:var(--cs-fd);font-weight:600;
+  font-size:clamp(1.45rem,3.3vw,1.95rem);line-height:1.12;letter-spacing:-.02em;
+  text-wrap:balance;margin:0;color:var(--cs-ink);}
+.cs-doc .cs-secbody{display:grid;grid-template-columns:var(--cs-rail) minmax(0,1fr);gap:0 1rem;}
+.cs-doc .cs-secbody>*{grid-column:2;}
+.cs-doc .cs-secbody>p,.cs-doc .cs-secbody>ul,.cs-doc .cs-secbody>ol{max-width:var(--cs-measure);}
+.cs-doc .cs-secbody>p{margin:0 0 1.05rem;}
+.cs-doc .cs-secbody>ul,.cs-doc .cs-secbody>ol{margin:0 0 1.15rem;padding-left:1.15rem;
+  display:grid;gap:.5rem;}
+.cs-doc h3{font-family:var(--cs-fd);font-weight:600;font-size:1.06rem;
+  letter-spacing:-.005em;margin:1.9rem 0 .7rem;color:var(--cs-ink);}
+.cs-doc .cs-secbody>h3:first-child{margin-top:0;}
+.cs-doc h4{font-family:var(--cs-fm);font-weight:600;font-size:.74rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--cs-ink3);margin:1.6rem 0 .6rem;}
+
+.cs-doc .cs-formula{font-family:var(--cs-fm);font-size:.84rem;line-height:1.75;
+  background:var(--cs-surface);border:1px solid var(--cs-rule);
+  border-left:3px solid var(--cs-accent);padding:.95rem 1.1rem;margin:0 0 1.2rem;
+  overflow-x:auto;white-space:pre;color:var(--cs-ink);}
+.cs-doc .cs-formula em{color:var(--cs-ink3);font-style:normal;}
+.cs-doc .cs-note{font-size:.9rem;color:var(--cs-ink2);border-left:2px solid var(--cs-rule);
+  padding-left:.95rem;margin:0 0 1.2rem;max-width:var(--cs-measure);}
+
+/* tables */
+.cs-doc .cs-tbl{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--cs-rule);
+  background:var(--cs-surface);}
+.cs-doc .cs-tbl table{border-collapse:collapse;width:100%;font-size:.845rem;
+  line-height:1.45;background:transparent;}
+.cs-doc .cs-tbl th,.cs-doc .cs-tbl td{padding:.5rem .7rem;text-align:left;
+  vertical-align:top;border:0;border-bottom:1px solid var(--cs-rule2);color:var(--cs-ink);}
+.cs-doc .cs-tbl thead th{font-family:var(--cs-fm);font-size:.68rem;font-weight:600;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--cs-ink3);
+  background:var(--cs-surface2);border-bottom:1px solid var(--cs-rule);white-space:nowrap;}
+.cs-doc .cs-tbl tbody tr:last-child td{border-bottom:0;}
+.cs-doc .cs-tbl tbody tr{background:transparent;}
+.cs-doc .cs-tbl .cs-n{text-align:right;font-family:var(--cs-fm);
+  font-variant-numeric:tabular-nums;white-space:nowrap;}
+.cs-doc .cs-tbl .cs-p{font-family:var(--cs-fm);font-size:.8rem;white-space:nowrap;}
+.cs-doc .cs-tbl .cs-d{font-family:var(--cs-fm);font-variant-numeric:tabular-nums;
+  white-space:nowrap;color:var(--cs-accent);font-weight:500;text-align:right;}
+.cs-doc .cs-tbl caption{caption-side:bottom;text-align:left;padding:.6rem .7rem;
+  font-size:.78rem;color:var(--cs-ink3);border-top:1px solid var(--cs-rule2);}
+
+/* chips + ledger */
+.cs-doc .cs-chip{display:inline-block;font-family:var(--cs-fm);font-size:.64rem;
+  font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:.15em .5em;
+  border-radius:2px;white-space:nowrap;}
+.cs-doc .cs-chip.is-in{background:var(--cs-ok-soft);color:var(--cs-ok);}
+.cs-doc .cs-chip.is-part{background:var(--cs-warn-soft);color:var(--cs-warn);}
+.cs-doc .cs-chip.is-out{background:var(--cs-no-soft);color:var(--cs-no);}
+.cs-doc .cs-ledger{display:grid;gap:0;border:1px solid var(--cs-rule);
+  background:var(--cs-surface);margin-bottom:1.4rem;}
+.cs-doc .cs-ledger>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);
+  gap:.2rem .9rem;padding:.8rem 1rem;border-bottom:1px solid var(--cs-rule2);}
+.cs-doc .cs-ledger>div:last-child{border-bottom:0;}
+.cs-doc .cs-ledger dt{font-family:var(--cs-fd);font-weight:600;font-size:.95rem;
+  grid-column:2;margin:0;color:var(--cs-ink);}
+.cs-doc .cs-ledger .cs-chip{grid-row:1;grid-column:1;align-self:start;margin-top:.18rem;}
+.cs-doc .cs-ledger dd{grid-column:2;margin:0;font-size:.93rem;color:var(--cs-ink2);
+  line-height:1.55;}
+
+/* exercises */
+.cs-doc .cs-ex{border:1px solid var(--cs-rule);background:var(--cs-surface);
+  padding:1.5rem 1.6rem;margin-bottom:1.5rem;}
+.cs-doc .cs-ex-n{font-family:var(--cs-fm);font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--cs-accent);
+  display:block;margin-bottom:.35rem;}
+.cs-doc .cs-ex h3{margin:0 0 .9rem;font-size:1.18rem;}
+.cs-doc .cs-steps{margin:0;padding-left:1.2rem;display:grid;gap:.5rem;font-size:.95rem;}
+.cs-doc .cs-steps code{font-size:.8rem;}
+.cs-doc .cs-principle{font-size:.93rem;color:var(--cs-ink2);
+  border-top:1px solid var(--cs-rule2);padding-top:.85rem;margin:.95rem 0 0;}
+.cs-doc .cs-principle b{color:var(--cs-ink);font-weight:600;}
+
+/* footer */
+.cs-doc .cs-footer{margin-top:4rem;padding-top:1.6rem;border-top:2px solid var(--cs-ink);
+  font-size:.86rem;color:var(--cs-ink2);}
+.cs-doc .cs-footer p{max-width:var(--cs-measure);margin:0 0 .8rem;}
+.cs-doc .cs-cite{font-family:var(--cs-fm);font-size:.78rem;color:var(--cs-ink3);line-height:1.7;}
+.cs-doc .cs-ref{border-left:2px solid var(--cs-rule);padding-left:.95rem;margin:0 0 1rem;
+  max-width:var(--cs-measure);font-size:.92rem;color:var(--cs-ink2);}
+.cs-doc pre{margin:0 0 1rem;padding:.9rem 1rem;background:var(--cs-surface);
+  border:1px solid var(--cs-rule);overflow-x:auto;font-family:var(--cs-fm);
+  font-size:.78rem;line-height:1.6;color:var(--cs-ink);white-space:pre;}
+
+@media (max-width:720px){
+  .cs-doc{--cs-rail:0px;font-size:16px;}
+  .cs-doc .cs-sechead{grid-template-columns:1fr;gap:.35rem;}
+  .cs-doc .cs-secbody{grid-template-columns:minmax(0,1fr);}
+  .cs-doc .cs-secbody>*{grid-column:1;}
+  .cs-doc .cs-traps,.cs-doc .cs-ex{padding:1.15rem;}
+}
+@media (max-width:560px){
+  .cs-doc .cs-ledger>div{grid-template-columns:1fr;}
+  .cs-doc .cs-ledger .cs-chip{grid-row:auto;grid-column:1;justify-self:start;margin-bottom:.3rem;}
+  .cs-doc .cs-ledger dt,.cs-doc .cs-ledger dd{grid-column:1;}
+}
+@media (prefers-reduced-motion:reduce){
+  .cs-doc *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+}
+</style>
+
+<div class="cs-doc">
+
+  <div class="cs-masthead">
+    <h1>Urban CFD Studio Method Notes</h1>
+    <p class="cs-standfirst">
+      What this tool solves, how the solve is scaled to metres and seconds, and — the part that
+      matters most when you cite it — <strong>how far the numbers can be trusted</strong>. Treat the
+      output as a qualitative picture of flow behaviour: the velocity <em>ratios</em> are meaningful,
+      the absolute speeds are not validated. Everything below is read from the source code or
+      measured by driving the running solver, not from what a CFD package is generally assumed to
+      do. Where the code makes something unclear, this page says so rather than inferring.
+    </p>
+    <div class="cs-byline">
+      <span><b>Audience</b> Architecture students and staff</span>
+      <span><b>Method</b> D3Q19 lattice Boltzmann · BGK · Smagorinsky</span>
+      <span><b>Runs</b> Entirely in the browser</span>
+    </div>
+  </div>
+
+  <div class="cs-traps">
+    <h2>Three things to know before you cite a number</h2>
+    <ol>
+      <li><b>The velocities are qualitative, not predictive.</b> The simulated Reynolds number is
+        <span class="cs-mono">≈ 1.7 × 10²</span> against a physical <span class="cs-mono">≈ 1.9 × 10⁷</span>
+        — five orders of magnitude apart. The solve works because separation from <em>sharp edges</em>
+        is fixed by geometry rather than by Re. Quote ratios and differences between runs; do not
+        quote a speed in m/s as a predicted wind speed.</li>
+      <li><b>The domain is far smaller than best practice requires.</b> Blockage is around
+        <span class="cs-mono">40%</span> against a <span class="cs-mono">&lt; 3%</span> guideline, and
+        the sample district touches the boundary in one direction. The boundaries <em>do</em>
+        influence the flow around the buildings, and the confinement over-accelerates air across
+        roofs and through gaps.</li>
+      <li><b>"Pedestrian level · 1.5 m" is a cell, not a height.</b> The plane is drawn at exactly
+        1.5 m, but the statistics come from the nearest cell centre — 1.07 m to 1.88 m depending on
+        resolution. And the comfort classes are Lawson thresholds applied to a <em>mean</em> speed
+        for <em>one</em> direction: no gust factor, no exceedance statistics, no directional
+        weighting. They are indicative labels, not a Lawson assessment.</li>
+    </ol>
+  </div>
+
+  <!-- 01 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">01</span><h2>What it computes</h2></div>
+    <div class="cs-secbody">
+      <p>A genuine three-dimensional lattice-Boltzmann solve, running in a Web Worker so the
+        interface stays responsive. It is not a 2D slice and not a precomputed lookup: vertical
+        motion — downwash, updraught — is solved rather than inferred.</p>
+
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Property</th><th>Value in the code</th></tr></thead>
+        <tbody>
+          <tr><td><b>Lattice</b></td><td class="cs-p">D3Q19 — 19 velocities, three dimensions</td></tr>
+          <tr><td><b>Collision</b></td><td class="cs-p">BGK, single relaxation time</td></tr>
+          <tr><td><b>Turbulence</b></td><td class="cs-p">Smagorinsky sub-grid, C = 0.14</td></tr>
+          <tr><td><b>Base relaxation time</b></td><td class="cs-p">τ₀ = 0.51</td></tr>
+          <tr><td><b>Reference lattice velocity</b></td><td class="cs-p">u_ref = 0.045 at 10 m</td></tr>
+          <tr><td><b>Precision</b></td><td class="cs-p">Float32 distributions · Float64 scratch per cell</td></tr>
+        </tbody>
+        <caption>Eight of the nineteen lattice directions carry a non-zero vertical component, which is what makes the vertical field real rather than interpolated.</caption>
+      </table></div>
+
+      <h3>Viscosity and the sub-grid model</h3>
+      <p>The standard LBM relation gives <span class="cs-mono">ν = (τ − ½)/3</span> in lattice units
+        — <span class="cs-mono">0.00333</span> at τ₀. Smagorinsky then raises τ locally from the
+        second moment of the non-equilibrium distribution, the Hou et al. formulation, so eddy
+        viscosity appears where the flow is sheared:</p>
+      <div class="cs-formula">τ = ½( τ₀ + √( τ₀² + 18√2 · C² · |Π| / ρ ) )      <em>C = 0.14</em>
+
+τ is clamped to 1.6                              <em>stability guard</em></div>
+      <p class="cs-note">There is <b>no wall damping</b> on the Smagorinsky term. Eddy viscosity does
+        not vanish correctly at a surface, so near-wall shear is over-damped — one reason ground-level
+        values are the least reliable part of the field.</p>
+
+      <h3>The Reynolds number, and why it is the first caveat</h3>
+      <p>Worked for the sample district's 24 m tower at the default 8 m/s on the Balanced lattice:</p>
+      <div class="cs-tbl"><table>
+        <thead><tr><th></th><th class="cs-n">U</th><th class="cs-n">L</th><th class="cs-n">ν</th><th class="cs-n">Re</th></tr></thead>
+        <tbody>
+          <tr><td><b>Physically</b></td><td class="cs-n">11.7 m/s</td><td class="cs-n">24 m</td><td class="cs-n">1.5 × 10⁻⁵</td><td class="cs-d">1.9 × 10⁷</td></tr>
+          <tr><td><b>In the simulation</b></td><td class="cs-n">0.066 lat.</td><td class="cs-n">8.8 cells</td><td class="cs-n">0.00333</td><td class="cs-d">1.7 × 10²</td></tr>
+        </tbody>
+        <caption>Five orders of magnitude apart, and the Smagorinsky term lowers the effective figure further. The solve is not resolving the real Reynolds number — it relies on separation being pinned by sharp edges. That assumption is reasonable for rectilinear massing and fails for curved or streamlined forms.</caption>
+      </table></div>
+
+      <h3>Convergence — and what "steady state" actually means</h3>
+      <p>A residual is computed at every reporting interval — the mean absolute change in cell speed
+        between reports, normalised by mean speed — and shown on screen. The <b>Steady state</b> badge
+        appears when <code>step &gt; 260</code> <em>and</em> <code>residual &lt; 0.0022</code>. A
+        divergence guard halts and reports if density leaves <span class="cs-mono">0.2 &lt; ρ &lt; 5</span>.</p>
+      <p class="cs-note">Note what this is <b>not</b>. The solve never terminates: there is no
+        stopping criterion and no fixed iteration count, and nothing prevents a student reading
+        results at step 20. Worse, the badge is generous. At Balanced and 8 m/s one step is
+        <span class="cs-mono">0.0153 s</span>, so step 260 is <b>≈ 4.0 s of simulated time</b> — about
+        13% of a single 30 s flow-through of the 240 m domain, and well before one ≈ 21 s
+        vortex-shedding period has completed. Let it run, and watch the residual rather than the
+        badge.</p>
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">02</span><h2>Units, scaling and the domain</h2></div>
+    <div class="cs-secbody">
+      <p>The domain is <b>fixed at 240 × 240 × 90 m</b>. Only the cell count changes between presets;
+        the physical box never does.</p>
+
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Preset</th><th class="cs-n">Cells</th><th class="cs-n">Total</th><th class="cs-n">Δx</th><th class="cs-n">Δt at 8 m/s</th></tr></thead>
+        <tbody>
+          <tr><td>Fast</td><td class="cs-n">64 × 64 × 24</td><td class="cs-n">98 304</td><td class="cs-d">3.75 m</td><td class="cs-n">0.0211 s</td></tr>
+          <tr><td>Balanced <span class="cs-mono">(default)</span></td><td class="cs-n">88 × 88 × 33</td><td class="cs-n">255 552</td><td class="cs-d">2.73 m</td><td class="cs-n">0.0153 s</td></tr>
+          <tr><td>Detailed</td><td class="cs-n">112 × 112 × 42</td><td class="cs-n">526 848</td><td class="cs-d">2.14 m</td><td class="cs-n">0.0121 s</td></tr>
+        </tbody>
+        <caption>Lattice resolution is the only thing about the domain a student can change. Domain size, τ₀, the Smagorinsky constant, u_ref, the reporting interval and the convergence threshold are all fixed and not exposed.</caption>
+      </table></div>
+
+      <h3>Mapping to metres and seconds</h3>
+      <div class="cs-formula">Δx = 240 / n                 <em>metres per cell</em>
+u  = 0.045 at z = 10 m       <em>lattice units, whatever the physical speed</em>
+Δt = Δx · u_ref / U₁₀        <em>seconds per step</em>
+Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%</em></div>
+
+      <h3>Changing the wind speed does not re-solve</h3>
+      <p>By design. The stored field is normalised — velocity as <span class="cs-mono">U/U₁₀</span>,
+        pressure as <span class="cs-mono">Cp</span> — and the reference speed is applied on display.
+        This is the Reynolds-independence assumption again: the flow <em>pattern</em> is taken as
+        fixed and only the magnitudes scale. Changing <b>direction</b> or <b>terrain roughness</b>
+        does start a new solve.</p>
+
+      <h3>Boundary conditions</h3>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Boundary</th><th>Condition in the code</th></tr></thead>
+        <tbody>
+          <tr><td>Upwind faces</td><td>Equilibrium at a <b>logarithmic ABL profile</b></td></tr>
+          <tr><td>Downwind faces</td><td>Zero gradient — a copy of the interior neighbour</td></tr>
+          <tr><td>Domain top</td><td><b>Driven free stream</b> — equilibrium at the same log profile</td></tr>
+          <tr><td>Ground</td><td>Half-way bounce-back, no-slip</td></tr>
+          <tr><td>Buildings</td><td>Half-way bounce-back on voxelised solids</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cs-formula">U(z) = U₁₀ · ln((z + z₀)/z₀) / ln((10 + z₀)/z₀)      <em>z₀ = 0.03 / 0.3 / 1.0 / 2.0 m</em></div>
+      <p>Logarithmic, not uniform and not a power law; the <span class="cs-mono">+z₀</span> offset
+        avoids the singularity at the wall. The inlet is applied per cell to whichever faces face
+        upwind (<span class="cs-mono">n·w &gt; 0</span>), so any azimuth works without rotating the
+        model — but it also means <b>the lateral faces are not symmetry planes</b>. Each face is
+        either an inlet or a zero-gradient outlet.</p>
+      <p class="cs-note">Two things worth stating plainly. The <b>top is not free-slip</b>: it is a
+        Dirichlet condition forcing the undisturbed profile only 26 m above the tallest sample
+        building, which suppresses vertical displacement over the district and accelerates flow
+        through the gaps. And <b>z₀ shapes the inlet profile only</b> — the ground inside the domain
+        is plain no-slip bounce-back with no wall function and no roughness. Selecting "dense city
+        centre" changes what enters the domain, not the drag inside it.</p>
+
+      <h3>Is the domain big enough? No</h3>
+      <p>Measured for the built-in sample district, 184.7 × 207.4 × 64 m:</p>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Guideline — COST 732 / Franke et al.</th><th class="cs-n">Required</th><th class="cs-n">Actual</th></tr></thead>
+        <tbody>
+          <tr><td>Clearance above the tallest building</td><td class="cs-n">≥ 5H = 320 m</td><td class="cs-d">26 m · 0.41H</td></tr>
+          <tr><td>Lateral clearance</td><td class="cs-n">≥ 5H</td><td class="cs-d">17.7 m in X · −0.2 m in Y</td></tr>
+          <tr><td>Blockage ratio</td><td class="cs-n">&lt; 3%</td><td class="cs-d">≈ 40%</td></tr>
+        </tbody>
+        <caption>The negative Y figure is not a typo: the sample district's northern slab reaches the domain boundary. This is a deliberate trade for interactive speed in a browser, and it is stated rather than glossed.</caption>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- 03 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">03</span><h2>What is and isn't modelled</h2></div>
+    <div class="cs-secbody">
+      <p>Four quantities are solved per cell — three velocity components and density. Everything else
+        on screen is derived from those.</p>
+
+      <h3>Computed and shown</h3>
+      <dl class="cs-ledger">
+        <div><span class="cs-chip is-in">In</span><dt>Wind speed |U|</dt><dd>√(u²+v²+w²), scaled to m/s by the reference speed. The default colour field.</dd></div>
+        <div><span class="cs-chip is-in">In</span><dt>Ux, Uy, Uz separately</dt><dd>Signed components on their own colour scales. Uz is the downwash and updraught indicator, and it is the field that makes a podium's effect visible.</dd></div>
+        <div><span class="cs-chip is-in">In</span><dt>Pressure coefficient Cp</dt><dd>2(ρ_lat − 1) / (3 u_ref²), and the same quantity mapped onto building surfaces one cell outside the facade.</dd></div>
+        <div><span class="cs-chip is-in">In</span><dt>Amplification factor</dt><dd>|U| / U₁₀ — local speed against the 10 m reference, the usual wind-comfort convention.</dd></div>
+        <div><span class="cs-chip is-in">In</span><dt>Streamline tracers</dt><dd>GPU particles advected through the velocity field, 8k to 150k of them, seeded throughout the domain.</dd></div>
+        <div><span class="cs-chip is-in">In</span><dt>Section planes and probes</dt><dd>X, Y and Z cutting planes through the field, and a point readout giving speed, ratio, components, Cp and comfort class.</dd></div>
+        <div><span class="cs-chip is-part">Partly</span><dt>Lawson comfort class</dt><dd>The LDDC thresholds are applied — frequent sitting &lt; 2.5, occasional sitting &lt; 4, standing &lt; 6, strolling &lt; 8, business walking &lt; 10, uncomfortable &lt; 15, unsafe ≥ 15 m/s — to the solved <b>mean</b> speed for <b>one direction</b>, with no gust factor and no exceedance statistics. Real Lawson classification uses a gust-equivalent mean and asks how often a threshold is exceeded across the year, summed over every direction weighted by frequency. These are indicative labels, not a Lawson assessment. "Calm area" is separate: the fraction below an absolute 1.5 m/s.</dd></div>
+        <div><span class="cs-chip is-part">Partly</span><dt>The Cp reference</dt><dd>Referenced to the lattice datum ρ = 1, the density imposed at the inlet — so approximately to the undisturbed inflow, rather than to a measured free-stream static pressure at a stated point.</dd></div>
+        <div><span class="cs-chip is-part">Note</span><dt>What amplification is against</dt><dd>The 10 m reference speed, not the undisturbed speed at the same height. A value of 0.8 at pedestrian level therefore does not mean "sheltered": for z₀ = 1 m the undisturbed profile at 1.4 m is already only about 0.36 × U₁₀.</dd></div>
+      </dl>
+
+      <h3>Not modelled</h3>
+      <p>These are the assumptions a student is most likely to make wrongly, because a general-purpose
+        CFD package would offer them.</p>
+      <dl class="cs-ledger">
+        <div><span class="cs-chip is-out">Out</span><dt>Thermal effects, entirely</dt><dd>The solve is isothermal. No buoyancy, no stack effect, no solar gain, no stratification, no stable or unstable atmospheric conditions. Neutral only.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Vegetation and porosity</dt><dd>No trees, no hedges, no porous screens, no permeable facades. Every solid is a perfect no-slip block.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Terrain</dt><dd>The ground is a flat plane at z = 0. No slopes, no embankments, no surrounding topography.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Multiple wind directions</dt><dd>One direction at a time. There is no multi-direction run and no wind-rose weighting of results.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Turbulence quantities</dt><dd>No vorticity output — the term does not occur in the file — no turbulence intensity, no TKE, no age of air, no pollutant transport.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Gusts and transients</dt><dd>The tool reports an instantaneous field, not a time-averaged one with peaks. No gust factors, no exceedance probabilities, no unsteady statistics.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Moisture, noise, snow</dt><dd>No rain or driving-rain assessment, no snow drifting, no acoustics, no roof-level wind for equipment siting.</dd></div>
+        <div><span class="cs-chip is-out">Out</span><dt>Validation</dt><dd>None of any kind. No wind-tunnel comparison, no benchmark case, no grid-independence study.</dd></div>
+        <div><span class="cs-chip is-part">Note</span><dt>Climate statistics</dt><dd>An EPW import builds a 16-sector wind rose from all 8 760 hourly records, and clicking a sector loads that sector's mean, 90th-percentile or peak speed into the solver. But the solve then uses that single speed and direction: the annual frequencies are displayed, never applied to the results.</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">04</span><h2>How exact the numbers are</h2></div>
+    <div class="cs-secbody">
+      <p>The short answer, and the one to give students: <b>qualitative</b>. The tool reliably shows
+        <em>where</em> flow accelerates, separates, recirculates and stagnates, and <em>how those
+        patterns change</em> when the massing changes. That is what it is for. A specific velocity at
+        a specific point should not be quoted as a predicted wind speed.</p>
+
+      <h3>What the cell size costs you</h3>
+      <p>Cells are 2.14 to 3.75 m across. The consequences are concrete:</p>
+      <ul>
+        <li><b>The smallest resolvable feature is one cell.</b> A 1 m balcony, a canopy, a parapet, a railing or a colonnade simply does not exist in the solve.</li>
+        <li><b>Best practice is around 10 cells across the smallest building dimension.</b> At Balanced, a 24 m tower is 8.8 cells — marginal — and anything under about 27 m is under-resolved.</li>
+        <li><b>All geometry is voxelised</b> by a surface pass plus a parity fill, so every surface is staircased. Diagonal and curved facades become steps, which moves where the flow separates.</li>
+        <li><b>Bounce-back places the wall halfway between cells</b> and there is no wall function, so near-wall velocity gradients are resolved by whatever the lattice provides — at these cell sizes, very little.</li>
+      </ul>
+
+      <h3>The approximations, and what each one costs</h3>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Approximation</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td class="cs-p">Small fixed domain</td><td>Boundary interference near buildings; over-acceleration over roofs and through gaps</td></tr>
+          <tr><td class="cs-p">Coarse lattice</td><td>Sub-cell detail lost; separation points approximate</td></tr>
+          <tr><td class="cs-p">BGK rather than MRT</td><td>Less stable and more dissipative at low τ</td></tr>
+          <tr><td class="cs-p">Smagorinsky, no wall damping</td><td>Eddy viscosity does not vanish at walls; near-wall shear over-damped</td></tr>
+          <tr><td class="cs-p">Single direction, mean flow</td><td>No gust, no exceedance, no directional weighting</td></tr>
+          <tr><td class="cs-p">Reynolds independence on speed change</td><td>Fine for sharp edges, wrong for curved bodies</td></tr>
+        </tbody>
+        <caption>Each of these is a deliberate trade for a solve that runs interactively in a browser. Together they are why the absolute numbers are indicative and the comparisons are not.</caption>
+      </table></div>
+
+      <h3>The pedestrian height is not 1.5 m</h3>
+      <p>The comfort plane is <em>drawn</em> at exactly z = 1.5 m, but the statistics are sampled from
+        the nearest cell centre, <span class="cs-mono">round(1.5/Δx − 0.5)</span>, which on every
+        preset resolves to layer 0:</p>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Preset</th><th class="cs-n">Height actually sampled</th></tr></thead>
+        <tbody>
+          <tr><td>Fast</td><td class="cs-d">1.88 m</td></tr>
+          <tr><td>Balanced</td><td class="cs-d">1.36 m</td></tr>
+          <tr><td>Detailed</td><td class="cs-d">1.07 m</td></tr>
+        </tbody>
+        <caption>So a figure labelled "pedestrian level · 1.5 m" is taken somewhere between 1.07 m and 1.88 m, and it moves when a student changes preset. The panel does display the true sampled height — report that number, not 1.5 m.</caption>
+      </table></div>
+      <p class="cs-note">One thing that is done carefully: the mean, max, amplification, calm fraction
+        and Lawson distribution are computed over the <b>area of interest</b> — the model bounding box
+        widened by 30 m in plan and 18 m in height, then clamped to the domain — not the whole domain,
+        so the empty buffer around the site does not dilute the statistics.</p>
+
+      <h3>What a student may and may not quote</h3>
+      <ul>
+        <li><b>May:</b> the ratio between two runs at identical settings. Which of two massing options produces the windier plaza, and by how much in relative terms.</li>
+        <li><b>May:</b> the topology — where the corner jet is, where the wake sits, where flow stagnates, whether a street channels.</li>
+        <li><b>May not:</b> a velocity in m/s at a point, as a predicted wind speed. It carries the domain-confinement bias, coarse-lattice error, staircased geometry, an unvalidated Reynolds regime and an instantaneous rather than time-averaged sample.</li>
+        <li><b>May not:</b> a comfort class as an assessment outcome. It is a threshold applied to a mean, for one direction.</li>
+      </ul>
+      <p class="cs-note">The <b>Lock</b> button on the legend exists for exactly this. Locking the
+        range across two runs is what turns a picture into a comparison, and comparison is where this
+        tool is trustworthy.</p>
+    </div>
+  </div>
+
+  <!-- 05 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">05</span><h2>Inputs you control</h2></div>
+    <div class="cs-secbody">
+      <h4>Wind and site</h4>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Control</th><th class="cs-n">Range</th><th>Units</th><th class="cs-n">Default</th></tr></thead>
+        <tbody>
+          <tr><td>Reference wind speed</td><td class="cs-n">0.5 – 30</td><td>m/s at 10 m</td><td class="cs-d">8</td></tr>
+          <tr><td>Wind direction</td><td class="cs-n">0 – 359, 16-point snap</td><td>degrees, meteorological (<em>from</em>)</td><td class="cs-d">250 · WSW</td></tr>
+          <tr><td>Terrain roughness z₀</td><td class="cs-n">0.03 / 0.3 / 1.0 / 2.0</td><td>m — inlet profile only</td><td class="cs-d">1.0</td></tr>
+          <tr><td>Lattice resolution</td><td class="cs-n">Fast / Balanced / Detailed</td><td>—</td><td class="cs-d">Balanced</td></tr>
+          <tr><td>Scenario presets</td><td class="cs-n">4 / 8 / 18</td><td>m/s — breeze · prevailing · storm</td><td class="cs-d">Prevailing</td></tr>
+        </tbody>
+        <caption>Only direction and roughness restart the solve. Changing the speed rescales the stored normalised field, as §02 explains.</caption>
+      </table></div>
+
+      <h4>Reading the result</h4>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Control</th><th class="cs-n">Range</th><th class="cs-n">Default</th></tr></thead>
+        <tbody>
+          <tr><td>Colour field</td><td class="cs-n">speed · Ux · Uy · Uz · Cp · amplification</td><td class="cs-d">speed</td></tr>
+          <tr><td>Section planes X / Y / Z</td><td class="cs-n">0 – 1 across the area of interest</td><td class="cs-d">Z at 1.5 m</td></tr>
+          <tr><td>Legend range</td><td class="cs-n">Auto / Lock</td><td class="cs-d">Auto</td></tr>
+          <tr><td>Lawson comfort layer</td><td class="cs-n">on / off</td><td class="cs-d">off</td></tr>
+          <tr><td>Streamline tracers</td><td class="cs-n">on / off</td><td class="cs-d">on</td></tr>
+          <tr><td>Tracer density</td><td class="cs-n">8k / 20k / 40k / 80k / 150k</td><td class="cs-d">40k</td></tr>
+          <tr><td>Facade pressure</td><td class="cs-n">on / off</td><td class="cs-d">off</td></tr>
+          <tr><td>Solver</td><td class="cs-n">Pause · Step ×20 · Reset</td><td class="cs-d">running</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>Bringing in your own data</h4>
+      <p><b>OBJ import</b> takes units in m, mm, cm, ft or in, with a Y-up toggle and a fit-to-site
+        toggle; the mesh is voxelised on the lattice as §04 describes. <b>EPW import</b> reads all
+        8 760 hourly records and builds a 16-sector rose, and a sector can be applied at its mean,
+        90th-percentile or peak speed.</p>
+
+      <h4>What is fixed, and not exposed</h4>
+      <p>Domain size, τ₀, the Smagorinsky constant, u_ref, the reporting interval and the convergence
+        threshold. Changing any of them means changing the source. Everything in the display group
+        above — colour field, planes, tracers, legend, layers — is presentation: none of it touches
+        the solve.</p>
+    </div>
+  </div>
+
+  <!-- 06 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">06</span><h2>Compared with OpenFOAM, Fluent and a wind tunnel</h2></div>
+    <div class="cs-secbody">
+      <h3>Where it should agree</h3>
+      <ul>
+        <li><b>The topology of the flow.</b> Stagnation on windward faces, separation at sharp edges, corner acceleration, recirculating wakes, downwash on tall windward facades, channelling along aligned streets. These are geometry-driven, and geometry is what this solver has.</li>
+        <li><b>The ranking of design options.</b> Which of two massing arrangements produces the windier plaza — provided both are run at identical settings with the legend locked.</li>
+        <li><b>Broad velocity-ratio patterns at pedestrian level.</b> Which areas are relatively fast and which are relatively sheltered.</li>
+      </ul>
+
+      <h3>Where it will diverge</h3>
+      <ul>
+        <li><b>Absolute velocities.</b> Domain confinement at ≈ 40% blockage against a &lt; 3% guideline, coarse cells, and no wall treatment.</li>
+        <li><b>Anything curved or streamlined.</b> Staircasing plus an unphysical Reynolds number means separation on a cylindrical or faceted tower will be wrong in both location and strength.</li>
+        <li><b>Reattachment lengths and wake extent</b>, which are sensitive to both Re and the turbulence model.</li>
+        <li><b>Near-ground values</b>, where a real study uses a rough-wall function and this uses plain bounce-back.</li>
+        <li><b>Anything requiring gusts or statistics</b> — peak gusts, exceedance probabilities, annual distributions. None of it is computed.</li>
+        <li><b>Thermally driven flow</b>, entirely absent.</li>
+      </ul>
+
+      <h3>Planning submission or BREEAM?</h3>
+      <p>No — strictly indicative, and this should be said to students before they are tempted. A
+        planning-authority microclimate study or a BREEAM-type wind assessment expects a validated
+        solver, a domain sized to COST 732 or AIJ guidance, grid-independence testing, a rough-wall
+        treatment, all wind directions weighted by local climate statistics, gust-equivalent Lawson or
+        NEN 8100 classification with exceedance percentages, and usually wind-tunnel corroboration for
+        tall buildings. This tool provides none of those.</p>
+
+      <p class="cs-note">The honest summary: this sits between a sketch and a study. It is more
+        rigorous than a sketch because the flow field is genuinely solved in three dimensions and
+        responds to the massing you give it, and far less rigorous than a study because the domain is
+        undersized, the Reynolds regime is unphysical and nothing has been validated. Use it to
+        understand <em>why</em> a massing decision changes the wind — and to find out where a real
+        study will be needed.</p>
+    </div>
+  </div>
+
+  <!-- 07 -->
+  <div class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum">07</span><h2>Three exercises</h2></div>
+    <div class="cs-secbody">
+      <p>Each teaches one principle, states exactly what to build and what to read, and takes ten to
+        twenty minutes. All three are comparative by design, which is where the tool is trustworthy.
+        Lock the legend before you start comparing.</p>
+
+      <div class="cs-ex">
+        <span class="cs-ex-n">Exercise 01</span>
+        <h3>Downwash, and why podiums exist</h3>
+        <ol class="cs-steps">
+          <li>Build two OBJ models, identical but for the podium. <b>Scheme A:</b> a single slab, <code>40 × 20 × 60 m</code>, standing alone. <b>Scheme B:</b> the same slab plus a podium <code>14 m</code> tall — four storeys — extending <code>10 m</code> forward of the windward face, the full 40 m width.</li>
+          <li>Settings for both: wind <code>10 m/s</code>, direction normal to the wide face, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> to the same range.</li>
+          <li>Read the <b>Z</b> section plane at 1.5 m, then switch the colour field to <b>Uz</b> and cut a <b>Y</b> plane through the slab centreline.</li>
+          <li>Pin a probe 5 m in front of the windward face at ground level in each scheme. Record the amplification factor.</li>
+          <li>Vary the podium <em>depth</em> at fixed height, then its <em>height</em> at fixed depth, and record the probe each time.</li>
+        </ol>
+        <p class="cs-principle"><b>Principle.</b> In Scheme A the Uz field goes strongly negative down
+          the windward face: high-momentum air from 40–60 m is driven to the ground, producing a fast,
+          uncomfortable strip at the base. That is downwash, and it is the single most common wind
+          problem a tall building creates. The podium in Scheme B intercepts the descending flow and
+          moves the acceleration onto the podium roof, where nobody stands. The last step is the real
+          lesson: <em>depth</em> matters more than <em>height</em>, because what the podium must do is
+          separate the descending column from the pavement, not block it.</p>
+      </div>
+
+      <div class="cs-ex">
+        <span class="cs-ex-n">Exercise 02</span>
+        <h3>Channelling, and why alignment is everything</h3>
+        <ol class="cs-steps">
+          <li>Use the built-in sample district — no import needed. It has a continuous east–west street.</li>
+          <li>Run three directions at <code>8 m/s</code>, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> across all three: <code>270°</code> aligned with the street, <code>315°</code> oblique, <code>360°</code> across it.</li>
+          <li>Turn on the <b>Lawson comfort layer</b> and read the pedestrian-level statistics panel each time.</li>
+          <li>Record mean speed, max speed and the percentage of area in each comfort band. Note the sampled height the panel reports — it is not 1.5 m.</li>
+        </ol>
+        <p class="cs-principle"><b>Principle.</b> The aligned case produces a clear high-velocity
+          ribbon along the canyon: channelling, driven by the pressure gradient along an unobstructed
+          street. The oblique case largely destroys it and replaces it with discrete corner jets at
+          each block end. The cross case leaves the street sheltered but accelerates the gaps between
+          blocks. So channelling is not a property of the street — it is a property of the street
+          <em>and</em> the wind rose together. Which is exactly why a real assessment weights every
+          direction by its annual frequency, and why this tool, which runs one direction at a time,
+          cannot do that for you.</p>
+      </div>
+
+      <div class="cs-ex">
+        <span class="cs-ex-n">Exercise 03</span>
+        <h3>Wake, sheltering, and the three flow regimes</h3>
+        <ol class="cs-steps">
+          <li>Build three OBJ models, each two identical blocks <code>40 × 20 × 20 m</code> aligned with the wind, differing only in the gap: <code>20 m</code> (S/H = 1), <code>40 m</code> (S/H = 2), <code>80 m</code> (S/H = 4).</li>
+          <li>Settings: wind <code>8 m/s</code> normal to the blocks, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b>, tracers on.</li>
+          <li>Read a <b>Y</b> section plane through the centreline with the <b>speed</b> field, and record the calm-area percentage from the statistics panel.</li>
+          <li>Watch the tracers in the gap in each case, and describe in one sentence what the air in the courtyard is doing.</li>
+        </ol>
+        <p class="cs-principle"><b>Principle.</b> The three classical regimes appear in order. At
+          S/H = 1 the flow skims across the tops and the gap holds a single slow recirculation —
+          <em>skimming flow</em>, a sheltered but poorly ventilated courtyard. At S/H = 2 the shear
+          layer begins to dip into the gap — <em>wake interference</em>. At S/H = 4 the flow reattaches
+          to the ground before the second block, which then sees almost undisturbed wind —
+          <em>isolated roughness</em>. Have students identify the transitions and connect them to a
+          design decision: shelter and ventilation are in tension, and courtyard proportion is the
+          control you have over both at once.</p>
+      </div>
+
+      <p class="cs-note">A caution for all three: <b>compare, do not quote</b>. The velocity ratios
+        between two runs are the finding; the absolute m/s values carry every limitation in §04. And
+        let each run settle — the Steady state badge appears at about 4 s of simulated time, which is
+        earlier than the flow has finished developing.</p>
+    </div>
+  </div>
+
+  <div class="cs-footer">
+    <p>Everything on this page was read from the tool's source code, and the measured figures — the
+      preset table, the Reynolds comparison, the domain ratios, the sampled pedestrian heights and the
+      time to the steady-state badge — were produced by driving the running solver. Where a figure is
+      quoted it is measured, not estimated. Where the code did not make something clear it has been
+      said so rather than inferred.</p>
+    <p>For anything that must inform a real decision about a real site, use a validated solver and a
+      wind engineer. This tool is built to teach why wind behaves as it does around buildings, and it
+      is deliberately small enough to run in a browser — which is the source of every limitation
+      listed above.</p>
+
+    <h3>Licence</h3>
+    <p>© Karam Al-Obaidi. The app is licensed <b>MIT</b>; this documentation is
+      <b><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></b>.
+      Both permit any use, including commercial, and ask only that you credit the author. The
+      application bundles <b>no third-party code</b> and makes <b>no network requests</b> — it is a
+      single self-contained HTML file — so there is no further notice to carry.</p>
+    <p>A model you analyse with the tool is <b>yours</b>. Neither licence claims anything over your
+      geometry, your results or the images you export. Two things do sit outside the author's control:
+      a screenshot containing an imported OBJ includes geometry you or someone else owns, and EPW
+      weather files carry their own terms of use.</p>
+
+    <h3>How to cite</h3>
+    <p>Cite it as software. Keeping the copyright notice in the file satisfies the licence; a citation
+      is the scholarly act on top of that.</p>
+    <p class="cs-ref">Al-Obaidi, K. M. (2026). <i>Urban CFD Studio: a browser-based lattice-Boltzmann wind
+      analysis tool for 3D urban context</i> (Version 1.0.0) [Computer software].
+      https://karam.me.uk/applications/urban-cfd-studio/</p>
+<pre>@software{alobaidi2026urbancfdstudio,
+  author  = {Al-Obaidi, Karam M.},
+  title   = {Urban CFD Studio: a browser-based lattice-Boltzmann wind
+             analysis tool for 3D urban context},
+  year    = {2026},
+  version = {1.0.0},
+  url     = {https://karam.me.uk/applications/urban-cfd-studio/},
+  note    = {MIT licensed}
+}</pre>
+    <p>Report the <b>wind direction</b>, the <b>terrain roughness</b>, the <b>resolution preset</b> and
+      the <b>sampled height the panel shows</b> alongside any figure taken from the tool — all four
+      change the numbers, and a speed quoted without them cannot be checked by anyone reading you. Say
+      also whether the field had converged, and prefer a ratio between two runs to any single value.</p>
+
+    <p class="cs-cite">Method and data follow: Lawson, <i>LDDC pedestrian comfort criteria</i>
+      (the comfort bands) · Franke et al., <i>COST Action 732: Best Practice Guideline for the CFD
+      Simulation of Flows in the Urban Environment</i> (domain sizing and blockage) ·
+      Hou, Sterling, Chen &amp; Doolen, <i>A Lattice Boltzmann Subgrid Model for High Reynolds Number
+      Flows</i> (the Smagorinsky formulation used here) · Qian, d'Humières &amp; Lallemand,
+      <i>Lattice BGK Models for Navier–Stokes Equation</i> (D3Q19 and the BGK collision) ·
+      Oke, <i>Boundary Layer Climates</i> (the skimming / wake-interference / isolated-roughness
+      regimes) · EnergyPlus Weather File (EPW) Data Dictionary (the import format).</p>
+  </div>
+
+</div>
+
