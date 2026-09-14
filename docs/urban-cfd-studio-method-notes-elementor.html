@@ -7,9 +7,10 @@
      nothing here can touch the rest of your theme. To follow the visitor's
      dark-mode setting, change the opening tag to <div class="cs-doc cs-auto-dark">.
 
-     Every figure on this page was read out of urban-cfd-studio.html or measured
-     by driving the running solver — none is estimated. Where the code does not
-     settle a question, the page says so.
+     Every figure on this page was read out of urban-cfd-studio.html, computed
+     from it, or measured by driving the running solver — none is estimated.
+     Section 07 says which figures are which, and by what method. Where the code
+     does not settle a question, the page says so.
      © Karam Al-Obaidi
      ========================================================================== -->
 
@@ -422,7 +423,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <div><span class="cs-chip is-in">In</span><dt>Amplification factor</dt><dd>|U| / U₁₀ — local speed against the 10 m reference, the usual wind-comfort convention.</dd></div>
         <div><span class="cs-chip is-in">In</span><dt>Streamline tracers</dt><dd>GPU particles advected through the velocity field, 8k to 150k of them, seeded throughout the domain.</dd></div>
         <div><span class="cs-chip is-in">In</span><dt>Section planes and probes</dt><dd>X, Y and Z cutting planes through the field, and a point readout giving speed, ratio, components, Cp and comfort class.</dd></div>
-        <div><span class="cs-chip is-part">Partly</span><dt>Lawson comfort class</dt><dd>The LDDC thresholds are applied — frequent sitting &lt; 2.5, occasional sitting &lt; 4, standing &lt; 6, strolling &lt; 8, business walking &lt; 10, uncomfortable &lt; 15, unsafe ≥ 15 m/s — to the solved <b>mean</b> speed for <b>one direction</b>, with no gust factor and no exceedance statistics. Real Lawson classification uses a gust-equivalent mean and asks how often a threshold is exceeded across the year, summed over every direction weighted by frequency. These are indicative labels, not a Lawson assessment. "Calm area" is separate: the fraction below an absolute 1.5 m/s.</dd></div>
+        <div><span class="cs-chip is-part">Partly</span><dt>Lawson comfort class</dt><dd>The seven coded bands are the standard LDDC set: frequent sitting &lt; 2.5, occasional sitting &lt; 4, standing &lt; 6, strolling &lt; 8, business walking &lt; 10, uncomfortable &lt; 15, unsafe ≥ 15 m/s — the last matching the LDDC safety limit for a frail person or cyclist. <b>The thresholds are right; the method is not.</b> The criteria ask whether a threshold is exceeded more than a stated share of the year — 5% for the comfort categories, 0.025% for the safety limit — summed over every wind direction weighted by its annual frequency, using a gust-equivalent rather than a mean speed. This tool applies the numbers to a single instantaneous mean for one direction, with no gust factor and no exceedance statistic at all. The labels are indicative; they are not a Lawson assessment. "Calm area" is separate again: the fraction below an absolute 1.5 m/s.</dd></div>
         <div><span class="cs-chip is-part">Partly</span><dt>The Cp reference</dt><dd>Referenced to the lattice datum ρ = 1, the density imposed at the inlet — so approximately to the undisturbed inflow, rather than to a measured free-stream static pressure at a stated point.</dd></div>
         <div><span class="cs-chip is-part">Note</span><dt>What amplification is against</dt><dd>The 10 m reference speed, not the undisturbed speed at the same height. A value of 0.8 at pedestrian level therefore does not mean "sheltered": for z₀ = 1 m the undisturbed profile at 1.4 m is already only about 0.36 × U₁₀.</dd></div>
       </dl>
@@ -666,7 +667,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         visible holes, and it is better to name them than to let a reader assume an oversight:</p>
       <ul>
         <li><b>The lattice has no citation.</b> The code uses the designation <span class="cs-mono">D3Q19</span> throughout but attributes it to no one, so no entry appears for it. The velocity set and its weights have a standard origin in the literature; this page does not assert which, because the code does not.</li>
-        <li><b>The comfort thresholds are only half-attributed.</b> The code says “Lawson LDDC” and no more. The entry below is Lawson's originating paper, which is what the name points at — but the LDDC criteria are a later set associated with the London Docklands Development Corporation, and <b>the code identifies no document for the specific bands it uses</b> (2.5 / 4 / 6 / 8 / 10 / 15 m/s). Do not cite this page as evidence that those bands reproduce any particular published table.</li>
+        <li><b>The comfort thresholds have a contested citation.</b> The code says “Lawson LDDC” and names no document. The bands themselves are not in doubt — they are the standard LDDC set, and they match it band for band, as the table below shows. What is unsettled is whom to credit: some sources give Lawson's 1990 University of Bristol report TVL 9025, others attribute the criteria to the City of London, which adopted them for the Square Mile. The reference list uses the Lawson report and says so on the entry. Treat the attribution, not the numbers, as the open question.</li>
       </ul>
 
       <h3>How the references were checked</h3>
@@ -731,6 +732,11 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
     <p>This list contains <b>only works the source code itself names</b>. Nothing has been added to
       round it out, and §07 explains the two gaps that rule leaves. Against each entry is the term the
       code uses and where it uses it.</p>
+    <p>One step in that rule is worth stating rather than glossing. The code names a <em>work</em>
+      only once, as “(Hou et al.)”. Elsewhere it names <em>methods</em> — BGK, Smagorinsky — and the
+      originating papers below are this page's identification of them, not the code's. Neither
+      identification is in serious doubt, but both are inferences, and a page claiming strict
+      sourcing should say where it made one.</p>
 
     <p class="cs-ref">Bhatnagar, P. L., Gross, E. P., &amp; Krook, M. (1954). A model for collision
       processes in gases. I. Small amplitude processes in charged and neutral one-component systems.
@@ -748,15 +754,20 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       Preprint: <a href="https://arxiv.org/abs/comp-gas/9401004" target="_blank" rel="noopener">arXiv:comp-gas/9401004</a><br>
       <span class="cs-mono">— code: “(Hou et al.)”, beside the τ formula in the collision step</span></p>
 
-    <p class="cs-ref">Lawson, T. V. (1978). The wind content of the built environment.
-      <i>Journal of Wind Engineering and Industrial Aerodynamics, 3</i>, 93–105. <span class="cs-mono">(The
-      journal was titled <i>Journal of Industrial Aerodynamics</i> at the time of publication.)</span><br>
-      <span class="cs-mono">— code: “Lawson LDDC pedestrian comfort categories”. See §07: the code
-      identifies no document for the specific thresholds it uses.</span></p>
+    <p class="cs-ref">Lawson, T. V. (1990). <i>The determination of the wind environment of a
+      building complex before construction</i> (Report TVL 9025). Department of Aerospace
+      Engineering, University of Bristol.<br>
+      <span class="cs-mono">— code: “Lawson LDDC pedestrian comfort categories”.
+      <b>Attribution contested; see §07.</b> An unpublished university technical report: no DOI, no
+      publisher page, and it could not be checked against a library catalogue. Sources also differ
+      over whether the LDDC criteria should be credited to this report or to the City of London.
+      Verify before citing formally.</span></p>
 
-    <p class="cs-ref">U.S. Department of Energy. <i>EnergyPlus weather file (EPW) data dictionary</i>
-      (Auxiliary Programs documentation).
-      <a href="https://bigladdersoftware.com/epx/docs/23-2/auxiliary-programs/energyplus-weather-file-epw-data-dictionary.html" target="_blank" rel="noopener">bigladdersoftware.com/epx/docs/23-2/auxiliary-programs/energyplus-weather-file-epw-data-dictionary.html</a><br>
+    <p class="cs-ref">U.S. Department of Energy. <i>EnergyPlus weather file (EPW) data dictionary</i>,
+      in <i>Auxiliary Programs</i> (EnergyPlus documentation). Linked here via the
+      <a href="https://bigladdersoftware.com/epx/docs/23-2/auxiliary-programs/energyplus-weather-file-epw-data-dictionary.html" target="_blank" rel="noopener">Big Ladder Software mirror</a>,
+      which is a third party's copy, not a Department of Energy host — the official documentation is
+      distributed with EnergyPlus itself.<br>
       <span class="cs-mono">— code: “EnergyPlus .epw”, and the column layout the importer reads</span></p>
   </div>
 
