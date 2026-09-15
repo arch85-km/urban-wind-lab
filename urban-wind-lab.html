@@ -56,7 +56,7 @@
 <title>Urban Wind Lab &mdash; Interactive Wind Analysis for Urban Design</title>
 <style>
 /* =====================================================================
-   URBAN CFD STUDIO
+   URBAN WIND LAB
    Copyright (c) Karam Al-Obaidi. This file is released under the MIT Licence
    (full text at the top of the source file, or https://opensource.org/licenses/MIT).
    Documentation, exercises and screenshots published alongside it are released
@@ -962,6 +962,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <div class="ucfd-btnrow"><button class="ucfd-btn" type="button" id="ucfd-tour-btn">Replay guided tour</button></div>
         <div class="ucfd-hint">Export a PNG for your report from the button in the header, beside the
           presentation switch. The size selector beside it sets the resolution.</div>
+        <div class="ucfd-kv"><span>Version</span><span id="ucfd-version">&mdash;</span></div>
       </div>
     </details>
   </aside>
@@ -1148,7 +1149,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
 
 <script>
 /* =====================================================================
-   URBAN CFD STUDIO
+   URBAN WIND LAB
    Interactive lattice-Boltzmann wind analysis for 3D urban context.
 
    Single file, zero dependencies, zero network requests.
@@ -1163,6 +1164,18 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
    ===================================================================== */
 (function () {
 'use strict';
+
+/* The release, defined once. RELEASED is ISO so it sorts and cannot be read
+   as a US date; the interface prints it long-form. */
+var VERSION = '1.0.0';
+var RELEASED = '2026-09-15';
+
+function releaseLabel() {
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+  var p = RELEASED.split('-');
+  return VERSION + ' · ' + parseInt(p[2], 10) + ' ' + MONTHS[parseInt(p[1], 10) - 1] + ' ' + p[0];
+}
 
 var root = document.getElementById('ucfd-root');
 if (!root || root.getAttribute('data-ucfd-mounted') === '1') { return; }
@@ -4536,6 +4549,7 @@ function bindUI() {
   on($('ucfd-tour-btn'), 'click', openTour);
   on($('ucfd-shot'), 'click', exportPNG);
   refreshShotSizes();
+  $('ucfd-version').textContent = releaseLabel();
   on($('ucfd-tourskip'), 'click', closeTour);
   on($('ucfd-tour-optout'), 'change', function (e) { setTourOptOut(e.target.checked); });
   on($('ucfd-tourveil'), 'click', closeTour);
@@ -5027,7 +5041,8 @@ function boot() {
   /* The old name is kept as an alias: anything already scripting the embed
      through window.UrbanCFDStudio keeps working. */
   window.UrbanWindLab = {
-    version: '1.0.0',
+    version: VERSION,
+    released: RELEASED,
     state: state,
     setWind: function (speed, dir) { setSpeed(speed); setDirection(dir); },
     setTheme: function (t) { applyTheme(t, true); },

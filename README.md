@@ -4,6 +4,8 @@ Interactive lattice-Boltzmann wind analysis for a 3D urban context, built for te
 architecture students. One self-contained HTML file: no build step, no dependencies, no
 network requests. Open it in a browser and it solves.
 
+**Version 1.0.0 · 15 September 2026**
+
 **[Open the tool](https://karam.me.uk/applications/urban-wind-lab/)** ·
 **[Method notes](docs/urban-wind-lab-method-notes-elementor.html)**
 

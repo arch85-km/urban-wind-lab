@@ -1,5 +1,7 @@
 # Urban Wind Lab — technical notes for the documentation page
 
+**Version 1.0.0 · 15 September 2026**
+
 Everything below is read out of `urban-wind-lab.html` as it currently stands, not from
 general knowledge of lattice-Boltzmann methods. Where the code does not settle a question,
 that is said explicitly rather than filled in.
