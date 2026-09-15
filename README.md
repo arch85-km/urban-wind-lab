@@ -4,8 +4,8 @@ Interactive lattice-Boltzmann wind analysis for a 3D urban context, built for te
 architecture students. One self-contained HTML file: no build step, no dependencies, no
 network requests. Open it in a browser and it solves.
 
-**[Open the tool](https://karam.me.uk/applications/urban-cfd-studio/)** ·
-**[Method notes](docs/urban-cfd-studio-method-notes-elementor.html)**
+**[Open the tool](https://karam.me.uk/applications/urban-wind-lab/)** ·
+**[Method notes](docs/urban-wind-lab-method-notes-elementor.html)**
 
 ## What it does
 
@@ -26,7 +26,7 @@ why the wind changed.
 
 ## Using it
 
-Download `urban-cfd-studio.html` and open it. That is the whole installation.
+Download `urban-wind-lab.html` and open it. That is the whole installation.
 
 To embed it in a page, either serve the file and point an `<iframe>` at it, or paste the
 file's contents into a WordPress **Custom HTML** block — everything is scoped under
@@ -43,7 +43,7 @@ a speed in m/s as a prediction. The tool is unvalidated — no wind-tunnel compa
 benchmark case, no grid-independence study — and it should never appear as evidence in a
 planning submission or a certified comfort assessment.
 
-The [method notes](docs/urban-cfd-studio-method-notes-elementor.html) set out exactly what
+The [method notes](docs/urban-wind-lab-method-notes-elementor.html) set out exactly what
 the solver does, every constant it uses, what it does not model, and where its numbers come
 from. They are deliberately blunt about the limits, and they are the thing to read before
 citing any figure.
@@ -52,15 +52,15 @@ citing any figure.
 
 | Path | |
 |---|---|
-| `urban-cfd-studio.html` | The application. This is the deliverable. |
-| `docs/urban-cfd-studio-method-notes-elementor.html` | Method notes, styled for an Elementor HTML widget |
-| `docs/urban-cfd-studio-technical-notes.md` | The same material in Markdown |
+| `urban-wind-lab.html` | The application. This is the deliverable. |
+| `docs/urban-wind-lab-method-notes-elementor.html` | Method notes, styled for an Elementor HTML widget |
+| `docs/urban-wind-lab-technical-notes.md` | The same material in Markdown |
 
 ## Citing it
 
 > Al-Obaidi, K. M. (2026). *Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
 > analysis* (Version 1.0.0) [Computer software].
-> https://karam.me.uk/applications/urban-cfd-studio/
+> https://karam.me.uk/applications/urban-wind-lab/
 
 ```bibtex
 @software{alobaidi2026urbanwindlab,
@@ -69,7 +69,7 @@ citing any figure.
              for wind analysis},
   year    = {2026},
   version = {1.0.0},
-  url     = {https://karam.me.uk/applications/urban-cfd-studio/},
+  url     = {https://karam.me.uk/applications/urban-wind-lab/},
   note    = {MIT licensed}
 }
 ```
@@ -79,7 +79,7 @@ height the panel shows alongside any figure taken from the tool. All four change
 
 ## Licence
 
-The application — `urban-cfd-studio.html` in its entirety, including the explanatory text
+The application — `urban-wind-lab.html` in its entirety, including the explanatory text
 embedded in it — is released under the **MIT Licence** (see [`LICENSE`](LICENSE)).
 
 Accompanying material published separately — documentation pages, exercises, handouts, slides

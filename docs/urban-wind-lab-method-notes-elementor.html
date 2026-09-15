@@ -7,7 +7,7 @@
      nothing here can touch the rest of your theme. To follow the visitor's
      dark-mode setting, change the opening tag to <div class="cs-doc cs-auto-dark">.
 
-     Every figure on this page was read out of urban-cfd-studio.html, computed
+     Every figure on this page was read out of urban-wind-lab.html, computed
      from it, or measured by driving the running solver — none is estimated.
      Section 07 says which figures are which, and by what method. Where the code
      does not settle a question, the page says so.
@@ -638,7 +638,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <h3>Where each number came from</h3>
       <p>Every figure on this page falls into one of three classes, and none into a fourth:</p>
       <dl class="cs-ledger">
-        <div><span class="cs-chip is-in">Read</span><dt>Read directly from the source</dt><dd>Constants and thresholds quoted as they appear in <span class="cs-mono">urban-cfd-studio.html</span>: τ₀ = 0.51, u_ref = 0.045, C = 0.14, the τ clamp at 1.6, the density guard 0.2 &lt; ρ &lt; 5, the badge test <span class="cs-mono">step &gt; 260 &amp;&amp; residual &lt; 0.0022</span>, the three lattice presets, the seven Lawson bands, the roughness options, the control ranges and defaults, and the statistics margins of 30 m in plan and 18 m in height.</dd></div>
+        <div><span class="cs-chip is-in">Read</span><dt>Read directly from the source</dt><dd>Constants and thresholds quoted as they appear in <span class="cs-mono">urban-wind-lab.html</span>: τ₀ = 0.51, u_ref = 0.045, C = 0.14, the τ clamp at 1.6, the density guard 0.2 &lt; ρ &lt; 5, the badge test <span class="cs-mono">step &gt; 260 &amp;&amp; residual &lt; 0.0022</span>, the three lattice presets, the seven Lawson bands, the roughness options, the control ranges and defaults, and the statistics margins of 30 m in plan and 18 m in height.</dd></div>
         <div><span class="cs-chip is-part">Derived</span><dt>Computed by the author from the source</dt><dd>Δx and Δt per preset; the 4.0 s of simulated time at step 260; the sampled pedestrian heights 1.88 / 1.36 / 1.07 m; the lattice viscosity and lattice Reynolds number; the sample district's bounding box and clearances, obtained by running the tool's own <span class="cs-mono">buildSampleCity</span> generator; and the blockage percentages, obtained by projecting its 29 boxes onto the plane normal to each wind direction and rasterising the silhouette at 0.1 m. Arithmetic, not measurement — but arithmetic on the code's own values.</dd></div>
         <div><span class="cs-chip is-part">Observed</span><dt>Produced by driving the running solver</dt><dd>Behaviour that only appears at run time: that the solve does not terminate, that the badge can be reached before the flow has crossed the site, and that the reported sampled height changes with the resolution preset.</dd></div>
         <div><span class="cs-chip is-out">Absent</span><dt>Estimated or assumed</dt><dd>Nothing. Where a figure would have required an assumption the code does not supply, it was removed rather than estimated — see the next two entries for what that cost. The further-reading list at the foot of the page is deliberately inert in the same spirit: it is cited nowhere and supports nothing, so no figure above depends on a work the tool does not name.</dd></div>
@@ -717,14 +717,14 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       is the scholarly act on top of that.</p>
     <p class="cs-ref">Al-Obaidi, K. M. (2026). <i>Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
       analysis</i> (Version 1.0.0) [Computer software].
-      https://karam.me.uk/applications/urban-cfd-studio/</p>
+      https://karam.me.uk/applications/urban-wind-lab/</p>
 <pre>@software{alobaidi2026urbanwindlab,
   author  = {Al-Obaidi, Karam M.},
   title   = {Urban Wind Lab: An interactive lattice-Boltzmann tool
              for wind analysis},
   year    = {2026},
   version = {1.0.0},
-  url     = {https://karam.me.uk/applications/urban-cfd-studio/},
+  url     = {https://karam.me.uk/applications/urban-wind-lab/},
   note    = {MIT licensed}
 }</pre>
     <p>Report the <b>wind direction</b>, the <b>terrain roughness</b>, the <b>resolution preset</b> and
