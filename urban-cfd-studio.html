@@ -4129,7 +4129,16 @@ function exportPNG() {
   var dpr = dims.dpr;
   var comfort = !!state.comfort;
   var mode = FIELD_MODES[state.mode];
-  var barH = Math.round((comfort ? 150 : 118) * dpr);
+
+  /* Lay the bar out from the rows it has to hold rather than guessing a
+     height. Guessing is how the tick labels ended up printed through the
+     credit line. */
+  var swatchCols = comfort ? (dims.w > 900 * dpr ? 4 : 2) : 1;
+  var swatchRows = comfort ? Math.ceil(LAWSON.length / swatchCols) : 0;
+  var ROW = { title: 24, params: 45, legend: 68 };
+  var legendBlock = comfort ? (16 + swatchRows * 15) : 43;
+  var creditY = ROW.legend + legendBlock + 20;
+  var barH = Math.round((creditY + 14) * dpr);
   var out = document.createElement('canvas');
   out.width = canvas.width;
   out.height = canvas.height + barH;
@@ -4148,7 +4157,7 @@ function exportPNG() {
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ctx.fillStyle = SH.title;
   ctx.font = '600 ' + (16 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText('Urban CFD Studio · ' + state.modelName, pad, top + 24 * dpr);
+  ctx.fillText('Urban CFD Studio · ' + state.modelName, pad, top + ROW.title * dpr);
 
   ctx.fillStyle = SH.body;
   ctx.font = '400 ' + (12.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
@@ -4156,20 +4165,19 @@ function exportPNG() {
     cardinal(state.dir) + ')' + ' · z₀ ' + state.z0 + ' m · lattice ' +
     state.grid.nx + '×' + state.grid.ny + '×' + state.grid.nz +
     ' (' + fmt(state.grid.dx, 2) + ' m) · ' + state.step.toLocaleString() + ' steps · residual ' +
-    state.residual.toExponential(1), pad, top + 45 * dpr);
+    state.residual.toExponential(1), pad, top + ROW.params * dpr);
 
   /* Legend on its own row: the caption above must never be squeezed by it. */
-  var ly = top + 68 * dpr;
+  var ly = top + ROW.legend * dpr;
   ctx.fillStyle = SH.title;
   ctx.font = '600 ' + (11.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
   if (comfort) {
     ctx.fillText('Lawson pedestrian comfort · threshold exceeded', pad, ly);
     ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-    var cols = out.width > 900 * dpr ? 4 : 2;
-    var cw = (out.width - pad * 2) / cols;
+    var cw = (out.width - pad * 2) / swatchCols;
     for (var i = 0; i < LAWSON.length; i++) {
       var L = LAWSON[i];
-      var cx = pad + (i % cols) * cw, cy = ly + 16 * dpr + Math.floor(i / cols) * 15 * dpr;
+      var cx = pad + (i % swatchCols) * cw, cy = ly + 16 * dpr + Math.floor(i / swatchCols) * 15 * dpr;
       ctx.fillStyle = rgbCss(L.color);
       ctx.fillRect(cx, cy - 4.5 * dpr, 9 * dpr, 9 * dpr);
       ctx.fillStyle = SH.body;
@@ -4205,7 +4213,7 @@ function exportPNG() {
   ctx.fillStyle = SH.faint;
   ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
   ctx.fillText('© Karam Al-Obaidi · Teaching tool — not a substitute for validated CFD ' +
-               'or wind-tunnel testing', pad, top + barH - 14 * dpr);
+               'or wind-tunnel testing', pad, top + creditY * dpr);
 
   var a = document.createElement('a');
   a.download = 'urban-cfd-' + Math.round(state.dir) + 'deg-' + fmt(state.speed, 1).replace('.', 'p') + 'ms' +
