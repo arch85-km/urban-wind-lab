@@ -7,7 +7,7 @@ network requests. Open it in a browser and it solves.
 **Version 1.0.0 · 15 September 2026**
 
 **[Open the tool](https://karam.me.uk/applications/urban-wind-lab/)** ·
-**[Method notes](docs/urban-wind-lab-method-notes-elementor.html)**
+**[Method notes](docs/urban-wind-lab-method-notes.html)**
 
 ## What it does
 
@@ -45,7 +45,7 @@ a speed in m/s as a prediction. The tool is unvalidated — no wind-tunnel compa
 benchmark case, no grid-independence study — and it should never appear as evidence in a
 planning submission or a certified comfort assessment.
 
-The [method notes](docs/urban-wind-lab-method-notes-elementor.html) set out exactly what
+The [method notes](docs/urban-wind-lab-method-notes.html) set out exactly what
 the solver does, every constant it uses, what it does not model, and where its numbers come
 from. They are deliberately blunt about the limits, and they are the thing to read before
 citing any figure.
@@ -55,7 +55,7 @@ citing any figure.
 | Path | |
 |---|---|
 | `urban-wind-lab.html` | The application. This is the deliverable. |
-| `docs/urban-wind-lab-method-notes-elementor.html` | Method notes, styled for an Elementor HTML widget |
+| `docs/urban-wind-lab-method-notes.html` | Method notes, styled for an Elementor HTML widget |
 | `docs/urban-wind-lab-technical-notes.md` | The same material in Markdown |
 
 ## Citing it
