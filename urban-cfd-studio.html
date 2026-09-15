@@ -233,11 +233,14 @@
 #ucfd-root .ucfd-themebtn:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
 #ucfd-root .ucfd-themebtn svg { width: 14px; height: 14px; flex: none; }
 #ucfd-root .ucfd-export { display: flex; align-items: center; gap: 6px; flex: none; }
+/* The enhanced trigger is the control the reader actually sees; .ucfd-select
+   is full-width for the rail, which is wrong in a header row. */
+#ucfd-root .ucfd-export .ucfd-select { width: auto; min-width: 128px; max-width: 232px; padding: 5px 9px; font-size: 11px; }
 #ucfd-root .ucfd-exportbtn { margin-left: 0; }
 #ucfd-root .ucfd-shotsize {
   font: inherit; font-size: 11px; color: var(--ucfd-dim); cursor: pointer;
   background: var(--ucfd-panel-2); border: 1px solid var(--ucfd-line); border-radius: 100px;
-  padding: 5px 8px; max-width: 160px;
+  padding: 5px 8px; max-width: 230px;
 }
 #ucfd-root .ucfd-shotsize:hover { color: var(--ucfd-text); border-color: var(--ucfd-line-hover); }
 #ucfd-root .ucfd-shotsize:focus-visible { outline: 2px solid var(--ucfd-accent); outline-offset: 2px; }
@@ -372,6 +375,8 @@
 }
 #ucfd-root .ucfd-menu-item:hover, #ucfd-root .ucfd-menu-item.is-active { background: var(--ucfd-raise); }
 #ucfd-root .ucfd-menu-item[aria-selected="true"] { color: var(--ucfd-accent); }
+#ucfd-root .ucfd-menu-item.is-disabled { color: var(--ucfd-faint); cursor: not-allowed; }
+#ucfd-root .ucfd-menu-item.is-disabled:hover { background: transparent; }
 #ucfd-root .ucfd-menu-tick { width: 12px; height: 12px; flex: none; opacity: 0; }
 #ucfd-root .ucfd-menu-item[aria-selected="true"] .ucfd-menu-tick { opacity: 1; }
 
@@ -663,6 +668,7 @@
 #ucfd-root.ucfd-w-sm .ucfd-exportbtn { margin-left: 0; }
 #ucfd-root.ucfd-w-sm .ucfd-export { gap: 4px; }
 #ucfd-root.ucfd-w-sm .ucfd-shotsize { padding: 5px 6px; font-size: 10.5px; max-width: 92px; }
+#ucfd-root.ucfd-w-sm .ucfd-export .ucfd-select { min-width: 74px; max-width: 108px; padding: 5px 6px; font-size: 10.5px; }
 #ucfd-root.ucfd-w-sm .ucfd-compass { width: 58px; height: 58px; }
 #ucfd-root.ucfd-w-sm .ucfd-foot .ucfd-hide-sm { display: none; }
 #ucfd-root.ucfd-w-sm .ucfd-viewbar { top: 8px; left: 8px; }
@@ -727,10 +733,13 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <span>Export PNG</span>
       </button>
       <label class="ucfd-sr" for="ucfd-shot-size">Export resolution</label>
-      <select class="ucfd-shotsize" id="ucfd-shot-size" title="Resolution of the exported image">
+      <select class="ucfd-shotsize" id="ucfd-shot-size"
+              title="Resolution of the exported image. Millimetres are the printed width at 300 dpi.">
         <option value="1" selected>Screen</option>
         <option value="2">2&times; print</option>
         <option value="3">3&times; print</option>
+        <option value="4">4&times; print</option>
+        <option value="max">Largest</option>
       </select>
     </div>
     <div class="ucfd-chips" id="ucfd-chips">
@@ -4059,8 +4068,24 @@ function handleEPW(file) {
    the picture. `scale` re-renders the scene larger rather than upscaling it. */
 function exportScale() {
   var el = $('ucfd-shot-size');
-  var n = el ? parseFloat(el.value) : 1;
-  return (isFinite(n) && n >= 1) ? Math.min(n, 4) : 1;
+  if (!el) { return 1; }
+  if (el.value === 'max') { return largestScale(); }
+  var n = parseFloat(el.value);
+  return (isFinite(n) && n >= 1) ? Math.min(n, MAX_SHOT_SCALE) : 1;
+}
+
+/* Fixed multipliers stop where most GL implementations do; beyond that the
+   'Largest' option asks the device instead of promising a number it cannot
+   render. */
+var MAX_SHOT_SCALE = 16;
+function largestScale() {
+  var cap = maxRenderPx(), best = 1;
+  for (var n = 2; n <= MAX_SHOT_SCALE; n++) {
+    var d = exportDims(n);
+    if (d.w > cap || d.h > cap) { break; }
+    best = n;
+  }
+  return best;
 }
 
 /* Largest render the GL implementation will give us, in device pixels. */
@@ -4079,22 +4104,27 @@ function exportDims(scale) {
            h: Math.max(1, Math.round(r.height * dpr)), dpr: dpr };
 }
 
-/* Label each option with the pixels it really yields, and disable any the GL
-   context cannot allocate. The aspect follows the window, so naming a paper
-   size here would be a lie; the pixel count is the honest thing to show. */
+/* Label each option with the pixels it really yields and the width that gives
+   on paper, and disable any the GL context cannot allocate. The aspect follows
+   the window, so naming a paper size would be a lie; the printed width at
+   300 dpi is the honest version of the same question. */
 function refreshShotSizes() {
   var sel = $('ucfd-shot-size');
   if (!sel) { return; }
-  var cap = maxRenderPx(), opts = sel.options;
+  var cap = maxRenderPx(), biggest = largestScale(), opts = sel.options;
   for (var i = 0; i < opts.length; i++) {
-    var sc = parseFloat(opts[i].value);
+    var isMax = opts[i].value === 'max';
+    var sc = isMax ? biggest : parseFloat(opts[i].value);
     var d = exportDims(sc);
     var over = d.w > cap || d.h > cap;
-    var base = sc === 1 ? 'Screen' : (fmt(sc, 0) + '× print');
-    opts[i].textContent = base + ' · ' + d.w + '×' + d.h + (over ? ' (too large)' : '');
+    var base = isMax ? ('Largest (' + fmt(biggest, 0) + '×)')
+                     : (sc === 1 ? 'Screen' : fmt(sc, 0) + '× print');
+    opts[i].textContent = base + ' · ' + d.w + '×' + d.h + ' px · ' +
+                          Math.round(d.w / 300 * 25.4) + ' mm' + (over ? ' (too large)' : '');
     opts[i].disabled = over;
   }
   if (opts[sel.selectedIndex] && opts[sel.selectedIndex].disabled) { sel.value = '1'; }
+  if (sel.ucfdSync) { sel.ucfdSync(); }
 }
 
 function exportPNG() {
@@ -4197,7 +4227,10 @@ function exportPNG() {
     ctx.strokeRect(pad + 0.5, rampY + 0.5, rampW - 1, rampH - 1);
     var r = state.range, mid = (r[0] + r[1]) / 2;
     var dec = Math.abs(r[1] - r[0]) < 3 ? 2 : 1;
-    ctx.fillStyle = SH.faint;
+    /* These were drawn in SH.faint, which measures 2.8:1 on the caption bar -
+       below even the large-text floor. The tick values are what makes the ramp
+       readable at all, so they belong in the body tier. */
+    ctx.fillStyle = SH.body;
     ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
     var ty = rampY + rampH + 10 * dpr;
     ctx.textAlign = 'left';   ctx.fillText(fmt(r[0], dec), pad, ty);
@@ -4209,11 +4242,19 @@ function exportPNG() {
     }
   }
 
+  /* Attribution first and in semibold, the caveat after it at normal weight,
+     both in the body tier: the credit used to sit at 2.8:1 and was the smallest
+     text on the image. */
   ctx.textAlign = 'left';
-  ctx.fillStyle = SH.faint;
-  ctx.font = '400 ' + (10.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText('© Karam Al-Obaidi · Teaching tool — not a substitute for validated CFD ' +
-               'or wind-tunnel testing', pad, top + creditY * dpr);
+  ctx.fillStyle = SH.body;
+  var creditPx = 11.5 * dpr;
+  var who = '© Karam Al-Obaidi';
+  var caveat = ' · Teaching tool — not a substitute for validated CFD or wind-tunnel testing';
+  ctx.font = '600 ' + creditPx + 'px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillText(who, pad, top + creditY * dpr);
+  var whoW = ctx.measureText(who).width;
+  ctx.font = '400 ' + creditPx + 'px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillText(caveat, pad + whoW, top + creditY * dpr);
 
   var a = document.createElement('a');
   a.download = 'urban-cfd-' + Math.round(state.dir) + 'deg-' + fmt(state.speed, 1).replace('.', 'p') + 'ms' +
@@ -4643,11 +4684,28 @@ function enhanceSelect(sel, index) {
   root.appendChild(menu);
 
   var active = -1;
+  /* Rebuilt from the options every time rather than trusted from enhance
+     time: the export picker relabels itself with the pixel sizes the current
+     window and GL limits actually allow, and disables the ones it cannot
+     render. A menu frozen at startup would quietly offer the wrong sizes. */
   function syncView() {
     label.textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : '';
     for (var k = 0; k < items.length; k++) {
+      var o = sel.options[k];
+      var txt = items[k].lastChild;
+      if (o && txt && txt.textContent !== o.textContent) { txt.textContent = o.textContent; }
+      var off = !!(o && o.disabled);
+      items[k].classList.toggle('is-disabled', off);
+      items[k].setAttribute('aria-disabled', String(off));
       items[k].setAttribute('aria-selected', String(k === sel.selectedIndex));
     }
+  }
+  function enabledIndex(from, dir) {
+    for (var k = clamp(from, 0, items.length - 1), n = 0; n < items.length; n++) {
+      if (!sel.options[k] || !sel.options[k].disabled) { return k; }
+      k = clamp(k + dir, 0, items.length - 1);
+    }
+    return clamp(from, 0, items.length - 1);
   }
   function setActive(k) {
     if (active >= 0 && items[active]) { items[active].classList.remove('is-active'); }
@@ -4679,6 +4737,7 @@ function enhanceSelect(sel, index) {
     openMenu = { menu: menu, trigger: trigger, place: place };
   }
   function choose(k) {
+    if (sel.options[k] && sel.options[k].disabled) { return; }
     if (sel.selectedIndex !== k) {
       sel.selectedIndex = k;
       sel.dispatchEvent(new Event('change', { bubbles: true }));
@@ -4706,10 +4765,10 @@ function enhanceSelect(sel, index) {
       if (!isOpen) { open(); e.preventDefault(); return; }
     }
     if (!isOpen) { return; }
-    if (e.key === 'ArrowDown') { setActive(active + 1); e.preventDefault(); }
-    else if (e.key === 'ArrowUp') { setActive(active - 1); e.preventDefault(); }
-    else if (e.key === 'Home') { setActive(0); e.preventDefault(); }
-    else if (e.key === 'End') { setActive(items.length - 1); e.preventDefault(); }
+    if (e.key === 'ArrowDown') { setActive(enabledIndex(active + 1, 1)); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { setActive(enabledIndex(active - 1, -1)); e.preventDefault(); }
+    else if (e.key === 'Home') { setActive(enabledIndex(0, 1)); e.preventDefault(); }
+    else if (e.key === 'End') { setActive(enabledIndex(items.length - 1, -1)); e.preventDefault(); }
     else if (e.key === 'Enter' || e.key === ' ') { choose(active); e.preventDefault(); }
     else if (e.key === 'Escape') { closeMenu(); trigger.focus(); e.preventDefault(); }
     else if (e.key === 'Tab') { closeMenu(); }
