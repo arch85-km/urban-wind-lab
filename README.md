@@ -1,4 +1,4 @@
-# Urban CFD Studio
+# Urban Wind Lab
 
 Interactive lattice-Boltzmann wind analysis for a 3D urban context, built for teaching
 architecture students. One self-contained HTML file: no build step, no dependencies, no
@@ -58,14 +58,14 @@ citing any figure.
 
 ## Citing it
 
-> Al-Obaidi, K. M. (2026). *Urban CFD Studio: An interactive lattice-Boltzmann tool for wind
+> Al-Obaidi, K. M. (2026). *Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
 > analysis* (Version 1.0.0) [Computer software].
 > https://karam.me.uk/applications/urban-cfd-studio/
 
 ```bibtex
-@software{alobaidi2026urbancfdstudio,
+@software{alobaidi2026urbanwindlab,
   author  = {Al-Obaidi, Karam M.},
-  title   = {Urban CFD Studio: An interactive lattice-Boltzmann tool
+  title   = {Urban Wind Lab: An interactive lattice-Boltzmann tool
              for wind analysis},
   year    = {2026},
   version = {1.0.0},
@@ -84,7 +84,7 @@ embedded in it — is released under the **MIT Licence** (see [`LICENSE`](LICENS
 
 Accompanying material published separately — documentation pages, exercises, handouts, slides
 and screenshots — is released under **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**.
-Suggested credit: *Urban CFD Studio by Karam Al-Obaidi, CC BY 4.0*.
+Suggested credit: *Urban Wind Lab by Karam Al-Obaidi, CC BY 4.0*.
 
 Two things neither grant can reach: a screenshot showing an imported OBJ model, or a wind rose
 built from someone else's EPW, contains material the author does not own and cannot

@@ -1,4 +1,4 @@
-# Urban CFD Studio — technical notes for the documentation page
+# Urban Wind Lab — technical notes for the documentation page
 
 Everything below is read out of `urban-cfd-studio.html` as it currently stands, not from
 general knowledge of lattice-Boltzmann methods. Where the code does not settle a question,

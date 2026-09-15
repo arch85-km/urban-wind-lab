@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  Urban CFD Studio - interactive lattice-Boltzmann wind analysis for 3D urban context.
+  Urban Wind Lab - interactive lattice-Boltzmann wind analysis for 3D urban context.
 
   Copyright (c) Karam Al-Obaidi
 
@@ -16,7 +16,7 @@
   handouts, slides and screenshots - is released under Creative Commons
   Attribution 4.0 International (CC BY 4.0):
       https://creativecommons.org/licenses/by/4.0/
-  Suggested credit: "Urban CFD Studio by Karam Al-Obaidi, CC BY 4.0".
+  Suggested credit: "Urban Wind Lab by Karam Al-Obaidi, CC BY 4.0".
 
   Two things that grant cannot reach. A screenshot showing an imported OBJ
   model, or a wind rose built from someone else's EPW, contains material the
@@ -51,9 +51,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Urban CFD Studio - an interactive lattice-Boltzmann wind analysis tool for 3D urban context, built for architecture teaching.">
+<meta name="description" content="Urban Wind Lab - an interactive lattice-Boltzmann wind analysis tool for 3D urban context, built for architecture teaching.">
 <link rel="license" href="https://opensource.org/licenses/MIT">
-<title>Urban CFD Studio &mdash; Interactive Wind Analysis for Urban Design</title>
+<title>Urban Wind Lab &mdash; Interactive Wind Analysis for Urban Design</title>
 <style>
 /* =====================================================================
    URBAN CFD STUDIO
@@ -685,7 +685,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
 </head>
 <body>
 
-<div id="ucfd-root" role="application" aria-label="Urban CFD Studio - interactive wind analysis">
+<div id="ucfd-root" role="application" aria-label="Urban Wind Lab - interactive wind analysis">
   <script>
   /* Runs while the element is still being parsed, so the very first paint
      already uses the right palette instead of flashing dark then correcting.
@@ -709,7 +709,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         </svg>
       </div>
       <div>
-        <h1 class="ucfd-title">Urban CFD Studio</h1>
+        <h1 class="ucfd-title">Urban Wind Lab</h1>
         <div class="ucfd-sub">Pedestrian wind analysis &middot; Lattice&#8209;Boltzmann</div>
       </div>
     </div>
@@ -4187,7 +4187,7 @@ function exportPNG() {
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ctx.fillStyle = SH.title;
   ctx.font = '600 ' + (16 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText('Urban CFD Studio · ' + state.modelName, pad, top + ROW.title * dpr);
+  ctx.fillText('Urban Wind Lab · ' + state.modelName, pad, top + ROW.title * dpr);
 
   ctx.fillStyle = SH.body;
   ctx.font = '400 ' + (12.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
@@ -4257,7 +4257,7 @@ function exportPNG() {
   ctx.fillText(caveat, pad + whoW, top + creditY * dpr);
 
   var a = document.createElement('a');
-  a.download = 'urban-cfd-' + Math.round(state.dir) + 'deg-' + fmt(state.speed, 1).replace('.', 'p') + 'ms' +
+  a.download = 'urban-wind-lab-' + Math.round(state.dir) + 'deg-' + fmt(state.speed, 1).replace('.', 'p') + 'ms' +
                (scale > 1 ? '-' + fmt(scale, 0) + 'x' : '') + '.png';
   var url = null;
   try {
@@ -4718,10 +4718,16 @@ function enhanceSelect(sel, index) {
   }
   function place() {
     var r = trigger.getBoundingClientRect(), b = root.getBoundingClientRect();
-    menu.style.width = r.width + 'px';
-    menu.style.left = clamp(r.left - b.left, 4, Math.max(4, b.width - r.width - 4)) + 'px';
+    /* At least as wide as its trigger, but free to grow for entries the
+       trigger truncates - the export sizes are longer than the control that
+       opens them, and a menu that clips them defeats the point of listing
+       them. */
+    menu.style.width = '';
+    menu.style.minWidth = r.width + 'px';
+    menu.style.maxWidth = Math.max(160, b.width - 8) + 'px';
     menu.hidden = false;                       /* measure with it laid out */
-    var h = menu.offsetHeight;
+    var h = menu.offsetHeight, w = menu.offsetWidth;
+    menu.style.left = clamp(r.left - b.left, 4, Math.max(4, b.width - w - 4)) + 'px';
     var below = r.bottom - b.top + 4, above = r.top - b.top - h - 4;
     var top = (below + h <= b.height - 6 || above < 4) ? below : above;
     /* a trigger scrolled out of the rail would otherwise place the menu
@@ -4896,7 +4902,7 @@ function updateScaleBar() {
 function fatal(msg, detail) {
   var box = $('ucfd-loading');
   box.className = 'ucfd-loading';
-  box.innerHTML = '<div class="ucfd-fatal"><b>Urban CFD Studio cannot start</b>' + msg +
+  box.innerHTML = '<div class="ucfd-fatal"><b>Urban Wind Lab cannot start</b>' + msg +
     (detail ? '<div style="margin-top:10px;font-size:11px;opacity:.7" class="ucfd-mono">' + detail + '</div>' : '') + '</div>';
 }
 
@@ -4913,7 +4919,7 @@ function boot() {
 
   R = Renderer(canvas);
   if (!R) {
-    fatal('This browser did not provide a WebGL2 context. Urban CFD Studio needs WebGL2, which is available in current Chrome, Edge, Firefox and Safari 15+. If you are on a remote desktop or have hardware acceleration disabled, enable it and reload.');
+    fatal('This browser did not provide a WebGL2 context. Urban Wind Lab needs WebGL2, which is available in current Chrome, Edge, Firefox and Safari 15+. If you are on a remote desktop or have hardware acceleration disabled, enable it and reload.');
     return;
   }
   gl = R.gl;
@@ -5018,7 +5024,9 @@ function boot() {
   }
   requestAnimationFrame(frame);
 
-  window.UrbanCFDStudio = {
+  /* The old name is kept as an alias: anything already scripting the embed
+     through window.UrbanCFDStudio keeps working. */
+  window.UrbanWindLab = {
     version: '1.0.0',
     state: state,
     setWind: function (speed, dir) { setSpeed(speed); setDirection(dir); },
@@ -5029,6 +5037,7 @@ function boot() {
     particlesResize: function (n) { particles.resize(n); },
     particleCount: function () { return particles.count; }
   };
+  window.UrbanCFDStudio = window.UrbanWindLab;
 }
 
 if (document.readyState === 'loading') {
