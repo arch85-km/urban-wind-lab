@@ -61,20 +61,26 @@ citing any figure.
 ## Citing it
 
 > Al-Obaidi, K. M. (2026). *Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
-> analysis* (Version 1.0.0) [Computer software].
-> https://karam.me.uk/applications/urban-wind-lab/
+> analysis* (Version 1.0.0) [Computer software]. Zenodo.
+> https://doi.org/10.5281/zenodo.22797138
 
 ```bibtex
 @software{alobaidi2026urbanwindlab,
   author  = {Al-Obaidi, Karam M.},
   title   = {Urban Wind Lab: An interactive lattice-Boltzmann tool
              for wind analysis},
-  year    = {2026},
-  version = {1.0.0},
-  url     = {https://karam.me.uk/applications/urban-wind-lab/},
-  note    = {MIT licensed}
+  year      = {2026},
+  version   = {1.0.0},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.22797138},
+  url       = {https://karam.me.uk/applications/urban-wind-lab/},
+  note      = {MIT licensed}
 }
 ```
+
+That DOI names this release. To cite the software in general rather than version 1.0.0, use the
+concept DOI [10.5281/zenodo.22797137](https://doi.org/10.5281/zenodo.22797137), which always resolves to the
+newest version.
 
 Report the wind direction, the terrain roughness, the resolution preset and the sampled
 height the panel shows alongside any figure taken from the tool. All four change the numbers.
