@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Urban Wind Lab: An interactive lattice-Boltzmann tool for wind analysis"
+abstract: >-
+  Interactive lattice-Boltzmann wind analysis for 3D urban context, built for teaching
+  architecture students. A D3Q19 lattice-Boltzmann solver with a Smagorinsky sub-grid model
+  and an atmospheric boundary layer log-law inlet runs in the browser, reporting wind speed,
+  amplification, pressure coefficient and Lawson pedestrian comfort classes. One
+  self-contained HTML file with no build step and no dependencies.
+authors:
+  - family-names: Al-Obaidi
+    given-names: Karam M.
+    orcid: "https://orcid.org/0000-0002-4379-6964"
+version: 1.0.0
+date-released: "2026-09-15"
+license: MIT
+repository-code: "https://github.com/arch85-km/urban-wind-lab"
+url: "https://karam.me.uk/applications/urban-wind-lab/"
+keywords:
+  - lattice-Boltzmann
+  - computational fluid dynamics
+  - pedestrian wind comfort
+  - urban design
+  - architecture teaching
