@@ -1,5 +1,7 @@
 # Urban Wind Lab
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22797137.svg)](https://doi.org/10.5281/zenodo.22797137)
+
 Interactive lattice-Boltzmann wind analysis for a 3D urban context, built for teaching
 architecture students. One self-contained HTML file: no build step, no dependencies, no
 network requests. Open it in a browser and it solves.
