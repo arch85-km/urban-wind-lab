@@ -68,15 +68,15 @@ citing any figure.
 
 ```bibtex
 @software{alobaidi2026urbanwindlab,
-  author  = {Al-Obaidi, Karam M.},
-  title   = {Urban Wind Lab: An interactive lattice-Boltzmann tool
-             for wind analysis},
+  author    = {Al-Obaidi, Karam M.},
+  title     = {Urban Wind Lab: An interactive lattice-Boltzmann tool
+               for wind analysis},
   year      = {2026},
   version   = {1.0.0},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.22797138},
   url       = {https://karam.me.uk/applications/urban-wind-lab/},
-  note      = {MIT licensed}
+  note      = {Code MIT licensed; accompanying material CC BY 4.0}
 }
 ```
 
