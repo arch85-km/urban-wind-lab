@@ -146,11 +146,18 @@
 
 /* diagrams. The SVGs paint from the same custom properties as everything
    else, so they invert with the page instead of staying light in dark mode. */
-.cs-doc .cs-fig{margin:0 0 1.2rem;}
-.cs-doc .cs-fig svg{display:block;width:100%;height:auto;
+/* Figures. A host theme usually styles <figure> and <figcaption> itself, and
+   its rules can be specific enough to win here — which is where an italic
+   caption and a caption sitting hard against the next paragraph come from.
+   The four properties that decide that are pinned, so the caption keeps this
+   page's own monospace label style wherever the fragment is pasted. */
+.cs-doc .cs-fig{margin:0 0 1.9rem !important;font-style:normal;}
+.cs-doc .cs-fig svg{display:block;width:100%;height:auto;font-style:normal;
   background:var(--cs-paper);border:1px solid var(--cs-rule);}
-.cs-doc .cs-fig figcaption{font-family:var(--cs-fm);font-size:.68rem;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--cs-ink3);margin-top:.55rem;}
+.cs-doc .cs-fig figcaption{font-family:var(--cs-fm) !important;
+  font-style:normal !important;font-size:.68rem;letter-spacing:.06em;line-height:1.5;
+  text-align:left;text-transform:uppercase;color:var(--cs-ink3);
+  margin:.7rem 0 0 !important;}
 
 /* Large screens. Most sizes here are in rem, which is relative to the ROOT
    font size, not to .cs-doc — so raising .cs-doc alone would scale the body
