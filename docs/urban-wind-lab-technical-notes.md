@@ -321,7 +321,8 @@ minutes. All three are comparative by design, which is where the tool is trustwo
 
 **Build two OBJ models,** identical except for the podium.
 
-- *Scheme A:* a single slab, 40 m wide × 20 m deep × 60 m tall, standing alone on the site.
+- *Scheme A:* a single **slab block** — rectangular, broad face to the wind — 40 m wide × 20 m deep
+  × 60 m tall, standing alone on the site.
 - *Scheme B:* the same slab, plus a podium 4 storeys / 14 m tall extending **10 m forward** of the
   windward face, the full 40 m width.
 
@@ -329,7 +330,8 @@ minutes. All three are comparative by design, which is where the tool is trustwo
 **Locked** to the same range for both runs.
 
 **Read:** the Z section plane at 1.5 m, and the **Uz** colour field on a Y section cut through the
-slab centreline. Pin a probe 5 m in front of the windward face at ground level in each scheme.
+slab centreline. Pin a probe 5 m in front of the windward face at ground level in each scheme. Then vary the
+podium depth at fixed height, and its height at fixed depth, recording the probe each time.
 
 **Expect:** in Scheme A, strongly negative Uz down the windward face — high-momentum air from
 40–60 m being driven to the ground — and a fast, uncomfortable strip at the base. In Scheme B the
@@ -345,7 +347,8 @@ podium depth matters more than its height.
 **270° (aligned with the street)**, **315° (45° oblique)**, **360° (across the street)**.
 
 **Read:** the Lawson comfort layer plus the pedestrian-level statistics panel each time. Record
-mean speed, max speed and the percentage of area in each comfort band.
+mean speed, max speed and the percentage of area in each comfort band. Note the sampled height the
+panel reports — it is not 1.5 m.
 
 **Expect:** the aligned case produces a clear high-velocity ribbon along the canyon — channelling,
 driven by the pressure gradient along an unobstructed street. The oblique case largely destroys it,
@@ -354,7 +357,7 @@ sheltered but accelerates the gaps between blocks. The teaching point: channelli
 property of the street, it is a property of the street *and* the wind rose together — which is why
 a real assessment weights every direction by frequency, and why this tool cannot do that for them.
 
-### Exercise 3 — Wake, sheltering, and the three flow regimes
+### Exercise 3 — Wake, sheltering, and the spacing that controls both
 
 **Build three OBJ models,** each two identical blocks 40 m wide × 20 m deep × **20 m tall**, aligned
 with the wind, differing only in the gap between them:
