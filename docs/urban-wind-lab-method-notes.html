@@ -568,7 +568,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <h3>Downwash, and why podiums exist</h3>
         <ol class="cs-steps">
           <li>Build two OBJ models, identical but for the podium. <b>Scheme A:</b> a single slab block — rectangular, broad face to the wind — <code>40 × 20 × 60 m</code> (width × depth × height), standing alone. <b>Scheme B:</b> the same slab plus a podium <code>14 m</code> tall — four storeys — extending <code>10 m</code> forward of the windward face, the full 40 m width.</li>
-          <li>Settings for both: wind <code>10 m/s</code>, direction normal to the wide face, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> to the same range.</li>
+          <li>Settings for both: wind <code>10 m/s</code>, direction normal to the wide face, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> to the same range. Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
           <li>Read the <b>Z</b> section plane at 1.5 m, then switch the colour field to <b>Uz</b> and cut a <b>Y</b> plane through the slab centreline.</li>
           <li>Pin a probe 5 m in front of the windward face at ground level in each scheme. Record the amplification factor.</li>
           <li>Vary the podium <em>depth</em> at fixed height, then its <em>height</em> at fixed depth, and record the probe each time.</li>
@@ -605,8 +605,8 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <span class="cs-ex-n">Exercise 03</span>
         <h3>Wake, sheltering, and the spacing that controls both</h3>
         <ol class="cs-steps">
-          <li>Build three OBJ models, each two identical blocks <code>40 × 20 × 20 m</code> aligned with the wind, differing only in the gap: <code>20 m</code> (S/H = 1), <code>40 m</code> (S/H = 2), <code>80 m</code> (S/H = 4).</li>
-          <li>Settings: wind <code>8 m/s</code> normal to the blocks, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b>, tracers on.</li>
+          <li>Build three OBJ models, each two identical blocks <code>40 × 20 × 20 m</code> aligned with the wind, differing only in the gap: <code>20 m</code>, <code>40 m</code> and <code>80 m</code> — that is, <b>spacing-to-height ratios S/H of 1, 2 and 4</b>, where S is the gap and H the 20 m block height.</li>
+          <li>Settings: wind <code>8 m/s</code> normal to the blocks, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b>, tracers on. Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
           <li>Read a <b>Y</b> section plane through the centreline with the <b>speed</b> field, and record the calm-area percentage from the statistics panel.</li>
           <li>Watch the tracers in the gap in each case, and describe in one sentence what the air in the courtyard is doing.</li>
         </ol>

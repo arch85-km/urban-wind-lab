@@ -329,6 +329,8 @@ minutes. All three are comparative by design, which is where the tool is trustwo
 **Settings:** wind 10 m/s, direction normal to the wide face, `z₀` = 1.0 m, Balanced, legend
 **Locked** to the same range for both runs.
 
+**Import each with OBJ units in metres and fit-to-site OFF.** Fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.
+
 **Read:** the Z section plane at 1.5 m, and the **Uz** colour field on a Y section cut through the
 slab centreline. Pin a probe 5 m in front of the windward face at ground level in each scheme. Then vary the
 podium depth at fixed height, and its height at fixed depth, recording the probe each time.
@@ -360,13 +362,16 @@ a real assessment weights every direction by frequency, and why this tool cannot
 ### Exercise 3 — Wake, sheltering, and the spacing that controls both
 
 **Build three OBJ models,** each two identical blocks 40 m wide × 20 m deep × **20 m tall**, aligned
-with the wind, differing only in the gap between them:
+with the wind, differing only in the gap between them. The cases are set by the
+**spacing-to-height ratio S/H**, where S is the gap and H the 20 m block height:
 
 - *Case 1:* gap 20 m (**S/H = 1**)
 - *Case 2:* gap 40 m (**S/H = 2**)
 - *Case 3:* gap 80 m (**S/H = 4**)
 
 **Settings:** wind 8 m/s normal to the blocks, `z₀` = 1.0 m, Balanced, legend **Locked**, tracers on.
+
+**Import each with OBJ units in metres and fit-to-site OFF.** Fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.
 
 **Read:** a Y section plane through the centreline with the **speed** field, plus the calm-area
 percentage from the statistics panel.
