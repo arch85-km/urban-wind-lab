@@ -180,6 +180,14 @@
   border-top:1px solid var(--cs-rule2);padding-top:.85rem;margin:.95rem 0 0;}
 .cs-doc .cs-principle b{color:var(--cs-ink);font-weight:600;}
 
+/* diagrams. Painted from the same custom properties as the rest of the page,
+   so they invert with it instead of staying light in dark mode. */
+.cs-doc .cs-fig{margin:0 0 1.2rem;}
+.cs-doc .cs-fig svg{display:block;width:100%;height:auto;
+  background:var(--cs-paper);border:1px solid var(--cs-rule);}
+.cs-doc .cs-fig figcaption{font-family:var(--cs-fm);font-size:.68rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--cs-ink3);margin-top:.55rem;}
+
 /* footer */
 .cs-doc .cs-footer{margin-top:4rem;padding-top:1.6rem;border-top:2px solid var(--cs-ink);
   font-size:.86rem;color:var(--cs-ink2);}
@@ -566,6 +574,57 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <div class="cs-ex">
         <span class="cs-ex-n">Exercise 01</span>
         <h3>Downwash, and why podiums exist</h3>
+<figure class="cs-fig">
+<svg viewBox="0 0 720 250" role="img" aria-label="Section through a slab block without and with a podium. Without, air from high on the windward face is driven down to the pavement. With, the podium intercepts it and moves the acceleration onto the podium roof.">
+  <defs>
+    <marker id="uwl-n1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-accent)"/></marker>
+    <marker id="uwl-n1-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-no)"/></marker>
+  </defs>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink3)">
+    <text x="20" y="24" fill="var(--cs-ink)" font-size="12">SCHEME A &#183; no podium</text>
+    <text x="380" y="24" fill="var(--cs-ink)" font-size="12">SCHEME B &#183; podium</text>
+  </g>
+  <!-- panel A -->
+  <line x1="20" y1="205" x2="340" y2="205" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <rect x="190" y="45" width="50" height="160" fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <g stroke="var(--cs-accent)" stroke-width="1.5" fill="none" marker-end="url(#uwl-n1-a)">
+    <line x1="35" y1="62" x2="180" y2="62"/>
+    <line x1="55" y1="100" x2="180" y2="100"/>
+    <line x1="80" y1="138" x2="180" y2="138"/>
+    <line x1="105" y1="176" x2="180" y2="176"/>
+  </g>
+  <path d="M196 58 C 176 96, 176 160, 178 196 C 179 201, 168 203, 150 203" fill="none"
+        stroke="var(--cs-no)" stroke-width="2.4" marker-end="url(#uwl-n1-n)"/>
+  <line x1="118" y1="209" x2="186" y2="209" stroke="var(--cs-no)" stroke-width="4"/>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5">
+    <text x="120" y="226" fill="var(--cs-no)">fast strip at the base</text>
+    <text x="204" y="120" fill="var(--cs-ink3)" transform="rotate(90 204 120)">60 m</text>
+    <text x="24" y="196" fill="var(--cs-ink3)">wind (log profile)</text>
+  </g>
+  <!-- panel B -->
+  <line x1="380" y1="205" x2="700" y2="205" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <rect x="550" y="45" width="50" height="160" fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <rect x="523" y="168" width="77" height="37" fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <g stroke="var(--cs-accent)" stroke-width="1.5" fill="none" marker-end="url(#uwl-n1-a)">
+    <line x1="395" y1="62" x2="540" y2="62"/>
+    <line x1="415" y1="100" x2="540" y2="100"/>
+    <line x1="440" y1="138" x2="513" y2="138"/>
+  </g>
+  <path d="M556 58 C 536 96, 534 140, 536 163 C 537 167, 520 160, 500 150" fill="none"
+        stroke="var(--cs-accent)" stroke-width="2.4" marker-end="url(#uwl-n1-a)"/>
+  <line x1="523" y1="163" x2="600" y2="163" stroke="var(--cs-accent)" stroke-width="3.5"/>
+  <line x1="452" y1="209" x2="519" y2="209" stroke="var(--cs-ok)" stroke-width="4"/>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5">
+    <text x="452" y="226" fill="var(--cs-ok)">pavement sheltered</text>
+    <text x="606" y="152" fill="var(--cs-accent)">acceleration</text>
+    <text x="606" y="165" fill="var(--cs-accent)">onto the roof</text>
+    <text x="466" y="186" fill="var(--cs-ink3)">14 m</text>
+  </g>
+</svg>
+<figcaption>Section. The podium separates the descending column from the pavement &mdash; depth does that, not height.</figcaption>
+        </figure>
         <ol class="cs-steps">
           <li>Build two OBJ models, identical but for the podium. <b>Scheme A:</b> a single slab block — rectangular, broad face to the wind — <code>40 × 20 × 60 m</code> (width × depth × height), standing alone. <b>Scheme B:</b> the same slab plus a podium <code>14 m</code> tall — four storeys — extending <code>10 m</code> forward of the windward face, the full 40 m width.</li>
           <li>Settings for both: wind <code>10 m/s</code>, direction normal to the wide face, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> to the same range. Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
@@ -585,6 +644,47 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <div class="cs-ex">
         <span class="cs-ex-n">Exercise 02</span>
         <h3>Channelling, and why alignment is everything</h3>
+<figure class="cs-fig">
+<svg viewBox="0 0 720 210" role="img" aria-label="Plan of a street between two rows of blocks under three wind directions: aligned, oblique and across. Aligned gives a fast ribbon along the street; oblique gives corner jets; across shelters the street but speeds the gaps.">
+  <defs>
+    <marker id="uwl-n2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-accent)"/></marker>
+    <marker id="uwl-n2-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-no)"/></marker>
+  </defs>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink)">
+    <text x="14" y="22">270&#176; ALIGNED</text><text x="254" y="22">315&#176; OBLIQUE</text><text x="494" y="22">360&#176; ACROSS</text>
+  </g>
+  <g fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.3">
+    <rect x="20" y="42" width="58" height="40"/><rect x="88" y="42" width="58" height="40"/><rect x="156" y="42" width="58" height="40"/>
+    <rect x="20" y="132" width="58" height="40"/><rect x="88" y="132" width="58" height="40"/><rect x="156" y="132" width="58" height="40"/>
+    <rect x="260" y="42" width="58" height="40"/><rect x="328" y="42" width="58" height="40"/><rect x="396" y="42" width="58" height="40"/>
+    <rect x="260" y="132" width="58" height="40"/><rect x="328" y="132" width="58" height="40"/><rect x="396" y="132" width="58" height="40"/>
+    <rect x="500" y="42" width="58" height="40"/><rect x="568" y="42" width="58" height="40"/><rect x="636" y="42" width="58" height="40"/>
+    <rect x="500" y="132" width="58" height="40"/><rect x="568" y="132" width="58" height="40"/><rect x="636" y="132" width="58" height="40"/>
+  </g>
+  <!-- A: aligned -->
+  <line x1="14" y1="107" x2="214" y2="107" stroke="var(--cs-no)" stroke-width="7" opacity=".45"/>
+  <line x1="14" y1="107" x2="210" y2="107" stroke="var(--cs-no)" stroke-width="2" marker-end="url(#uwl-n2-n)"/>
+  <text x="26" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-no)">one fast ribbon down the canyon</text>
+  <!-- B: oblique -->
+  <line x1="248" y1="34" x2="300" y2="86" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-n2-a)"/>
+  <g stroke="var(--cs-no)" stroke-width="2" marker-end="url(#uwl-n2-n)">
+    <line x1="320" y1="86" x2="334" y2="104"/><line x1="388" y1="86" x2="402" y2="104"/><line x1="320" y1="122" x2="334" y2="128"/>
+  </g>
+  <text x="266" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-no)">ribbon gone, corner jets instead</text>
+  <!-- C: across -->
+  <g stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-n2-a)">
+    <line x1="529" y1="14" x2="529" y2="38"/><line x1="597" y1="14" x2="597" y2="38"/><line x1="665" y1="14" x2="665" y2="38"/>
+  </g>
+  <g stroke="var(--cs-no)" stroke-width="3.5" marker-end="url(#uwl-n2-n)">
+    <line x1="563" y1="86" x2="563" y2="128"/><line x1="631" y1="86" x2="631" y2="128"/>
+  </g>
+  <rect x="500" y="92" width="194" height="30" fill="var(--cs-ok)" opacity=".16"/>
+  <text x="506" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-ink3)">sheltered street &#183; <tspan fill="var(--cs-no)">fast gaps</tspan></text>
+</svg>
+<figcaption>Plan. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone.</figcaption>
+        </figure>
         <ol class="cs-steps">
           <li>Use the built-in sample district — no import needed. It has a continuous east–west street.</li>
           <li>Run three directions at <code>8 m/s</code>, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> across all three: <code>270°</code> aligned with the street, <code>315°</code> oblique, <code>360°</code> across it.</li>
@@ -604,6 +704,43 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <div class="cs-ex">
         <span class="cs-ex-n">Exercise 03</span>
         <h3>Wake, sheltering, and the spacing that controls both</h3>
+<figure class="cs-fig">
+<svg viewBox="0 0 720 200" role="img" aria-label="Three panels, one per model. Each shows the same two blocks in section at a different spacing. At S over H of 1 the flow skims the tops and one slow rotation is trapped in the gap; at 2 the shear layer dips in; at 4 the flow reaches the ground before the second block.">
+  <defs>
+    <marker id="uwl-n3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-accent)"/></marker>
+  </defs>
+  <g stroke="var(--cs-rule)" stroke-width="1">
+    <line x1="240" y1="8" x2="240" y2="186"/><line x1="480" y1="8" x2="480" y2="186"/>
+  </g>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink)">
+    <text x="14" y="22">MODEL 1 &#183; S/H = 1</text><text x="254" y="22">MODEL 2 &#183; S/H = 2</text><text x="494" y="22">MODEL 3 &#183; S/H = 4</text>
+  </g>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-ink3)">
+    <text x="14" y="38">two blocks &#183; skimming flow</text><text x="254" y="38">two blocks &#183; wake interference</text><text x="494" y="38">two blocks &#183; isolated roughness</text>
+  </g>
+  <g fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.4">
+    <rect x="44" y="118" width="28" height="32"/><rect x="132" y="118" width="28" height="32"/>
+    <rect x="272" y="118" width="28" height="32"/><rect x="392" y="118" width="28" height="32"/>
+    <rect x="500" y="118" width="28" height="32"/><rect x="684" y="118" width="28" height="32"/>
+  </g>
+  <g stroke="var(--cs-ink)" stroke-width="1.5">
+    <line x1="14" y1="150" x2="226" y2="150"/><line x1="254" y1="150" x2="466" y2="150"/><line x1="494" y1="150" x2="706" y2="150"/>
+  </g>
+  <!-- A -->
+  <path d="M18 112 L44 112 L160 112 L212 112" fill="none" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-n3-a)"/>
+  <path d="M96 126 a 14 11 0 1 1 -0.1 0" fill="none" stroke="var(--cs-accent)" stroke-width="1.6" marker-end="url(#uwl-n3-a)"/>
+  <text x="30" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="var(--cs-ink3)">trapped rotation &#183; calm, unventilated</text>
+  <!-- B -->
+  <path d="M258 112 L272 112 C 310 112, 330 134, 356 134 C 378 134, 388 116, 400 112 L452 112" fill="none" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-n3-a)"/>
+  <text x="290" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="var(--cs-ink3)">shear layer dips in</text>
+  <!-- C -->
+  <path d="M498 112 L500 112 C 552 112, 570 148, 610 149 L648 149 C 668 149, 676 120, 684 112 L700 112" fill="none" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-n3-a)"/>
+  <circle cx="610" cy="150" r="3.2" fill="var(--cs-no)"/>
+  <text x="560" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="var(--cs-no)">reattachment</text>
+</svg>
+<figcaption>Section. Each panel is one of the three models &mdash; the same two blocks, a different gap. One number, the proportion of the space between them, moves that gap through three different places.</figcaption>
+        </figure>
         <ol class="cs-steps">
           <li>Build three OBJ models, each two identical blocks <code>40 × 20 × 20 m</code> aligned with the wind, differing only in the gap: <code>20 m</code>, <code>40 m</code> and <code>80 m</code> — that is, <b>spacing-to-height ratios S/H of 1, 2 and 4</b>, where S is the gap and H the 20 m block height.</li>
           <li>Settings: wind <code>8 m/s</code> normal to the blocks, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b>, tracers on. Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
