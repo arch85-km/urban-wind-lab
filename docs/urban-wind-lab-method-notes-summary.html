@@ -1,0 +1,653 @@
+<!-- ======================================================================
+     URBAN WIND LAB — "Method notes in brief"
+     A short companion to the full method notes.
+
+     Uses the SAME design system as the full notes: the .cs-doc scope, the same
+     custom properties, the same class names. Body type inherits from the site
+     (--cs-fb:inherit), so it picks up your serif exactly as the full notes do,
+     and it carries the same dark-mode block.
+
+     IF YOU PASTE THIS ON THE SAME PAGE AS THE FULL NOTES, delete the <style>
+     block below — the full notes already define every rule it contains, and
+     one copy is enough. On its own page, keep it.
+
+     THE CITATION STRIP JUMPS HERE. The "How to cite" heading below carries
+     id="how-to-cite", which is what the strip's "Version, BibTeX and licence"
+     link targets. Only ONE element per page may hold that id — so if the full
+     method notes are on this same page, remove the id from one of them.
+     ====================================================================== -->
+
+<style>
+.cs-doc{
+  --cs-paper:#F1F2EE; --cs-surface:#FBFBF9; --cs-surface2:#E8EAE4;
+  --cs-ink:#16191B; --cs-ink2:#4C555A; --cs-ink3:#5F696E;
+  --cs-rule:#D6D9D1; --cs-rule2:#E5E7E1;
+  --cs-accent:#1D5A73; --cs-accent-soft:rgba(29,90,115,.10);
+  --cs-ok:#3F6B47;  --cs-ok-soft:rgba(63,107,71,.12);
+  --cs-warn:#8A6410;--cs-warn-soft:rgba(138,100,16,.13);
+  --cs-no:#8E3A32;  --cs-no-soft:rgba(142,58,50,.11);
+  --cs-fd:"Poppins",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --cs-fb:inherit;
+  --cs-fm:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --cs-measure:90ch; --cs-rail:4.75rem;
+
+  background:var(--cs-paper); color:var(--cs-ink);
+  font-family:var(--cs-fb); font-size:17px; line-height:1.65; font-weight:400;
+  max-width:1040px; margin:0 auto; padding:0 20px 3rem;
+  -webkit-font-smoothing:antialiased; text-align:left;
+}
+@media (prefers-color-scheme:dark){
+  .cs-doc.cs-auto-dark{
+    --cs-paper:#121517; --cs-surface:#191D20; --cs-surface2:#21262A;
+    --cs-ink:#E9EBE6; --cs-ink2:#A6AFB4; --cs-ink3:#79838A;
+    --cs-rule:#2C3235; --cs-rule2:#232829;
+    --cs-accent:#74B6D0; --cs-accent-soft:rgba(116,182,208,.14);
+    --cs-ok:#7FB88C;  --cs-ok-soft:rgba(127,184,140,.14);
+    --cs-warn:#D6A748;--cs-warn-soft:rgba(214,167,72,.15);
+    --cs-no:#DD8479;  --cs-no-soft:rgba(221,132,121,.14);
+  }
+}
+.cs-doc *,.cs-doc *::before,.cs-doc *::after{box-sizing:border-box;}
+.cs-doc h1,.cs-doc h2,.cs-doc h3,.cs-doc h4,.cs-doc p,.cs-doc ul,.cs-doc ol,
+.cs-doc dl,.cs-doc dt,.cs-doc dd{margin:0;padding:0;}
+.cs-doc ul,.cs-doc ol{list-style-position:outside;}
+.cs-doc li{margin:0;}
+.cs-doc a{color:var(--cs-accent);text-decoration:underline;text-underline-offset:2px;}
+.cs-doc code,.cs-doc .cs-mono{font-family:var(--cs-fm);font-size:.855em;}
+.cs-doc b,.cs-doc strong{font-weight:600;}
+.cs-doc code{background:var(--cs-accent-soft);color:var(--cs-accent);
+  padding:.1em .34em;border-radius:2px;border:0;}
+
+/* masthead */
+.cs-doc .cs-masthead{padding:2.75rem 0 1.9rem;border-bottom:2px solid var(--cs-ink);}
+.cs-doc .cs-eyebrow{font-family:var(--cs-fm);font-size:.70rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--cs-accent);margin:0 0 1.1rem;}
+.cs-doc h1{font-family:var(--cs-fd);font-weight:600;
+  font-size:clamp(1.9rem,5.2vw,2.75rem);line-height:1.04;letter-spacing:-.028em;
+  text-wrap:balance;margin:0 0 1.1rem;color:var(--cs-ink);}
+.cs-doc .cs-standfirst{max-width:var(--cs-measure);font-size:1.14rem;line-height:1.6;
+  color:var(--cs-ink2);margin:0;}
+.cs-doc .cs-standfirst strong{color:var(--cs-ink);font-weight:600;}
+.cs-doc .cs-byline{display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;margin-top:1.9rem;
+  font-family:var(--cs-fm);font-size:.74rem;letter-spacing:.04em;color:var(--cs-ink3);}
+.cs-doc .cs-byline b{color:var(--cs-ink2);font-weight:500;}
+
+/* trap notice */
+.cs-doc .cs-traps{margin:2.5rem 0;border:1px solid var(--cs-rule);
+  border-left:4px solid var(--cs-no);background:var(--cs-surface);padding:1.5rem 1.6rem;}
+.cs-doc .cs-traps h2{font-family:var(--cs-fd);font-size:.82rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--cs-no);margin:0 0 .9rem;}
+.cs-doc .cs-traps ol{margin:0;padding-left:1.15rem;display:grid;gap:.6rem;}
+.cs-doc .cs-traps li{max-width:var(--cs-measure);}
+
+/* sections */
+.cs-doc .cs-sec{padding:2.5rem 0 0;}
+.cs-doc .cs-sechead{display:grid;grid-template-columns:var(--cs-rail) 1fr;
+  align-items:baseline;gap:0 1rem;border-top:1px solid var(--cs-rule);
+  padding-top:1.4rem;margin-bottom:1.6rem;}
+.cs-doc .cs-secnum{font-family:var(--cs-fm);font-size:.95rem;font-weight:600;
+  color:var(--cs-accent);letter-spacing:.02em;font-variant-numeric:tabular-nums;}
+.cs-doc .cs-sechead h2{font-family:var(--cs-fd);font-weight:600;
+  font-size:clamp(1.3rem,2.9vw,1.7rem);line-height:1.12;letter-spacing:-.02em;
+  text-wrap:balance;margin:0;color:var(--cs-ink);}
+.cs-doc .cs-secbody{display:grid;grid-template-columns:var(--cs-rail) minmax(0,1fr);gap:0 1rem;}
+.cs-doc .cs-secbody>*{grid-column:2;}
+.cs-doc .cs-secbody>p,.cs-doc .cs-secbody>ul,.cs-doc .cs-secbody>ol{max-width:var(--cs-measure);}
+.cs-doc .cs-secbody>p{margin:0 0 1.05rem;}
+.cs-doc .cs-secbody>ul,.cs-doc .cs-secbody>ol{margin:0 0 1.15rem;padding-left:1.15rem;
+  display:grid;gap:.5rem;}
+.cs-doc h3{font-family:var(--cs-fd);font-weight:600;font-size:1.06rem;
+  letter-spacing:-.005em;margin:1.9rem 0 .7rem;color:var(--cs-ink);}
+.cs-doc .cs-note{font-size:.9rem;color:var(--cs-ink2);border-left:2px solid var(--cs-rule);
+  padding-left:.95rem;margin:0 0 1.2rem;max-width:var(--cs-measure);}
+
+/* chips + ledger */
+.cs-doc .cs-chip{display:inline-block;font-family:var(--cs-fm);font-size:.64rem;
+  font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:.15em .5em;
+  border-radius:2px;white-space:nowrap;}
+.cs-doc .cs-chip.is-in{background:var(--cs-ok-soft);color:var(--cs-ok);}
+.cs-doc .cs-chip.is-out{background:var(--cs-no-soft);color:var(--cs-no);}
+.cs-doc .cs-ledger{display:grid;gap:0;border:1px solid var(--cs-rule);
+  background:var(--cs-surface);margin-bottom:1.4rem;}
+.cs-doc .cs-ledger>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);
+  gap:.2rem .9rem;padding:.8rem 1rem;border-bottom:1px solid var(--cs-rule2);}
+.cs-doc .cs-ledger>div:last-child{border-bottom:0;}
+.cs-doc .cs-ledger dt{font-family:var(--cs-fd);font-weight:600;font-size:.95rem;
+  grid-column:2;margin:0;color:var(--cs-ink);}
+.cs-doc .cs-ledger .cs-chip{grid-row:1;grid-column:1;align-self:start;margin-top:.18rem;}
+.cs-doc .cs-ledger dd{grid-column:2;margin:0;font-size:.93rem;color:var(--cs-ink2);
+  line-height:1.55;}
+
+/* footer */
+.cs-doc .cs-footer{margin-top:3rem;padding-top:1.6rem;border-top:2px solid var(--cs-ink);
+  font-size:.86rem;color:var(--cs-ink2);}
+.cs-doc .cs-footer p{max-width:var(--cs-measure);margin:0 0 .8rem;}
+.cs-doc .cs-cite{font-family:var(--cs-fm);font-size:.78rem;color:var(--cs-ink3);line-height:1.7;}
+.cs-doc .cs-ref{border-left:2px solid var(--cs-rule);padding-left:.95rem;margin:0 0 1rem;
+  max-width:var(--cs-measure);font-size:.92rem;color:var(--cs-ink2);}
+.cs-doc pre{margin:0 0 1rem;padding:.9rem 1rem;background:var(--cs-surface);
+  border:1px solid var(--cs-rule);overflow-x:auto;font-family:var(--cs-fm);
+  font-size:.78rem;line-height:1.6;color:var(--cs-ink);white-space:pre;}
+
+/* exercises */
+.cs-doc .cs-ex{border:1px solid var(--cs-rule);background:var(--cs-surface);
+  padding:1.5rem 1.6rem;margin-bottom:1.5rem;}
+.cs-doc .cs-ex-n{font-family:var(--cs-fm);font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--cs-accent);
+  display:block;margin-bottom:.35rem;}
+.cs-doc .cs-ex h3{margin:0 0 .9rem;font-size:1.18rem;}
+.cs-doc .cs-steps{margin:0;padding-left:1.2rem;display:grid;gap:.5rem;font-size:.95rem;}
+.cs-doc .cs-principle{font-size:.93rem;color:var(--cs-ink2);
+  border-top:1px solid var(--cs-rule2);padding-top:.85rem;margin:.95rem 0 0;}
+.cs-doc .cs-principle b{color:var(--cs-ink);font-weight:600;}
+
+/* diagrams. The SVGs paint from the same custom properties as everything
+   else, so they invert with the page instead of staying light in dark mode. */
+.cs-doc .cs-fig{margin:0 0 1.2rem;}
+.cs-doc .cs-fig svg{display:block;width:100%;height:auto;
+  background:var(--cs-paper);border:1px solid var(--cs-rule);}
+.cs-doc .cs-fig figcaption{font-family:var(--cs-fm);font-size:.68rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--cs-ink3);margin-top:.55rem;}
+
+/* Large screens. Most sizes here are in rem, which is relative to the ROOT
+   font size, not to .cs-doc — so raising .cs-doc alone would scale the body
+   copy and leave the byline, notes and references behind. They are stepped up
+   together. */
+@media (min-width:1280px){
+  .cs-doc{font-size:18.5px;max-width:1140px;}
+  .cs-doc .cs-standfirst{font-size:1.22rem;}
+  .cs-doc .cs-byline{font-size:.84rem;}
+  .cs-doc h3{font-size:1.14rem;}
+  .cs-doc .cs-note{font-size:.97rem;}
+  .cs-doc .cs-ref{font-size:1rem;}
+  .cs-doc .cs-cite{font-size:.86rem;}
+  .cs-doc pre{font-size:.86rem;}
+  .cs-doc .cs-ledger dt{font-size:1.02rem;}
+  .cs-doc .cs-ledger dd{font-size:1rem;}
+  .cs-doc .cs-chip{font-size:.70rem;}
+  .cs-doc .cs-traps h2{font-size:.88rem;}
+  .cs-doc .cs-steps{font-size:1rem;}
+  .cs-doc .cs-principle{font-size:.99rem;}
+  .cs-doc .cs-ex-n{font-size:.76rem;}
+}
+@media (max-width:720px){
+  .cs-doc{--cs-rail:0px;font-size:16px;}
+  .cs-doc .cs-sechead{grid-template-columns:1fr;gap:.35rem;}
+  .cs-doc .cs-secbody{grid-template-columns:minmax(0,1fr);}
+  .cs-doc .cs-secbody>*{grid-column:1;}
+  .cs-doc .cs-traps,.cs-doc .cs-ex{padding:1.15rem;}
+}
+@media (max-width:560px){
+  .cs-doc .cs-ledger>div{grid-template-columns:1fr;}
+  .cs-doc .cs-ledger .cs-chip{grid-row:auto;grid-column:1;justify-self:start;margin-bottom:.3rem;}
+  .cs-doc .cs-ledger dt,.cs-doc .cs-ledger dd{grid-column:1;}
+}
+</style>
+
+<div class="cs-doc cs-auto-dark">
+
+  <div class="cs-masthead">
+    <p class="cs-eyebrow">Urban Wind Lab &middot; In brief</p>
+    <h1>Method notes in brief</h1>
+    <p class="cs-standfirst">The short version: what the tool solves, and <strong>how far the
+      numbers can be trusted</strong>. Treat the output as a qualitative picture of flow
+      behaviour &mdash; the velocity <i>ratios</i> are meaningful, the absolute speeds are not
+      validated. The <a href="https://github.com/arch85-km/urban-wind-lab/blob/main/docs/urban-wind-lab-technical-notes.md" target="_blank" rel="noopener">technical
+      notes</a> set out the solver constants, the boundary conditions and the resolution tables in
+      full.</p>
+    <div class="cs-byline">
+      <span><b>Audience</b> Architecture students and staff</span>
+      <span><b>Method</b> D3Q19 lattice Boltzmann &middot; BGK &middot; Smagorinsky</span>
+      <span><b>Runs</b> Entirely in the browser</span>
+      <span><b>Version</b> 1.0.0 &middot; 15 September 2026</span>
+    </div>
+  </div>
+
+  <div class="cs-traps">
+    <h2>Three things to know before you cite a number</h2>
+    <ol>
+      <li><b>The velocities are qualitative, not predictive.</b> The solve never uses the
+        viscosity of air. Its viscosity is a lattice quantity,
+        <span class="cs-mono">&nu; = 0.00333</span>, chosen for stability, and nothing in the code
+        maps it to a physical fluid &mdash; so the district is not being solved at its real
+        Reynolds number. What makes the result useful anyway is that separation from
+        <i>sharp edges</i> is fixed by geometry. That holds for rectilinear massing and fails for
+        curved or streamlined forms.</li>
+      <li><b>&ldquo;Pedestrian level &middot; 1.5&nbsp;m&rdquo; is a cell, not a height.</b> The
+        plane is drawn at exactly 1.5&nbsp;m, but the statistics come from the nearest cell centre
+        &mdash; 1.07&nbsp;m to 1.88&nbsp;m depending on resolution. The panel displays the height
+        actually sampled. Report that number.</li>
+      <li><b>The comfort classes are indicative labels, not a Lawson assessment.</b> The seven
+        bands are the standard LDDC set and the thresholds are right; the method is not. The
+        criteria ask whether a threshold is exceeded more than a stated share of the year, summed
+        over every direction weighted by its annual frequency, using a gust-equivalent speed. This
+        tool applies them to a single instantaneous mean, for one direction, with no gust factor
+        and no exceedance statistic.</li>
+    </ol>
+  </div>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>What it computes</h2></div>
+    <div class="cs-secbody">
+      <p>A genuine three-dimensional lattice-Boltzmann solve &mdash; D3Q19 velocity set, BGK
+        collision, Smagorinsky sub-grid turbulence &mdash; running in a Web Worker so the interface
+        stays responsive. It is not a 2D slice and not a precomputed lookup: vertical motion,
+        downwash and updraught, is solved rather than inferred. Four quantities are computed per
+        cell &mdash; three velocity components and density. Everything else on screen is derived
+        from those: speed, the signed components, pressure coefficient
+        <span class="cs-mono">Cp</span>, amplification against the 10&nbsp;m reference, streamlines
+        and probes.</p>
+      <p class="cs-note">There is no wall damping on the Smagorinsky term, so eddy viscosity does
+        not vanish correctly at a surface and near-wall shear is over-damped. Ground-level values
+        are the least reliable part of the field.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>The domain is fixed, and it is tight</h2></div>
+    <div class="cs-secbody">
+      <p>240 &times; 240 &times; 90&nbsp;m, whatever the preset &mdash; only the cell count changes,
+        giving cells of 2.14&nbsp;m to 3.75&nbsp;m. For the built-in sample district that leaves
+        26&nbsp;m of air above the tallest building, and in one direction the geometry reaches the
+        boundary exactly. The silhouette facing the wind fills roughly a quarter to a third of the
+        domain&rsquo;s cross-section.</p>
+      <p>The top of the domain is <b>driven, not free</b>: the undisturbed profile is imposed
+        26&nbsp;m above the tallest building rather than allowed to respond to it, so air displaced
+        upward has nowhere to go and is pushed through the gaps instead. Terrain roughness shapes
+        the inlet profile only &mdash; the ground inside the domain is plain no-slip with no wall
+        function, so selecting &ldquo;dense city centre&rdquo; changes what enters the domain, not
+        the drag inside it.</p>
+      <p class="cs-note">These are measurements, not a verdict. Published practice does set minimum
+        clearances and a maximum blockage, but the tool implements and cites none of it &mdash; so
+        neither the full notes nor this summary judge the figures against a standard.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>What the cell size costs</h2></div>
+    <div class="cs-secbody">
+      <p>The smallest resolvable feature is one cell, so a balcony, a canopy, a parapet or a
+        railing simply does not exist in the solve. A whole building can be only a handful of cells
+        wide: the sample district&rsquo;s landmark tower spans 8.8 cells at the default preset. All
+        geometry is voxelised, so every surface is staircased and curved facades become steps
+        &mdash; which moves where the flow separates.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>Not modelled at all</h2></div>
+    <div class="cs-secbody">
+      <p>Thermal effects &mdash; the solve is isothermal, so no buoyancy, no stack effect, neutral
+        conditions only. Vegetation and porosity; every solid is a perfect no-slip block. Terrain:
+        the ground is a flat plane. More than one wind direction at a time. Turbulence quantities:
+        no vorticity, no turbulence intensity, no pollutant transport. Gusts and transients.
+        Driving rain, snow drifting and acoustics. And <b>validation of any kind</b>.</p>
+      <p class="cs-note">An EPW import builds a 16-sector wind rose from all 8&nbsp;760 hourly
+        records, but the solve then uses a single speed and direction: the annual frequencies are
+        displayed, never applied to the results.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>Convergence: watch the residual, not the badge</h2></div>
+    <div class="cs-secbody">
+      <p>The solve never terminates &mdash; there is no stopping criterion and no fixed iteration
+        count. The <i>Steady state</i> badge appears once the residual falls below its threshold,
+        which at the default preset and 8&nbsp;m/s is about 4&nbsp;seconds of simulated time:
+        roughly 13% of the time a parcel of air needs to cross the domain. The badge can therefore
+        appear before the flow has traversed the site even once. Let it run.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>What you may and may not quote</h2></div>
+    <div class="cs-secbody">
+      <div class="cs-ledger">
+        <div>
+          <span class="cs-chip is-in">May</span>
+          <dt>Ratios, and topology</dt>
+          <dd>The ratio between two runs at identical settings &mdash; which of two massing options
+            produces the windier plaza, and by how much in relative terms. And where the corner jet
+            is, where the wake sits, where flow stagnates, whether a street channels.</dd>
+        </div>
+        <div>
+          <span class="cs-chip is-out">May not</span>
+          <dt>A speed, or a comfort class</dt>
+          <dd>Not a velocity in m/s at a point as a predicted wind speed &mdash; it carries the
+            domain confinement, coarse-lattice error, staircased geometry, an unvalidated Reynolds
+            regime and an instantaneous rather than time-averaged sample. Nor a comfort class as an
+            assessment outcome: it is a threshold applied to a mean, for one direction.</dd>
+        </div>
+      </div>
+      <p>The <i>Lock</i> button on the legend exists for exactly this. Locking the range across two
+        runs is what turns a picture into a comparison &mdash; and comparison is where this tool is
+        trustworthy.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>Three exercises</h2></div>
+    <div class="cs-secbody">
+      <p>Each teaches one principle, states what to build and what to read, and takes ten to twenty
+        minutes. All three are comparative by design, which is where the tool is trustworthy.
+        <b>Lock the legend before you start comparing.</b></p>
+
+      <div class="cs-ex">
+        <span class="cs-ex-n">Exercise 01</span>
+        <h3>Downwash, and why podiums exist</h3>
+        <figure class="cs-fig">
+<svg viewBox="0 0 720 250" role="img" aria-label="Section through a slab block without and with a podium. Without, air from high on the windward face is driven down to the pavement. With, the podium intercepts it and moves the acceleration onto the podium roof.">
+  <defs>
+    <marker id="uwl-f1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-accent)"/></marker>
+    <marker id="uwl-f1-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-no)"/></marker>
+  </defs>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink3)">
+    <text x="20" y="24" fill="var(--cs-ink)" font-size="12">SCHEME A &#183; no podium</text>
+    <text x="380" y="24" fill="var(--cs-ink)" font-size="12">SCHEME B &#183; podium</text>
+  </g>
+  <!-- panel A -->
+  <line x1="20" y1="205" x2="340" y2="205" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <rect x="190" y="45" width="50" height="160" fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <g stroke="var(--cs-accent)" stroke-width="1.5" fill="none" marker-end="url(#uwl-f1-a)">
+    <line x1="35" y1="62" x2="180" y2="62"/>
+    <line x1="55" y1="100" x2="180" y2="100"/>
+    <line x1="80" y1="138" x2="180" y2="138"/>
+    <line x1="105" y1="176" x2="180" y2="176"/>
+  </g>
+  <path d="M196 58 C 176 96, 176 160, 178 196 C 179 201, 168 203, 150 203" fill="none"
+        stroke="var(--cs-no)" stroke-width="2.4" marker-end="url(#uwl-f1-n)"/>
+  <line x1="118" y1="209" x2="186" y2="209" stroke="var(--cs-no)" stroke-width="4"/>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5">
+    <text x="120" y="226" fill="var(--cs-no)">fast strip at the base</text>
+    <text x="204" y="120" fill="var(--cs-ink3)" transform="rotate(90 204 120)">60 m</text>
+    <text x="24" y="196" fill="var(--cs-ink3)">wind (log profile)</text>
+  </g>
+  <!-- panel B -->
+  <line x1="380" y1="205" x2="700" y2="205" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <rect x="550" y="45" width="50" height="160" fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <rect x="523" y="168" width="77" height="37" fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.5"/>
+  <g stroke="var(--cs-accent)" stroke-width="1.5" fill="none" marker-end="url(#uwl-f1-a)">
+    <line x1="395" y1="62" x2="540" y2="62"/>
+    <line x1="415" y1="100" x2="540" y2="100"/>
+    <line x1="440" y1="138" x2="513" y2="138"/>
+  </g>
+  <path d="M556 58 C 536 96, 534 140, 536 163 C 537 167, 520 160, 500 150" fill="none"
+        stroke="var(--cs-accent)" stroke-width="2.4" marker-end="url(#uwl-f1-a)"/>
+  <line x1="523" y1="163" x2="600" y2="163" stroke="var(--cs-accent)" stroke-width="3.5"/>
+  <line x1="452" y1="209" x2="519" y2="209" stroke="var(--cs-ok)" stroke-width="4"/>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5">
+    <text x="452" y="226" fill="var(--cs-ok)">pavement sheltered</text>
+    <text x="606" y="158" fill="var(--cs-accent)">acceleration onto the roof</text>
+    <text x="500" y="186" fill="var(--cs-ink3)">14 m</text>
+  </g>
+</svg>
+<figcaption>Section. The podium separates the descending column from the pavement &mdash; depth does that, not height.</figcaption>
+        </figure>
+        <ol class="cs-steps">
+          <li>Build two OBJ models, identical but for the podium. <b>Scheme A:</b> a single <b>slab block</b>
+            &mdash; rectangular, broad face to the wind &mdash; 40 &times; 20 &times; 60&nbsp;m
+            (width &times; depth &times; height), standing alone. <b>Scheme B:</b> the same slab plus a
+            podium 14&nbsp;m tall, extending 10&nbsp;m forward of the windward face, the full
+            40&nbsp;m width.</li>
+          <li>Both at wind 10&nbsp;m/s normal to the wide face, z&#8320; = 1.0&nbsp;m, Balanced,
+            legend <b>Locked</b> to the same range.
+            Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> &mdash; fitting
+            rescales every model to the same share of the site, flattening the very difference the
+            exercise is built on.</li>
+          <li>Read the Z plane at 1.5&nbsp;m, then switch the colour field to
+            <span class="cs-mono">Uz</span> and cut a Y plane through the slab centreline.</li>
+          <li>Pin a probe 5&nbsp;m in front of the windward face at ground level in each scheme and
+            record the amplification factor. Then vary the podium depth at fixed height, and its
+            height at fixed depth, recording the probe each time.</li>
+        </ol>
+        <p class="cs-principle"><b>Principle.</b> In Scheme A the <span class="cs-mono">Uz</span>
+          field goes strongly negative down the windward face: high-momentum air from 40&ndash;60&nbsp;m
+          is driven to the ground, producing a fast, uncomfortable strip at the base. That is
+          downwash, the most common wind problem a tall building creates. The podium intercepts the
+          descending flow and moves the acceleration onto the podium roof, where nobody stands. The
+          last step is the real lesson: <b>depth matters more than height</b>, because the podium
+          must separate the descending column from the pavement, not block it.</p>
+      </div>
+
+      <div class="cs-ex">
+        <span class="cs-ex-n">Exercise 02</span>
+        <h3>Channelling, and why alignment is everything</h3>
+        <figure class="cs-fig">
+<svg viewBox="0 0 720 210" role="img" aria-label="Plan of a street between two rows of blocks under three wind directions: aligned, oblique and across. Aligned gives a fast ribbon along the street; oblique gives corner jets; across shelters the street but speeds the gaps.">
+  <defs>
+    <marker id="uwl-f2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-accent)"/></marker>
+    <marker id="uwl-f2-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-no)"/></marker>
+  </defs>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink)">
+    <text x="14" y="22">270&#176; ALIGNED</text><text x="254" y="22">315&#176; OBLIQUE</text><text x="494" y="22">360&#176; ACROSS</text>
+  </g>
+  <g fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.3">
+    <rect x="20" y="42" width="58" height="40"/><rect x="88" y="42" width="58" height="40"/><rect x="156" y="42" width="58" height="40"/>
+    <rect x="20" y="132" width="58" height="40"/><rect x="88" y="132" width="58" height="40"/><rect x="156" y="132" width="58" height="40"/>
+    <rect x="260" y="42" width="58" height="40"/><rect x="328" y="42" width="58" height="40"/><rect x="396" y="42" width="58" height="40"/>
+    <rect x="260" y="132" width="58" height="40"/><rect x="328" y="132" width="58" height="40"/><rect x="396" y="132" width="58" height="40"/>
+    <rect x="500" y="42" width="58" height="40"/><rect x="568" y="42" width="58" height="40"/><rect x="636" y="42" width="58" height="40"/>
+    <rect x="500" y="132" width="58" height="40"/><rect x="568" y="132" width="58" height="40"/><rect x="636" y="132" width="58" height="40"/>
+  </g>
+  <!-- A: aligned -->
+  <line x1="14" y1="107" x2="214" y2="107" stroke="var(--cs-no)" stroke-width="7" opacity=".45"/>
+  <line x1="14" y1="107" x2="210" y2="107" stroke="var(--cs-no)" stroke-width="2" marker-end="url(#uwl-f2-n)"/>
+  <text x="26" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-no)">one fast ribbon down the canyon</text>
+  <!-- B: oblique -->
+  <line x1="248" y1="34" x2="300" y2="86" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-f2-a)"/>
+  <g stroke="var(--cs-no)" stroke-width="2" marker-end="url(#uwl-f2-n)">
+    <line x1="320" y1="86" x2="334" y2="104"/><line x1="388" y1="86" x2="402" y2="104"/><line x1="320" y1="122" x2="334" y2="128"/>
+  </g>
+  <text x="266" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-no)">ribbon gone, corner jets instead</text>
+  <!-- C: across -->
+  <g stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-f2-a)">
+    <line x1="529" y1="14" x2="529" y2="38"/><line x1="597" y1="14" x2="597" y2="38"/><line x1="665" y1="14" x2="665" y2="38"/>
+  </g>
+  <g stroke="var(--cs-no)" stroke-width="3.5" marker-end="url(#uwl-f2-n)">
+    <line x1="563" y1="86" x2="563" y2="128"/><line x1="631" y1="86" x2="631" y2="128"/>
+  </g>
+  <rect x="500" y="92" width="194" height="30" fill="var(--cs-ok)" opacity=".16"/>
+  <text x="506" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-ink3)">street sheltered &#183; <tspan fill="var(--cs-no)">gaps accelerate</tspan></text>
+</svg>
+<figcaption>Plan. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone.</figcaption>
+        </figure>
+        <ol class="cs-steps">
+          <li>Use the built-in sample district &mdash; no import needed. It has a continuous
+            east&ndash;west street.</li>
+          <li>Run three directions at 8&nbsp;m/s, z&#8320; = 1.0&nbsp;m, Balanced, legend
+            <b>Locked</b> across all three: <b>270&deg;</b> aligned with the street,
+            <b>315&deg;</b> oblique, <b>360&deg;</b> across it.</li>
+          <li>Turn on the Lawson comfort layer and read the pedestrian-level statistics each time:
+            mean speed, max speed, and the share of area in each band. Note the sampled height the
+            panel reports &mdash; it is not 1.5&nbsp;m.</li>
+        </ol>
+        <p class="cs-principle"><b>Principle.</b> The aligned case produces a clear high-velocity
+          ribbon along the canyon: channelling, driven by the pressure gradient along an
+          unobstructed street. The oblique case largely destroys it and replaces it with discrete
+          corner jets at each block end. The cross case leaves the street sheltered but accelerates
+          the gaps between blocks. So channelling is not a property of the street &mdash; it is a
+          property of <b>the street and the wind rose together</b>. Which is why a real assessment
+          weights every direction by its annual frequency, and why this tool, running one direction
+          at a time, cannot do that for you.</p>
+      </div>
+
+      <div class="cs-ex">
+        <span class="cs-ex-n">Exercise 03</span>
+        <h3>Wake, sheltering, and the spacing that controls both</h3>
+        <figure class="cs-fig">
+<svg viewBox="0 0 720 200" role="img" aria-label="Three panels, one per model. Each shows the same two blocks in section at a different spacing. At S over H of 1 the flow skims the tops and one slow rotation is trapped in the gap; at 2 the shear layer dips in; at 4 the flow reaches the ground before the second block.">
+  <defs>
+    <marker id="uwl-f3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-accent)"/></marker>
+  </defs>
+  <g stroke="var(--cs-rule)" stroke-width="1">
+    <line x1="240" y1="8" x2="240" y2="186"/><line x1="480" y1="8" x2="480" y2="186"/>
+  </g>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink)">
+    <text x="14" y="22">MODEL 1 &#183; S/H = 1</text><text x="254" y="22">MODEL 2 &#183; S/H = 2</text><text x="494" y="22">MODEL 3 &#183; S/H = 4</text>
+  </g>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-ink3)">
+    <text x="14" y="38">two blocks &#183; skimming flow</text><text x="254" y="38">two blocks &#183; wake interference</text><text x="494" y="38">two blocks &#183; isolated roughness</text>
+  </g>
+  <g fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.4">
+    <rect x="44" y="118" width="28" height="32"/><rect x="132" y="118" width="28" height="32"/>
+    <rect x="272" y="118" width="28" height="32"/><rect x="392" y="118" width="28" height="32"/>
+    <rect x="500" y="118" width="28" height="32"/><rect x="684" y="118" width="28" height="32"/>
+  </g>
+  <g stroke="var(--cs-ink)" stroke-width="1.5">
+    <line x1="14" y1="150" x2="226" y2="150"/><line x1="254" y1="150" x2="466" y2="150"/><line x1="494" y1="150" x2="706" y2="150"/>
+  </g>
+  <!-- A -->
+  <path d="M18 112 L44 112 L160 112 L212 112" fill="none" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-f3-a)"/>
+  <path d="M96 126 a 14 11 0 1 1 -0.1 0" fill="none" stroke="var(--cs-accent)" stroke-width="1.6" marker-end="url(#uwl-f3-a)"/>
+  <text x="30" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="var(--cs-ink3)">trapped rotation &#183; calm, unventilated</text>
+  <!-- B -->
+  <path d="M258 112 L272 112 C 310 112, 330 134, 356 134 C 378 134, 388 116, 400 112 L452 112" fill="none" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-f3-a)"/>
+  <text x="290" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="var(--cs-ink3)">shear layer dips in</text>
+  <!-- C -->
+  <path d="M498 112 L500 112 C 552 112, 570 148, 610 149 L648 149 C 668 149, 676 120, 684 112 L700 112" fill="none" stroke="var(--cs-accent)" stroke-width="2" marker-end="url(#uwl-f3-a)"/>
+  <circle cx="610" cy="150" r="3.2" fill="var(--cs-no)"/>
+  <text x="560" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="var(--cs-no)">reattachment</text>
+</svg>
+<figcaption>Section. Each panel is one of the three models &mdash; the same two blocks, a different gap. One number, the proportion of the space between them, moves that gap through three different places.</figcaption>
+        </figure>
+        <ol class="cs-steps">
+          <li>Build three OBJ models, each two identical blocks 40 &times; 20 &times; 20&nbsp;m
+            aligned with the wind, differing only in the gap: 20, 40 and 80&nbsp;m &mdash; that is,
+            <b>spacing-to-height ratios S/H of 1, 2 and 4</b>, where S is the gap and H the
+            20&nbsp;m block height.</li>
+          <li>Wind 8&nbsp;m/s normal to the blocks, z&#8320; = 1.0&nbsp;m, Balanced, legend
+            <b>Locked</b>, tracers on.
+            Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> &mdash; fitting
+            rescales every model to the same share of the site, flattening the very difference the
+            exercise is built on.</li>
+          <li>Read a Y plane through the centreline with the speed field, record the calm-area
+            percentage, and describe in one sentence what the air in the courtyard is doing.</li>
+        </ol>
+        <p class="cs-principle"><b>Principle.</b> The gap behaves as three different places as it
+          widens, and the transitions are what the exercise is for. At S/H&nbsp;=&nbsp;1 the flow
+          passes over the top with a single slow rotation trapped between the blocks &mdash;
+          <i>skimming flow</i>: calm at ground level, almost nothing exchanging with the air above.
+          At S/H&nbsp;=&nbsp;2 the shear layer begins to dip in and the calm fraction falls &mdash;
+          <i>wake interference</i>. At S/H&nbsp;=&nbsp;4 the flow has come back down to the ground
+          before it reaches the second block, which stands in something close to open wind &mdash;
+          <i>isolated roughness</i>. These are the three classical regimes, and naming them is half
+          the point. <b>Shelter and ventilation pull against each other</b>, and the proportion of
+          the space between buildings is the control you have over both at once. Report what you
+          observed and the S/H at which it changed &mdash; not a wind speed.</p>
+      </div>
+
+      <p class="cs-note"><b>A caution for all three: compare, do not quote.</b> The velocity ratios
+        between two runs are the finding; the absolute m/s values carry every limitation above. And
+        let each run settle &mdash; the <i>Steady state</i> badge appears at about 4&nbsp;s of
+        simulated time, earlier than the flow has finished developing.</p>
+    </div>
+  </section>
+
+  <section class="cs-sec">
+    <div class="cs-sechead"><span class="cs-secnum"></span><h2>Where it stops</h2></div>
+    <div class="cs-secbody">
+      <p>There is no wind-tunnel comparison, no benchmark case and no grid-independence study, in
+        the tool or anywhere behind it. Its output has never been checked against a measured flow.
+        For anything that must inform a real decision about a real site, use a validated solver and
+        a wind engineer. This tool is built to teach why wind behaves as it does around buildings,
+        and it is deliberately small enough to run in a browser &mdash; which is the source of
+        every limitation above.</p>
+    </div>
+  </section>
+
+  <div class="cs-footer">
+
+    <h3>Licence</h3>
+    <p>&copy; Karam Al-Obaidi. The app is licensed <b>MIT</b>; this documentation is
+      <b><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></b>. Both permit any
+      use, including commercial, and ask only that you credit the author. The application bundles
+      no third-party code and makes no network requests, so there is no further notice to carry.</p>
+    <p>A model you analyse with the tool is <b>yours</b>. Neither licence claims anything over your
+      geometry, your results or the images you export. Two things sit outside the author&rsquo;s
+      control: a screenshot containing an imported OBJ includes geometry someone else may own, and
+      EPW weather files carry their own terms of use.</p>
+
+    <h3 id="how-to-cite" style="scroll-margin-top:100px;">How to cite</h3>
+    <p>Cite it as software. Keeping the copyright notice in the file satisfies the licence; a
+      citation is the scholarly act on top of that.</p>
+    <p class="cs-ref">Al-Obaidi, K. M. (2026). <i>Urban Wind Lab: An interactive lattice-Boltzmann
+      tool for wind analysis</i> (Version 1.0.0) [Computer software]. Zenodo.
+      <a href="https://doi.org/10.5281/zenodo.22797138" target="_blank" rel="noopener">https://doi.org/10.5281/zenodo.22797138</a></p>
+<pre>@software{alobaidi2026urbanwindlab,
+  author    = {Al-Obaidi, Karam M.},
+  title     = {Urban Wind Lab: An interactive lattice-Boltzmann tool
+               for wind analysis},
+  year      = {2026},
+  version   = {1.0.0},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.22797138},
+  url       = {https://karam.me.uk/applications/urban-wind-lab/},
+  note      = {Code MIT licensed; accompanying material CC BY 4.0}
+}</pre>
+    <p>That DOI names this release. To cite the software in general rather than version 1.0.0, use
+      the concept DOI <a href="https://doi.org/10.5281/zenodo.22797137" target="_blank" rel="noopener">10.5281/zenodo.22797137</a>,
+      which always resolves to the newest version.</p>
+    <p><b>Report four things alongside any figure</b> taken from the tool: the wind direction, the
+      terrain roughness, the resolution preset, and the sampled height the panel shows. All four
+      change the numbers, and a speed quoted without them cannot be checked by anyone reading you.
+      Say also whether the field had converged &mdash; and prefer a ratio between two runs to any
+      single value.</p>
+
+    <h3>References</h3>
+    <p><b>The source code cites no literature.</b> It contains no bibliography and no reading list
+      &mdash; only names: three methods (<span class="cs-mono">D3Q19</span>,
+      <span class="cs-mono">BGK</span>, <span class="cs-mono">Smagorinsky</span>), one author group
+      in a comment (<span class="cs-mono">Hou et al.</span>), one set of comfort criteria
+      (<span class="cs-mono">Lawson LDDC</span>) and one file format. The entries below are this
+      page&rsquo;s identification of where those named things come from, not a record of what was
+      read while the tool was written. Only once does the code name a work at all; everywhere else
+      the step from a method&rsquo;s name to its paper is an inference made here.</p>
+
+    <p class="cs-ref">Bhatnagar, P. L., Gross, E. P. &amp; Krook, M. (1954). &lsquo;A model for
+      collision processes in gases. I&rsquo;, <i>Physical Review</i>, 94(3), pp. 511&ndash;525.
+      <a href="https://doi.org/10.1103/PhysRev.94.511" target="_blank" rel="noopener">doi:10.1103/PhysRev.94.511</a>
+      &mdash; the BGK collision.</p>
+    <p class="cs-ref">Smagorinsky, J. (1963). &lsquo;General circulation experiments with the
+      primitive equations: I&rsquo;, <i>Monthly Weather Review</i>, 91(3), pp. 99&ndash;164.
+      &mdash; the sub-grid model, and the constant C&nbsp;=&nbsp;0.14.</p>
+    <p class="cs-ref">Hou, S., Sterling, J., Chen, S. &amp; Doolen, G. D. (1996). &lsquo;A lattice
+      Boltzmann subgrid model for high Reynolds number flows&rsquo;, <i>Fields Institute
+      Communications</i>, 6, pp. 151&ndash;166. &mdash; the &tau; formula in the collision step,
+      and the one work the code names.</p>
+    <p class="cs-ref">Lawson, T. V. (1990). <i>The determination of the wind environment of a
+      building complex before construction</i> (Report TVL 9025). University of Bristol.
+      &mdash; the comfort categories. <b>Attribution contested:</b> sources differ over whether the
+      LDDC criteria belong to this report or to the City of London. An unpublished report &mdash;
+      no DOI, and it could not be checked against a library catalogue.</p>
+    <p class="cs-ref">U.S. Department of Energy. <i>EnergyPlus weather file (EPW) data
+      dictionary</i>, in <i>Auxiliary Programs</i>. &mdash; the column layout the importer reads.</p>
+
+    <h3>Further reading &mdash; not named by the code</h3>
+    <p>Nothing here is used by the tool or relied on above. Provenance makes a poor starting point
+      for a reader: two mid-century papers and an unpublished report will not teach anyone the
+      method. These will.</p>
+    <p class="cs-ref">Kr&uuml;ger, T. et al. (2017). <i>The Lattice Boltzmann Method: Principles
+      and Practice</i>. Springer.
+      <a href="https://doi.org/10.1007/978-3-319-44649-3" target="_blank" rel="noopener">doi:10.1007/978-3-319-44649-3</a>
+      &mdash; the current standard text; covers D3Q19, BGK and Smagorinsky in one place.</p>
+    <p class="cs-ref">Lawson, T. V. (2001). <i>Building Aerodynamics</i>. Imperial College Press.
+      &mdash; background only. The criteria set out here are later and different from the LDDC
+      bands the tool implements. <b>Do not cite this book for them.</b></p>
+    <p class="cs-ref">Blocken, B., Stathopoulos, T. &amp; van Beeck, J. P. A. J. (2016).
+      &lsquo;Pedestrian-level wind conditions around buildings&rsquo;, <i>Building and
+      Environment</i>, 100, pp. 50&ndash;81. &mdash; what a real pedestrian-wind study involves:
+      domain sizing, grid resolution, wall treatment, directional weighting, validation.</p>
+
+    <p class="cs-cite">Every entry above has been checked against the published record, with one
+      exception: the Lawson report of 1990 is unpublished and has no publisher page, so its details
+      and its attribution both remain open. Every figure above is read from the tool&rsquo;s source
+      or measured by driving the solver.</p>
+
+  </div>
+
+</div>

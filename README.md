@@ -58,7 +58,8 @@ citing any figure.
 |---|---|
 | `urban-wind-lab.html` | The application. This is the deliverable. |
 | `docs/urban-wind-lab-method-notes.html` | Method notes, styled for an Elementor HTML widget |
-| `docs/urban-wind-lab-technical-notes.md` | The same material in Markdown |
+| `docs/urban-wind-lab-method-notes-summary.html` | A short companion to the above, with diagrams for the exercises. Same widget |
+| `docs/urban-wind-lab-technical-notes.md` | The solver, units, boundaries and exercises in Markdown |
 
 ## Citing it
 
