@@ -98,6 +98,9 @@
   display:grid;gap:.5rem;}
 .cs-doc h3{font-family:var(--cs-fd);font-weight:600;font-size:1.06rem;
   letter-spacing:-.005em;margin:1.9rem 0 .7rem;color:var(--cs-ink);}
+.cs-doc h4{font-family:var(--cs-fm);font-weight:600;font-size:.74rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--cs-ink3);margin:1.7rem 0 .7rem;}
+.cs-doc .cs-footer h4:first-of-type{margin-top:1.1rem;}
 .cs-doc .cs-note{font-size:.9rem;color:var(--cs-ink2);border-left:2px solid var(--cs-rule);
   padding-left:.95rem;margin:0 0 1.2rem;max-width:var(--cs-measure);}
 
@@ -192,9 +195,9 @@
     <p class="cs-standfirst">The short version: what the tool solves, and <strong>how far the
       numbers can be trusted</strong>. Treat the output as a qualitative picture of flow
       behaviour &mdash; the velocity <i>ratios</i> are meaningful, the absolute speeds are not
-      validated. The <a href="https://github.com/arch85-km/urban-wind-lab/blob/main/docs/urban-wind-lab-technical-notes.md" target="_blank" rel="noopener">technical
-      notes</a> set out the solver constants, the boundary conditions and the resolution tables in
-      full.</p>
+      validated. The <a href="https://github.com/arch85-km/urban-wind-lab" target="_blank" rel="noopener">full
+      method notes</a> set out the solver constants, the boundary conditions and the resolution
+      tables in full.</p>
     <div class="cs-byline">
       <span><b>Audience</b> Architecture students and staff</span>
       <span><b>Method</b> D3Q19 lattice Boltzmann &middot; BGK &middot; Smagorinsky</span>
@@ -609,6 +612,7 @@
       read while the tool was written. Only once does the code name a work at all; everywhere else
       the step from a method&rsquo;s name to its paper is an inference made here.</p>
 
+    <h4>The solver</h4>
     <p class="cs-ref">Bhatnagar, P. L., Gross, E. P. &amp; Krook, M. (1954). &lsquo;A model for
       collision processes in gases. I&rsquo;, <i>Physical Review</i>, 94(3), pp. 511&ndash;525.
       <a href="https://doi.org/10.1103/PhysRev.94.511" target="_blank" rel="noopener">doi:10.1103/PhysRev.94.511</a>
@@ -620,11 +624,13 @@
       Boltzmann subgrid model for high Reynolds number flows&rsquo;, <i>Fields Institute
       Communications</i>, 6, pp. 151&ndash;166. &mdash; the &tau; formula in the collision step,
       and the one work the code names.</p>
+    <h4>Pedestrian comfort</h4>
     <p class="cs-ref">Lawson, T. V. (1990). <i>The determination of the wind environment of a
       building complex before construction</i> (Report TVL 9025). University of Bristol.
       &mdash; the comfort categories. <b>Attribution contested:</b> sources differ over whether the
       LDDC criteria belong to this report or to the City of London. An unpublished report &mdash;
       no DOI, and it could not be checked against a library catalogue.</p>
+    <h4>Climate data</h4>
     <p class="cs-ref">U.S. Department of Energy. <i>EnergyPlus weather file (EPW) data
       dictionary</i>, in <i>Auxiliary Programs</i>. &mdash; the column layout the importer reads.</p>
 
