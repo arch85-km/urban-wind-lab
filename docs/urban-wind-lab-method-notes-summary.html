@@ -471,10 +471,10 @@
 <figcaption>Plan, schematic. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone. The third panel is the general cross-wind case; the sample district, being a grid, does not offer one.</figcaption>
         </figure>
         <ol class="cs-steps">
-          <li>Use the built-in sample district &mdash; no import needed. Read its plan first: a
+          <li>Use the built-in sample district &mdash; no import needed. Read its plan first. It is a
             4 &times; 4 grid of 34&nbsp;m blocks on a 50&nbsp;m pitch, so there are continuous
-            <b>16&nbsp;m streets both ways</b>, plus a plaza, a tower and podium, a low-rise
-            southern row and a 120&nbsp;m slab across the northern edge.</li>
+            <b>16&nbsp;m streets both ways</b>. Add a plaza, a tower and podium, a low-rise southern
+            row, and a 120&nbsp;m slab across the northern edge.</li>
           <li>Run three directions at 8&nbsp;m/s, z&#8320; = 1.0&nbsp;m, Balanced, legend
             <b>Lock</b>ed across all three: <b>270&deg;</b> along the east&ndash;west streets,
             <b>315&deg;</b> oblique, and <b>0&deg;</b> along the north&ndash;south ones. The dial
@@ -489,14 +489,14 @@
           ribbon along the canyon: channelling, driven by the pressure gradient along an
           unobstructed street. The oblique case largely destroys it and replaces it with discrete
           corner jets at each block end. A true cross-wind would leave the street sheltered and
-          accelerate the gaps between blocks &mdash; but note that this district, being a grid,
-          never gives you one: <b>0&deg; is a second aligned direction</b>, down the north&ndash;south
-          streets, two of which sit behind the 120&nbsp;m slab at the northern edge. So the
+          accelerate the gaps between blocks. This district never gives you one, though, because it
+          is a grid: <b>0&deg; is a second aligned direction</b>, down the north&ndash;south streets,
+          two of which sit behind the 120&nbsp;m slab at the northern edge. So the
           comparison you are actually making is between two channelled directions with different
           approach fetches, which is the more useful one: real sites rarely offer a street the wind
           cannot enter, only streets it enters more or less cleanly. Channelling is not a property
-          of the street &mdash; it is a property of <b>the street and the wind rose together</b>,
-          which is why a real assessment weights every direction by its annual frequency, and why
+          of the street. It is a property of <b>the street and the wind rose together</b>. That is
+          why a real assessment weights every direction by its annual frequency, and why
           this tool, running one direction at a time, cannot do that for you.</p>
       </div>
 
@@ -542,7 +542,7 @@
         </figure>
         <ol class="cs-steps">
           <li>Build three OBJ models, each two identical blocks 40 &times; 20 &times; 20&nbsp;m
-            aligned with the wind, differing only in the gap: 20, 40 and 80&nbsp;m &mdash; that is,
+            aligned with the wind, differing only in the gap: 20, 40 and 80&nbsp;m. That gives
             <b>spacing-to-height ratios S/H of 1, 2 and 4</b>, where S is the gap and H the
             20&nbsp;m block height.</li>
           <li>Wind 8&nbsp;m/s normal to the blocks, z&#8320; = 1.0&nbsp;m, Balanced, legend
