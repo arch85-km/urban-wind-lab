@@ -1,6 +1,6 @@
 <!-- ==========================================================================
      Urban Wind Lab — Method Notes
-     Paste into an Elementor "HTML" widget (Elements > HTML).
+     Paste into an HTML block.
 
      Same stylesheet as the Construction Studio and Daylight Lab notes, byte for
      byte, so the three pages sit together. Everything is scoped to .cs-doc, so
@@ -25,7 +25,7 @@
   --cs-warn:#8A6410;--cs-warn-soft:rgba(138,100,16,.13);
   --cs-no:#8E3A32;  --cs-no-soft:rgba(142,58,50,.11);
   /* Headings and body follow the site's own typeface. `inherit` resolves where
-     it is used — inside .cs-doc, whose parent is the Elementor container — so
+     it is used — inside .cs-doc, whose parent is the page container — so
      this keeps working if the theme font ever changes.
      The monospace stack must NOT inherit: the table number columns use
      font-variant-numeric:tabular-nums and align on fixed-width digits, and the
