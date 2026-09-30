@@ -404,15 +404,18 @@
             podium 14&nbsp;m tall, extending 10&nbsp;m forward of the windward face, the full
             40&nbsp;m width.</li>
           <li>Both at wind 10&nbsp;m/s normal to the wide face, z&#8320; = 1.0&nbsp;m, Balanced,
-            legend <b>Locked</b> to the same range.
-            Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> &mdash; fitting
+            legend <b>Lock</b>ed to the same range.
+            Import each with <b>OBJ units</b> set to <b>Metres</b> and <b>Fit model to site</b>
+            turned off &mdash; fitting
             rescales every model to the same share of the site, flattening the very difference the
             exercise is built on.</li>
           <li>Read the Z plane at 1.5&nbsp;m, then switch the colour field to
             <span class="cs-mono">Uz</span> and cut a Y plane through the slab centreline.</li>
           <li>Pin a probe 5&nbsp;m in front of the windward face at ground level in each scheme and
-            record the amplification factor. Then vary the podium depth at fixed height, and its
-            height at fixed depth, recording the probe each time.</li>
+            record its <span class="cs-mono">U/U&#8321;&#8320;</span> &mdash; the probe's own ratio
+            to the 10&nbsp;m reference. Not the <b>Amplification</b> stat, which is the maximum over
+            the whole plane. Then vary the podium depth at fixed height, and its height at fixed
+            depth, recording the probe each time.</li>
         </ol>
         <p class="cs-principle"><b>Principle.</b> In Scheme A the <span class="cs-mono">Uz</span>
           field goes strongly negative down the windward face: high-momentum air from 40&ndash;60&nbsp;m
@@ -435,7 +438,7 @@
       <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-no)"/></marker>
   </defs>
   <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink)">
-    <text x="14" y="22">270&#176; ALIGNED</text><text x="254" y="22">315&#176; OBLIQUE</text><text x="494" y="22">360&#176; ACROSS</text>
+    <text x="14" y="22">270&#176; ALIGNED</text><text x="254" y="22">315&#176; OBLIQUE</text><text x="494" y="22">CROSS-WIND</text>
   </g>
   <g fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.3">
     <rect x="20" y="42" width="58" height="40"/><rect x="88" y="42" width="58" height="40"/><rect x="156" y="42" width="58" height="40"/>
@@ -465,26 +468,36 @@
   <rect x="500" y="92" width="194" height="30" fill="var(--cs-ok)" opacity=".16"/>
   <text x="506" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-ink3)">sheltered street &#183; <tspan fill="var(--cs-no)">fast gaps</tspan></text>
 </svg>
-<figcaption>Plan. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone.</figcaption>
+<figcaption>Plan, schematic. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone. The third panel is the general cross-wind case; the sample district, being a grid, does not offer one.</figcaption>
         </figure>
         <ol class="cs-steps">
-          <li>Use the built-in sample district &mdash; no import needed. It has a continuous
-            east&ndash;west street.</li>
+          <li>Use the built-in sample district &mdash; no import needed. Read its plan first: a
+            4 &times; 4 grid of 34&nbsp;m blocks on a 50&nbsp;m pitch, so there are continuous
+            <b>16&nbsp;m streets both ways</b>, plus a plaza, a tower and podium, a low-rise
+            southern row and a 120&nbsp;m slab across the northern edge.</li>
           <li>Run three directions at 8&nbsp;m/s, z&#8320; = 1.0&nbsp;m, Balanced, legend
-            <b>Locked</b> across all three: <b>270&deg;</b> aligned with the street,
-            <b>315&deg;</b> oblique, <b>360&deg;</b> across it.</li>
+            <b>Lock</b>ed across all three: <b>270&deg;</b> along the east&ndash;west streets,
+            <b>315&deg;</b> oblique, and <b>0&deg;</b> along the north&ndash;south ones. The dial
+            reads 0&ndash;359 and names the direction the wind comes <i>from</i>, so due north is
+            0&deg;, not 360&deg;.</li>
           <li>Turn on the Lawson comfort layer and read the pedestrian-level statistics each time:
-            mean speed, max speed, and the share of area in each band. Note the sampled height the
-            panel reports &mdash; it is not 1.5&nbsp;m.</li>
+            mean speed, max speed, and the share of area in each band. The panel is headed
+            &ldquo;Pedestrian level &middot; 1.5&nbsp;m&rdquo; but never says what height it
+            sampled; on <b>Balanced</b> that is <b>1.36&nbsp;m</b>. Quote the real height.</li>
         </ol>
         <p class="cs-principle"><b>Principle.</b> The aligned case produces a clear high-velocity
           ribbon along the canyon: channelling, driven by the pressure gradient along an
           unobstructed street. The oblique case largely destroys it and replaces it with discrete
-          corner jets at each block end. The cross case leaves the street sheltered but accelerates
-          the gaps between blocks. So channelling is not a property of the street &mdash; it is a
-          property of <b>the street and the wind rose together</b>. Which is why a real assessment
-          weights every direction by its annual frequency, and why this tool, running one direction
-          at a time, cannot do that for you.</p>
+          corner jets at each block end. A true cross-wind would leave the street sheltered and
+          accelerate the gaps between blocks &mdash; but note that this district, being a grid,
+          never gives you one: <b>0&deg; is a second aligned direction</b>, down the north&ndash;south
+          streets, two of which sit behind the 120&nbsp;m slab at the northern edge. So the
+          comparison you are actually making is between two channelled directions with different
+          approach fetches, which is the more useful one: real sites rarely offer a street the wind
+          cannot enter, only streets it enters more or less cleanly. Channelling is not a property
+          of the street &mdash; it is a property of <b>the street and the wind rose together</b>,
+          which is why a real assessment weights every direction by its annual frequency, and why
+          this tool, running one direction at a time, cannot do that for you.</p>
       </div>
 
       <div class="cs-ex">
@@ -533,8 +546,9 @@
             <b>spacing-to-height ratios S/H of 1, 2 and 4</b>, where S is the gap and H the
             20&nbsp;m block height.</li>
           <li>Wind 8&nbsp;m/s normal to the blocks, z&#8320; = 1.0&nbsp;m, Balanced, legend
-            <b>Locked</b>, tracers on.
-            Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> &mdash; fitting
+            <b>Lock</b>ed, <b>Streamline tracers</b> on.
+            Import each with <b>OBJ units</b> set to <b>Metres</b> and <b>Fit model to site</b>
+            turned off &mdash; fitting
             rescales every model to the same share of the site, flattening the very difference the
             exercise is built on.</li>
           <li>Read a Y plane through the centreline with the speed field, record the calm-area
@@ -605,7 +619,8 @@
       the concept DOI <a href="https://doi.org/10.5281/zenodo.22797137" target="_blank" rel="noopener">10.5281/zenodo.22797137</a>,
       which always resolves to the newest version.</p>
     <p><b>Report four things alongside any figure</b> taken from the tool: the wind direction, the
-      terrain roughness, the resolution preset, and the sampled height the panel shows. All four
+      terrain roughness, the resolution preset, and the height actually sampled &mdash; which the
+      panel does not show, so take it from the resolution: 1.88, 1.36 or 1.07&nbsp;m. All four
       change the numbers, and a speed quoted without them cannot be checked by anyone reading you.
       Say also whether the field had converged &mdash; and prefer a ratio between two runs to any
       single value.</p>

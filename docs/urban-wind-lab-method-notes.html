@@ -497,7 +497,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
           <tr><td>Balanced</td><td class="cs-d">1.36 m</td></tr>
           <tr><td>Detailed</td><td class="cs-d">1.07 m</td></tr>
         </tbody>
-        <caption>So a figure labelled "pedestrian level · 1.5 m" is taken somewhere between 1.07 m and 1.88 m, and it moves when a student changes preset. The panel does display the true sampled height — report that number, not 1.5 m.</caption>
+        <caption>So a figure labelled "pedestrian level · 1.5 m" is taken somewhere between 1.07 m and 1.88 m, and it moves when a student changes preset. The panel does <b>not</b> show it: the true height is computed as <span class="cs-mono">state.stats.height</span> and then never rendered, the heading staying at a fixed "1.5 m". Read your preset off this table and report that height instead.</caption>
       </table></div>
       <p class="cs-note">One thing that is done carefully: the mean, max, amplification, calm fraction
         and Lawson distribution are computed over the <b>area of interest</b> — the model bounding box
@@ -627,9 +627,9 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         </figure>
         <ol class="cs-steps">
           <li>Build two OBJ models, identical but for the podium. <b>Scheme A:</b> a single slab block — rectangular, broad face to the wind — <code>40 × 20 × 60 m</code> (width × depth × height), standing alone. <b>Scheme B:</b> the same slab plus a podium <code>14 m</code> tall — four storeys — extending <code>10 m</code> forward of the windward face, the full 40 m width.</li>
-          <li>Settings for both: wind <code>10 m/s</code>, direction normal to the wide face, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> to the same range. Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
+          <li>Settings for both: wind <code>10 m/s</code>, direction normal to the wide face, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Lock</b>ed to the same range. Import each with <b>OBJ units</b> set to <b>Metres</b> and <b>Fit model to site</b> turned off — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
           <li>Read the <b>Z</b> section plane at 1.5 m, then switch the colour field to <b>Uz</b> and cut a <b>Y</b> plane through the slab centreline.</li>
-          <li>Pin a probe 5 m in front of the windward face at ground level in each scheme. Record the amplification factor.</li>
+          <li>Pin a probe 5 m in front of the windward face at ground level in each scheme. Record its <code>U/U₁₀</code> — the probe's own ratio to the 10 m reference speed. (Do not use the <b>Amplification</b> figure in the statistics panel: that is the maximum over the whole pedestrian plane, not the value at your probe.)</li>
           <li>Vary the podium <em>depth</em> at fixed height, then its <em>height</em> at fixed depth, and record the probe each time.</li>
         </ol>
         <p class="cs-principle"><b>Principle.</b> In Scheme A the Uz field goes strongly negative down
@@ -653,7 +653,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <path d="M0 0 L10 5 L0 10 z" fill="var(--cs-no)"/></marker>
   </defs>
   <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="11" fill="var(--cs-ink)">
-    <text x="14" y="22">270&#176; ALIGNED</text><text x="254" y="22">315&#176; OBLIQUE</text><text x="494" y="22">360&#176; ACROSS</text>
+    <text x="14" y="22">270&#176; ALIGNED</text><text x="254" y="22">315&#176; OBLIQUE</text><text x="494" y="22">CROSS-WIND</text>
   </g>
   <g fill="var(--cs-surface2)" stroke="var(--cs-ink)" stroke-width="1.3">
     <rect x="20" y="42" width="58" height="40"/><rect x="88" y="42" width="58" height="40"/><rect x="156" y="42" width="58" height="40"/>
@@ -683,22 +683,27 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
   <rect x="500" y="92" width="194" height="30" fill="var(--cs-ok)" opacity=".16"/>
   <text x="506" y="196" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="var(--cs-ink3)">sheltered street &#183; <tspan fill="var(--cs-no)">fast gaps</tspan></text>
 </svg>
-<figcaption>Plan. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone.</figcaption>
+<figcaption>Plan, schematic. Channelling belongs to the street <i>and</i> the wind direction together &mdash; not to the street alone. The third panel is the general cross-wind case; the sample district, being a grid, does not offer one.</figcaption>
         </figure>
         <ol class="cs-steps">
-          <li>Use the built-in sample district — no import needed. It has a continuous east–west street.</li>
-          <li>Run three directions at <code>8 m/s</code>, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b> across all three: <code>270°</code> aligned with the street, <code>315°</code> oblique, <code>360°</code> across it.</li>
+          <li>Use the built-in sample district — no import needed. Read its plan before you run anything: it is a 4 × 4 grid of 34 m blocks on a 50 m pitch, so it has continuous <b>16 m streets in both directions</b> — east–west at y = −50, 0 and 50, north–south at x = −60, −10 and 40. A plaza replaces one block, a tower with a podium stands at another, a low-rise terrace runs along the southern row, and a 120 m slab sits across the northern edge from x = −90 to 30, angled to deflect flow.</li>
+          <li>Run three directions at <code>8 m/s</code>, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Lock</b>ed across all three: <code>270°</code> along the east–west streets, <code>315°</code> oblique, and <code>0°</code> along the north–south ones. The dial reads 0 to 359 and is the direction the wind comes <em>from</em>, so due north is 0°, not 360°.</li>
           <li>Turn on the <b>Lawson comfort layer</b> and read the pedestrian-level statistics panel each time.</li>
-          <li>Record mean speed, max speed and the percentage of area in each comfort band. Note the sampled height the panel reports — it is not 1.5 m.</li>
+          <li>Record mean speed, max speed and the percentage of area in each comfort band. The panel is headed "Pedestrian level · 1.5 m" but does not say what height it sampled; look your preset up in section 04 and quote that instead. On <b>Balanced</b> it is 1.36 m.</li>
         </ol>
-        <p class="cs-principle"><b>Principle.</b> The aligned case produces a clear high-velocity
-          ribbon along the canyon: channelling, driven by the pressure gradient along an unobstructed
+        <p class="cs-principle"><b>Principle.</b> An aligned direction produces a clear high-velocity
+          ribbon along the canyon: channelling, driven by the pressure gradient down an unobstructed
           street. The oblique case largely destroys it and replaces it with discrete corner jets at
-          each block end. The cross case leaves the street sheltered but accelerates the gaps between
-          blocks. So channelling is not a property of the street — it is a property of the street
-          <em>and</em> the wind rose together. Which is exactly why a real assessment weights every
-          direction by its annual frequency, and why this tool, which runs one direction at a time,
-          cannot do that for you.</p>
+          each block end. So channelling is not a property of the street — it is a property of the
+          street <em>and</em> the wind rose together. Which is exactly why a real assessment weights
+          every direction by its annual frequency, and why this tool, which runs one direction at a
+          time, cannot do that for you. Note what the third direction is <em>not</em>: because this
+          district is a grid, 0° is not a cross-wind case but a second aligned one, down the
+          north–south streets — and two of those three sit behind the 120 m slab at the northern
+          edge. Comparing 270° with 0° therefore compares two channelled directions with different
+          approach fetches, which is the more useful comparison anyway: a real site rarely offers a
+          street the wind cannot enter, only streets it enters more or less cleanly. If you want a
+          genuine cross-wind case, build one — two parallel rows with no gap between them.</p>
       </div>
 
       <div class="cs-ex">
@@ -743,7 +748,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         </figure>
         <ol class="cs-steps">
           <li>Build three OBJ models, each two identical blocks <code>40 × 20 × 20 m</code> aligned with the wind, differing only in the gap: <code>20 m</code>, <code>40 m</code> and <code>80 m</code> — that is, <b>spacing-to-height ratios S/H of 1, 2 and 4</b>, where S is the gap and H the 20 m block height.</li>
-          <li>Settings: wind <code>8 m/s</code> normal to the blocks, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Locked</b>, tracers on. Import each with <b>OBJ units in metres</b> and <b>fit-to-site off</b> — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
+          <li>Settings: wind <code>8 m/s</code> normal to the blocks, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Lock</b>ed, <b>Streamline tracers</b> on. Import each with <b>OBJ units</b> set to <b>Metres</b> and <b>Fit model to site</b> turned off — fitting rescales every model to the same share of the site, which would flatten the difference the exercise is built on.</li>
           <li>Read a <b>Y</b> section plane through the centreline with the <b>speed</b> field, and record the calm-area percentage from the statistics panel.</li>
           <li>Watch the tracers in the gap in each case, and describe in one sentence what the air in the courtyard is doing.</li>
         </ol>
