@@ -527,6 +527,35 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         widened by 30 m in plan and 18 m in height, then clamped to the domain — not the whole domain,
         so the empty buffer around the site does not dilute the statistics.</p>
 
+      <h3>Amplification is not a shelter factor</h3>
+      <p>The <b>Amplification factor U/U&#8321;&#8320;</b> colour field divides the local speed by the
+        <em>10 m reference</em>, not by the undisturbed speed at the height being sampled. Its colour
+        ramp diverges about 1.0, which invites the reading &ldquo;below 1 is sheltered&rdquo;. At
+        pedestrian level that reading is wrong, because the undisturbed profile is already well below
+        U&#8321;&#8320; down there:</p>
+      <div class="cs-tbl"><table>
+        <thead><tr><th>Preset</th><th class="cs-n">Height sampled</th><th class="cs-n">z&#8320; 0.03</th><th class="cs-n">z&#8320; 0.3</th><th class="cs-n">z&#8320; 1.0</th><th class="cs-n">z&#8320; 2.0</th></tr></thead>
+        <tbody>
+          <tr><td>Fast</td><td class="cs-n">1.88 m</td><td class="cs-n">0.71</td><td class="cs-n">0.56</td><td class="cs-d">0.44</td><td class="cs-n">0.37</td></tr>
+          <tr><td>Balanced</td><td class="cs-n">1.36 m</td><td class="cs-n">0.66</td><td class="cs-n">0.48</td><td class="cs-d">0.36</td><td class="cs-n">0.29</td></tr>
+          <tr><td>Detailed</td><td class="cs-n">1.07 m</td><td class="cs-n">0.62</td><td class="cs-n">0.43</td><td class="cs-d">0.30</td><td class="cs-n">0.24</td></tr>
+        </tbody>
+        <caption>The undisturbed inlet profile at the sampled height, as a multiple of
+          U&#8321;&#8320;. The bold column is the default urban roughness.</caption>
+      </table></div>
+      <p>So on <b>Balanced</b> at z&#8320; = 1.0 m, a reading of <b>0.80</b> is not shelter: it is
+        6.4 m/s where the undisturbed wind at that height is 2.9 m/s &mdash; <b>2.2&times; the local
+        undisturbed speed</b>, and well into the strolling band. The value that would mean
+        <em>locally undisturbed</em> is about <b>0.36</b>, not 1.0. Anything approaching 1.0 at
+        pedestrian level means high-level wind has been brought to the ground, which is what
+        downwash does &mdash; read <span class="cs-mono">Uz</span> alongside it to see whether that
+        is the mechanism.</p>
+      <p class="cs-note">The threshold moves with terrain roughness as well as resolution. The same
+        0.80 reading is 2.2&times; the undisturbed speed in a city centre and only 1.2&times; over
+        open country, because the profile it is being compared against is a different shape. There
+        is no single number below which the field means &ldquo;calm&rdquo;; read it against the
+        column above for the roughness you set.</p>
+
       <h3>What a student may and may not quote</h3>
       <ul>
         <li><b>May:</b> the ratio between two runs at identical settings. Which of two massing options produces the windier plaza, and by how much in relative terms.</li>
