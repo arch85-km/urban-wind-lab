@@ -360,6 +360,28 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         fixed and only the magnitudes scale. Changing <b>direction</b> or <b>terrain roughness</b>
         does start a new solve.</p>
 
+      <h3>Why the m/s reading is exact arithmetic and still not a wind speed</h3>
+      <p>These are two different claims and it is worth separating them, because the first is
+        sometimes read as a defence of the second.</p>
+      <p><b>The conversion is exact.</b> The worker divides every lattice velocity by
+        <span class="cs-mono">u_ref&nbsp;=&nbsp;0.045</span>, which leaves the stored field in units
+        of U&#8321;&#8320;; the display multiplies by the reference speed you set. The inlet is
+        written as <span class="cs-mono">u_ref&nbsp;&times;&nbsp;profile(z)</span> and that profile
+        returns exactly 1 at z&nbsp;=&nbsp;10&nbsp;m by construction, so 0.045 in the lattice
+        <em>is</em> U&#8321;&#8320; at the reference height. Nothing is lost or fudged in the
+        conversion, and the metres per second on screen are the correct rendering of the field the
+        solver produced.</p>
+      <p><b>That is also why the figure adds nothing.</b> The scaling is purely linear in
+        U&#8321;&#8320;: double the reference speed and every displayed m/s doubles exactly, while
+        the flow pattern, the ratios and the topology do not move at all. The m/s reading is
+        therefore the dimensionless ratio multiplied by a number you typed in. It carries no
+        information the ratio does not already carry, and it wears units that imply a measurement.
+        The error is not in the arithmetic; it is in the field being converted &mdash; the
+        confinement, the cell size, the staircasing and the Reynolds regime of
+        <a href="#ucfd-s04">section 04</a>. Those biases sit in the ratio too, but they sit there
+        <em>equally in two runs at the same settings</em>, which is why a comparison survives them
+        and a single absolute does not.</p>
+
       <h3>Boundary conditions</h3>
       <div class="cs-tbl"><table>
         <thead><tr><th>Boundary</th><th>Condition in the code</th></tr></thead>
@@ -690,7 +712,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
           <li>Use the built-in sample district — no import needed. Read its plan before you run anything: it is a 4 × 4 grid of 34 m blocks on a 50 m pitch, so it has continuous <b>16 m streets in both directions</b> — east–west at y = −50, 0 and 50, north–south at x = −60, −10 and 40. A plaza replaces one block, a tower with a podium stands at another, a low-rise terrace runs along the southern row, and a 120 m slab sits across the northern edge from x = −90 to 30, angled to deflect flow.</li>
           <li>Run three directions at <code>8 m/s</code>, <code>z₀ = 1.0 m</code>, <b>Balanced</b>, legend <b>Lock</b>ed across all three: <code>270°</code> along the east–west streets, <code>315°</code> oblique, and <code>0°</code> along the north–south ones. The dial reads 0 to 359 and is the direction the wind comes <em>from</em>, so due north is 0°, not 360°.</li>
           <li>Turn on the <b>Lawson comfort layer</b> and read the pedestrian-level statistics panel each time.</li>
-          <li>Record mean speed, max speed and the percentage of area in each comfort band. The panel is headed "Pedestrian level · 1.5 m" but does not say what height it sampled; look your preset up in section 04 and quote that instead. On <b>Balanced</b> it is 1.36 m.</li>
+          <li>Record mean speed, max speed and the percentage of area in each comfort band. The panel heading gives the height it sampled &mdash; "Pedestrian level · 1.36 m" on <b>Balanced</b>, not the 1.5 m the plane is drawn at. Quote the heading.</li>
         </ol>
         <p class="cs-principle"><b>Principle.</b> An aligned direction produces a clear high-velocity
           ribbon along the canyon: channelling, driven by the pressure gradient down an unobstructed
