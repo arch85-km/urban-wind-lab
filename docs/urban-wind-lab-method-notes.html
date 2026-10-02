@@ -847,10 +847,13 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <p>It applies <b>no external benchmark</b>. Published guidance exists on how large a CFD domain
         should be relative to the buildings in it, how many cells a building should span, how a
         pedestrian comfort criterion should be evaluated across a wind rose, and what a planning
-        authority will accept. The tool implements none of it and cites none of it, so this page
-        cites none of it either. Everything said here about domain size, resolution and convergence
-        is therefore <em>descriptive</em>: these are the measurements, and they are not compared with
-        a standard.</p>
+        authority will accept. The tool implements none of it and names none of it, so <b>no figure
+        on this page is measured against any of it</b>. Everything said here about domain size,
+        resolution and convergence is therefore <em>descriptive</em>: these are the measurements,
+        and they are not compared with a standard. The guidance and the benchmark cases are
+        <em>listed</em>, under further reading at the foot of the page, for a student who wants to
+        make that comparison themselves &mdash; which is a different thing from this page having
+        made it.</p>
       <p class="cs-note">This is a real limitation and worth being blunt about. This page can tell a
         student what the tool does; it cannot tell them whether that is good enough for any given
         purpose. Answering that means bringing your own guidance and applying it to the measurements
@@ -885,6 +888,50 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       <p>Stated once more here because it belongs with the limitations rather than only in <a href="#ucfd-s04">How exact the numbers are</a>: there
         is no wind-tunnel comparison, no benchmark case, and no grid-independence study, in the tool
         or anywhere behind it. Its output has never been checked against a measured flow.</p>
+
+      <p>It is worth adding why, because the obvious explanation is the wrong one:
+        <b>the measured flows are not hard to come by.</b> The Architectural Institute of Japan
+        publishes thirteen benchmark cases, each with its geometry, inflow conditions, measuring
+        points and tunnel results in a freely downloadable spreadsheet, and Case C &mdash; a
+        3&nbsp;&times;&nbsp;3 array of blocks measured at pedestrian height in three wind directions
+        &mdash; is small enough to sit inside this tool's fixed 240&nbsp;m domain with room to spare.
+        The honest reason this page carries no benchmark is not that the data are locked away. It is
+        that <b>three things would have to change in the tool first</b>, and naming them is more use
+        to a student than the bare word <i>unvalidated</i>.</p>
+      <ul>
+        <li><b>It does not compute a mean.</b> The decisive one. A tunnel figure is an average over
+          minutes of flow; the statistics panel reports a single instant, sampled at whatever step
+          the viewer is looking at, and the converged badge can be reached at step 260 &mdash; about
+          4.0&nbsp;s of simulated wind, before the flow has crossed the site once. No amount of
+          resolution fixes that, because it is not a resolution problem. Scoring an instantaneous
+          sample against a measured mean would be a category error, not an approximation.</li>
+        <li><b>It exports pictures, not numbers.</b> The only export is the PNG of the current view.
+          A benchmark is scored point by point against a list of named measurement positions, and
+          the tool has no way to emit a value at a coordinate.</li>
+        <li><b>The ground layer is one cell, at every preset.</b> The rule the jifto report below
+          applies to a point value is <em>cells no larger than a third of the measurement
+          height</em>. This tool samples the pedestrian plane at the first cell centre, which sits
+          half a cell above the ground, so the height sampled is always
+          <span class="cs-mono">Δx/2</span> while the rule would permit only
+          <span class="cs-mono">Δx/6</span>. The cell is therefore <b>exactly six times the
+          permitted size &mdash; by construction, and identically at all three presets</b>:
+          3.75&nbsp;m cells sampling 1.88&nbsp;m, 2.73&nbsp;m sampling 1.36&nbsp;m, 2.14&nbsp;m
+          sampling 1.07&nbsp;m. Choosing a finer preset buys resolution around the buildings, where
+          a 20&nbsp;m block spans 9.3 cells at the finest, and none at all underfoot.</li>
+      </ul>
+      <p class="cs-note">One mismatch that is <em>not</em> a blocker, recorded so it is not mistaken
+        for one: the benchmark normalises each point by the approach wind at the <b>same height</b>,
+        while this tool's amplification reading is the pedestrian maximum over
+        <b>U&#8321;&#8320;</b>. Those differ by the undisturbed profile factor and nothing else
+        &mdash; 0.62 at 1.07&nbsp;m for
+        the open-country roughness a tunnel case would use. One division, not a limitation. The
+        profile values are tabulated in <a href="#ucfd-s04">How exact the numbers are</a>.</p>
+      <p>What the tool could support, on its own terms, is the <em>qualitative</em> half of a
+        benchmark: load the case geometry, solve the three directions, and ask whether the windy and
+        calm zones fall where the tunnel found them. That is the claim this page makes for the
+        output &mdash; a pattern, not a point value &mdash; so it is the claim a comparison could
+        fairly test. It is an exercise, not a validation, and the distinction is the whole of this
+        section.</p>
     </div>
   </div>
 
@@ -1011,9 +1058,55 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       resolution, wall treatment, directional weighting, validation. Read alongside <a href="#ucfd-s04">How exact the numbers are</a> and <a href="#ucfd-s07">Limitations of this page</a> to
       see the distance between that and this tool.</span></p>
 
-    <p class="cs-cite">Every entry above has been checked against the published record, with one
-      exception: the Lawson report of 1990 is unpublished and has no publisher page, so its
-      details and its attribution both remain open. Its entry says so.</p>
+    <p class="cs-ref">Architectural Institute of Japan. <i>Guidebook for CFD predictions of urban
+      wind environment</i> &mdash; benchmark database.
+      <a href="https://www.aij.or.jp/jpn/publish/cfdguide/index_e.htm" target="_blank" rel="noopener">https://www.aij.or.jp/jpn/publish/cfdguide/index_e.htm</a><br>
+      <span class="cs-mono"><b>The measured flows this tool has never been compared with.</b>
+      Thirteen wind-tunnel cases, A to M. Each one's spreadsheet carries the geometry, the inflow
+      boundary conditions, the measuring points and the measured results, and several add CAD;
+      the <i>guidebook</i> is sold, the <b>case data are free</b>. Case C &mdash; a
+      3&nbsp;&times;&nbsp;3 array of blocks measured at 120 pedestrian-height points, in three
+      centre variants and three wind directions, as the jifto entry below describes it &mdash; is
+      the one that would fit inside this tool's 240&nbsp;m domain.
+      <a href="#ucfd-s07">Limitations of this page</a> says what using it would still
+      require.</span></p>
+
+    <p class="cs-ref">Uehara, K., Wakamatsu, S., &amp; Ooka, R. (2003). Studies on critical Reynolds
+      number indices for wind-tunnel experiments on flow within urban areas.
+      <i>Boundary-Layer Meteorology, 107</i>(2), 353&ndash;370.
+      <a href="https://doi.org/10.1023/A:1022162807729" target="_blank" rel="noopener">https://doi.org/10.1023/A:1022162807729</a><br>
+      <span class="cs-mono">Where the Reynolds-independence assumption is actually tested rather
+      than asserted: how low a Reynolds number an urban array can be measured at before the flow
+      pattern stops holding. The tool rests on that assumption throughout and names no source for
+      it; this is the paper that sets its bounds. Read against the lattice Reynolds number in
+      <a href="#ucfd-s02">Units, scaling and the domain</a>.</span></p>
+
+    <p class="cs-ref">Tominaga, Y., Mochida, A., Yoshie, R., Kataoka, H., Nozu, T., Yoshikawa, M.,
+      &amp; Shirasawa, T. (2008). AIJ guidelines for practical applications of CFD to pedestrian
+      wind environment around buildings. <i>Journal of Wind Engineering and Industrial
+      Aerodynamics, 96</i>(10&ndash;11), 1749&ndash;1761.
+      <a href="https://doi.org/10.1016/j.jweia.2008.02.058" target="_blank" rel="noopener">https://doi.org/10.1016/j.jweia.2008.02.058</a><br>
+      <span class="cs-mono">The guidance the paragraph above admits this page does not apply:
+      domain size, cell count per building, near-ground resolution, inflow profile, convergence.
+      It is the companion to the database &mdash; the cases are what you compare against, this is
+      how you are expected to have set the comparison up.</span></p>
+
+    <p class="cs-ref">Nflection ApS (2026). <i>Wind validation</i> [jifto Wind technical report].
+      <a href="https://jifto.com/validation/wind/" target="_blank" rel="noopener">https://jifto.com/validation/wind/</a><br>
+      <span class="cs-mono"><b>A vendor's own report, not peer-reviewed</b> &mdash; the one entry on
+      this page that cannot be checked against the published record, and listed anyway for a
+      reason no published paper covers: it validates a <b>D3Q19 lattice-Boltzmann solver</b>, the
+      same family as this tool's, against AIJ Case C and a second building array, publishes the
+      geometry openly, and is the source of the Case C description given above. It is the closest thing to a worked answer to &ldquo;what would validating
+      <em>this</em> actually take&rdquo;, and its resolution rule &mdash; cells no larger than a
+      third of the measurement height &mdash; is the one this tool misses by the widest
+      margin.</span></p>
+
+    <p class="cs-cite">Every entry above has been checked against the published record, with two
+      exceptions, both of which say so on their own entry: the Lawson report of 1990 is unpublished
+      and has no publisher page, so its details and its attribution both remain open; and the jifto
+      report is a vendor's self-published web document, with no journal, volume or DOI to check it
+      against.</p>
   </div>
 
 </div>

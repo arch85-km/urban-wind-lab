@@ -581,8 +581,21 @@
     <div class="cs-sechead"><span class="cs-secnum"></span><h2>Where it stops</h2></div>
     <div class="cs-secbody">
       <p>There is no wind-tunnel comparison, no benchmark case and no grid-independence study, in
-        the tool or anywhere behind it. Its output has never been checked against a measured flow.
-        For anything that must inform a real decision about a real site, use a validated solver and
+        the tool or anywhere behind it. Its output has never been checked against a measured flow.</p>
+      <p>Not for want of data. The Architectural Institute of Japan publishes thirteen benchmark
+        cases with their geometry, inflow conditions, measuring points and tunnel results in freely
+        downloadable spreadsheets, and one of them &mdash; a 3&nbsp;&times;&nbsp;3 array of blocks
+        measured at pedestrian height &mdash; fits inside the 240&nbsp;m domain. <b>Three properties
+        of the tool, not the availability of data, are what stand in the way:</b> it reports a single
+        instant rather than a mean, so there is nothing of the right kind to compare with a measured
+        average; it exports a PNG rather than numbers, so there is no value to read at a named
+        measurement position; and it samples the pedestrian plane at the first cell centre, half a
+        cell up, which makes the cell <b>exactly six times</b> the size the
+        third-of-the-measurement-height rule in the jifto report below allows &mdash; identically at
+        all three presets, by construction. The first of those is a difference in kind, not in accuracy. What the tool
+        <em>could</em> fairly be asked is the qualitative half: do the windy and calm zones fall
+        where the tunnel found them. That is an exercise, not a validation.</p>
+      <p>For anything that must inform a real decision about a real site, use a validated solver and
         a wind engineer. This tool is built to teach why wind behaves as it does around buildings,
         and it is deliberately small enough to run in a browser &mdash; which is the source of
         every limitation above.</p>
@@ -676,9 +689,33 @@
       Environment</i>, 100, pp. 50&ndash;81. &mdash; what a real pedestrian-wind study involves:
       domain sizing, grid resolution, wall treatment, directional weighting, validation.</p>
 
-    <p class="cs-cite">Every entry above has been checked against the published record, with one
-      exception: the Lawson report of 1990 is unpublished and has no publisher page, so its details
-      and its attribution both remain open.</p>
+    <p class="cs-ref">Architectural Institute of Japan. <i>Guidebook for CFD predictions of urban
+      wind environment</i> &mdash; benchmark database.
+      <a href="https://www.aij.or.jp/jpn/publish/cfdguide/index_e.htm" target="_blank" rel="noopener">aij.or.jp</a>
+      &mdash; the measured flows this tool has never been compared with. Thirteen wind-tunnel cases;
+      the guidebook is sold, the case data are free.</p>
+    <p class="cs-ref">Uehara, K., Wakamatsu, S. &amp; Ooka, R. (2003). &lsquo;Studies on critical
+      Reynolds number indices for wind-tunnel experiments on flow within urban areas&rsquo;,
+      <i>Boundary-Layer Meteorology</i>, 107(2), pp. 353&ndash;370.
+      <a href="https://doi.org/10.1023/A:1022162807729" target="_blank" rel="noopener">doi:10.1023/A:1022162807729</a>
+      &mdash; where the Reynolds-independence assumption is tested rather than asserted. The tool
+      rests on it throughout and names no source for it.</p>
+    <p class="cs-ref">Tominaga, Y. et al. (2008). &lsquo;AIJ guidelines for practical applications of
+      CFD to pedestrian wind environment around buildings&rsquo;, <i>Journal of Wind Engineering and
+      Industrial Aerodynamics</i>, 96(10&ndash;11), pp. 1749&ndash;1761.
+      <a href="https://doi.org/10.1016/j.jweia.2008.02.058" target="_blank" rel="noopener">doi:10.1016/j.jweia.2008.02.058</a>
+      &mdash; the guidance this page does not apply: domain size, cells per building, near-ground
+      resolution, inflow, convergence. The companion to the database above.</p>
+    <p class="cs-ref">Nflection ApS (2026). <i>Wind validation</i> [jifto Wind technical report].
+      <a href="https://jifto.com/validation/wind/" target="_blank" rel="noopener">jifto.com</a>
+      &mdash; <b>a vendor's own report, not peer-reviewed</b>, and listed anyway: it validates a
+      D3Q19 lattice-Boltzmann solver, the same family as this tool's, against the AIJ cases, and so
+      is the closest thing to a worked answer to what validating this would take.</p>
+
+    <p class="cs-cite">Every entry above has been checked against the published record, with two
+      exceptions, both noted on their own entry: the Lawson report of 1990 is unpublished and has no
+      publisher page, so its details and its attribution both remain open; and the jifto report is a
+      vendor's self-published web document, with no journal, volume or DOI to check it against.</p>
 
   </div>
 
