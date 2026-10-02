@@ -20,9 +20,9 @@ identifiers:
     description: "Concept DOI — always resolves to the latest version"
   - type: doi
     value: "10.5281/zenodo.22797138"
-    description: "Version DOI — this release, 1.0.0"
-version: 1.0.0
-date-released: "2026-09-15"
+    description: "Version DOI — 1.0.0; 1.0.1's is minted when this release is archived"
+version: 1.0.1
+date-released: "2026-10-02"
 license: MIT
 repository-code: "https://github.com/arch85-km/urban-wind-lab"
 url: "https://karam.me.uk/applications/urban-wind-lab/"

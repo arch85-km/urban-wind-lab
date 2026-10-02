@@ -6,7 +6,7 @@ Interactive lattice-Boltzmann wind analysis for a 3D urban context, built for te
 architecture students. One self-contained HTML file: no build step, no dependencies, no
 network requests. Open it in a browser and it solves.
 
-**Version 1.0.0 · 15 September 2026**
+**Version 1.0.1 · 2 October 2026**
 
 **[Open the tool](https://karam.me.uk/applications/urban-wind-lab/)** ·
 **[Method notes](docs/urban-wind-lab-method-notes.html)**
@@ -64,7 +64,7 @@ citing any figure.
 ## Citing it
 
 > Al-Obaidi, K. M. (2026). *Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
-> analysis* (Version 1.0.0) [Computer software]. Zenodo.
+> analysis* (Version 1.0.1) [Computer software]. Zenodo.
 > https://doi.org/10.5281/zenodo.22797138
 
 ```bibtex
@@ -73,7 +73,7 @@ citing any figure.
   title     = {Urban Wind Lab: An interactive lattice-Boltzmann tool
                for wind analysis},
   year      = {2026},
-  version   = {1.0.0},
+  version   = {1.0.1},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.22797138},
   url       = {https://karam.me.uk/applications/urban-wind-lab/},
@@ -81,9 +81,11 @@ citing any figure.
 }
 ```
 
-That DOI names this release. To cite the software in general rather than version 1.0.0, use the
-concept DOI [10.5281/zenodo.22797137](https://doi.org/10.5281/zenodo.22797137), which always resolves to the
-newest version.
+**That DOI is 1.0.0's.** Zenodo mints a version DOI when it archives a release, so 1.0.1's does
+not exist until this one is deposited; it replaces the one above the moment it does. To cite the
+software in general rather than any single version, use the concept DOI
+[10.5281/zenodo.22797137](https://doi.org/10.5281/zenodo.22797137), which always resolves to the
+newest version and is stable in the meantime.
 
 Report the wind direction, the terrain roughness, the resolution preset and the sampled
 height the panel shows alongside any figure taken from the tool. All four change the numbers.
