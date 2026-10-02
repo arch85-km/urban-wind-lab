@@ -789,7 +789,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
             <option value="1" selected>Urban &middot; z&#8320; 1.0 m</option>
             <option value="2">Dense city centre &middot; z&#8320; 2.0 m</option>
           </select>
-          <div class="ucfd-hint">Sets the logarithmic inlet profile U(z) = U&#8321;&#8320;&nbsp;&middot;&nbsp;ln(z/z&#8320;)&nbsp;/&nbsp;ln(10/z&#8320;)</div>
+          <div class="ucfd-hint">Sets the logarithmic inlet profile U(z) = U&#8321;&#8320;&nbsp;&middot;&nbsp;ln((z&nbsp;+&nbsp;z&#8320;)/z&#8320;)&nbsp;/&nbsp;ln((10&nbsp;+&nbsp;z&#8320;)/z&#8320;). The +&nbsp;z&#8320; offset keeps it defined at ground level.</div>
         </div>
 
         <div class="ucfd-field">
@@ -1023,7 +1023,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
     </details>
 
     <details class="ucfd-group" open>
-      <summary>Pedestrian level &middot; 1.5 m</summary>
+      <summary id="ucfd-pedhead" title="The plane is drawn at 1.5 m, but the statistics come from the nearest lattice cell centre, which moves with the resolution preset">Pedestrian level &middot; <span id="ucfd-pedz">1.5</span>&nbsp;m</summary>
       <div class="ucfd-body">
         <div class="ucfd-stats">
           <div class="ucfd-stat"><div class="ucfd-statlabel">Mean speed</div><div class="ucfd-statvalue ucfd-mono" id="ucfd-stat-mean">&mdash;<small>m/s</small></div></div>
@@ -3335,6 +3335,13 @@ function renderStats() {
   $('ucfd-stat-max').innerHTML = fmt(s.max, 1) + '<small>m/s</small>';
   $('ucfd-stat-amp').innerHTML = fmt(s.amplification, 2) + '<small>&times;</small>';
   $('ucfd-stat-calm').innerHTML = fmt(s.calmPct, 0) + '<small>%</small>';
+  /* The heading used to read a flat "1.5 m" whatever the resolution. The plane
+     is drawn at 1.5 m, but every figure under this heading is sampled at the
+     nearest cell centre - 1.07 m on Detailed, 1.88 m on Fast - and that is the
+     number a student has to report. It was computed here all along and thrown
+     away. */
+  var pz = $('ucfd-pedz');
+  if (pz && isFinite(s.height)) { pz.textContent = fmt(s.height, 2); }
 
   var html = '';
   for (var i = 0; i < LAWSON.length; i++) {
@@ -4301,6 +4308,11 @@ var TOUR = [
   { el: 'ucfd-stage', title: 'Probe and present', text: 'Click anywhere to pin a probe, click again for a second one and compare the two. Export a captioned PNG for your report — it records the wind, the lattice and the convergence residual.' }
 ];
 var tourStep = 0;
+/* What the drawers were doing before the tour started. tourReveal() opens
+   whichever one holds each step's target, and on a phone those are full-screen
+   overlays, so closing the tour has to put them back - otherwise the tour ends
+   with the controls or the results sitting over the model. */
+var tourDrawers = null;
 /* The tour opens on every launch. Only the explicit opt-out stops it, so
    skipping it once cannot switch it off for the next person at this machine.
    Private mode simply means it always shows. */
@@ -4315,6 +4327,8 @@ function setTourOptOut(off) {
 }
 function openTour() {
   tourStep = 0;
+  tourDrawers = { rail: $('ucfd-rail').classList.contains('is-open'),
+                  panel: $('ucfd-panel').classList.contains('is-open') };
   $('ucfd-tour-optout').checked = tourOptedOut();
   $('ucfd-tour').className = 'ucfd-tour is-open';
   $('ucfd-tour').setAttribute('aria-hidden', 'false');
@@ -4323,6 +4337,15 @@ function openTour() {
 function closeTour() {
   $('ucfd-tour').className = 'ucfd-tour';
   $('ucfd-tour').setAttribute('aria-hidden', 'true');
+  /* Put the drawers back where the tour found them. Only where they are
+     overlays: on a wide screen the rail is a grid column and is-open means
+     nothing there. */
+  if (tourDrawers) {
+    var small = root.classList.contains('ucfd-w-sm');
+    if (small) { $('ucfd-rail').classList.toggle('is-open', tourDrawers.rail); }
+    if (small || root.classList.contains('ucfd-w-md')) { setPanelOpen(tourDrawers.panel); }
+    tourDrawers = null;
+  }
 }
 /* Bring a tour target into view before measuring it: open the drawer it lives
    in, expand its group and scroll it inside the rail. Without this the target

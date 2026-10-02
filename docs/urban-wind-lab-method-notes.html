@@ -255,7 +255,8 @@
         guideline (see <a href="#ucfd-s07">Limitations of this page</a>).</li>
       <li><b>"Pedestrian level · 1.5 m" is a cell, not a height.</b> The plane is drawn at exactly
         1.5 m, but the statistics come from the nearest cell centre — 1.07 m to 1.88 m depending on
-        resolution. And the comfort classes are Lawson thresholds applied to a <em>mean</em> speed
+        resolution. The panel heading shows the height actually sampled; report that number.
+        And the comfort classes are Lawson thresholds applied to a <em>mean</em> speed
         for <em>one</em> direction: no gust factor, no exceedance statistics, no directional
         weighting. They are indicative labels, not a Lawson assessment.</li>
     </ol>
@@ -497,7 +498,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
           <tr><td>Balanced</td><td class="cs-d">1.36 m</td></tr>
           <tr><td>Detailed</td><td class="cs-d">1.07 m</td></tr>
         </tbody>
-        <caption>So a figure labelled "pedestrian level · 1.5 m" is taken somewhere between 1.07 m and 1.88 m, and it moves when a student changes preset. The panel does <b>not</b> show it: the true height is computed as <span class="cs-mono">state.stats.height</span> and then never rendered, the heading staying at a fixed "1.5 m". Read your preset off this table and report that height instead.</caption>
+        <caption>So a figure labelled "pedestrian level · 1.5 m" is taken somewhere between 1.07 m and 1.88 m, and it moves when a student changes preset. The panel heading shows it — "Pedestrian level · 1.36 m" on the default preset, following the resolution as it changes. Report that number rather than the 1.5 m the plane is drawn at.</caption>
       </table></div>
       <p class="cs-note">One thing that is done carefully: the mean, max, amplification, calm fraction
         and Lawson distribution are computed over the <b>area of interest</b> — the model bounding box
