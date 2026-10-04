@@ -53,12 +53,30 @@ for (const dir of ['docs', '.']) {
 }
 ok('the method notes were found', docs.length > 0, docs.join(', ') || 'none');
 
-/* The concept DOI is the one CITATION.cff carries as its top-level `doi:`;
-   citing it in place of a version DOI is what an un-finished release looks
-   like, and it is easy to leave behind. */
+/* The concept DOI is the one CITATION.cff carries as its top-level `doi:`. */
 const conceptDoi = cff
   ? ((cff.match(/^doi:[ \t]*(\S+)/m) || [])[1] || '').replace(/^["']|["']$/g, '') || null
   : null;
+
+/* Whether a version DOI for THIS release exists yet.
+   Zenodo mints one only when the release is archived, which happens after the
+   tag is cut. Between bumping the version and archiving it there is no version
+   DOI to cite, and the documents must fall back to the concept DOI.
+   This check used to read "cites a version DOI, not the concept DOI" flatly,
+   which made that unavoidable interval look like an error and told whoever saw
+   it to go and put a DOI that does not exist into a citation. The identifier's
+   description names the release it is frozen on - "Version DOI - 1.0.1" - so
+   the rule is derived from that instead of assumed. */
+const idEntries = cff
+  ? [...cff.matchAll(/value:[ \t]*(10\.5281\/zenodo\.\d+)\s*\n\s*description:[ \t]*"([^"]*)"/g)]
+      .map((m) => ({ doi: m[1], desc: m[2] }))
+  : [];
+const verRe = new RegExp('version doi\\s*[\\u2014-]\\s*' +
+                         String(VERSION).replace(/\./g, '\\.') + '(?!\\d)', 'i');
+const releaseDoi = (idEntries.find((e) => verRe.test(e.desc)) || {}).doi || null;
+ok(`a version DOI for ${VERSION} ${releaseDoi ? 'is declared' : 'is not minted yet'}`,
+  true,
+  releaseDoi || `documents cite the concept DOI ${conceptDoi} until Zenodo mints one`);
 
 for (const doc of docs) {
   const html = read(doc);
@@ -67,9 +85,10 @@ for (const doc of docs) {
 
   const bibDoi = (html.match(/doi\s*=\s*\{([^}]+)\}/) || [])[1];
   if (bibDoi) {
-    ok(`${doc} cites a version DOI, not the concept DOI`,
-      !!conceptDoi && bibDoi.trim() !== conceptDoi.trim(),
-      `BibTeX doi ${bibDoi}, concept ${conceptDoi}`);
+    const want = releaseDoi || conceptDoi;
+    ok(`${doc} cites ${releaseDoi ? 'this release\'s version DOI' : 'the concept DOI, as it must until one is minted'}`,
+      !!want && bibDoi.trim() === want.trim(),
+      `BibTeX doi ${bibDoi}, wanted ${want}`);
     ok(`${doc} cites a DOI that CITATION.cff declares`,
       cffDois.some((d) => bibDoi.includes(d)),
       `${bibDoi} vs ${cffDois.join(', ') || 'none declared'}`);
