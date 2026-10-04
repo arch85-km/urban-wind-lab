@@ -68,7 +68,11 @@ const conceptDoi = cff
    description names the release it is frozen on - "Version DOI - 1.0.1" - so
    the rule is derived from that instead of assumed. */
 const idEntries = cff
-  ? [...cff.matchAll(/value:[ \t]*(10\.5281\/zenodo\.\d+)\s*\n\s*description:[ \t]*"([^"]*)"/g)]
+  // Quotes are optional in CFF and both styles are in use across these repos.
+  // Without the `"?` this matched nothing in a quoted file, which left the guard
+  // silently certain no version DOI had been minted - a check passing on an empty
+  // list rather than on the facts.
+  ? [...cff.matchAll(/value:[ \t]*"?(10\.5281\/zenodo\.\d+)"?\s*\n\s*description:[ \t]*"?([^"\n]*?)"?[ \t]*$/gm)]
       .map((m) => ({ doi: m[1], desc: m[2] }))
   : [];
 const verRe = new RegExp('version doi\\s*[\\u2014-]\\s*' +
