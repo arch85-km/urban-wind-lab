@@ -967,6 +967,31 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <div class="ucfd-kv"><span>Version</span><span id="ucfd-version">&mdash;</span></div>
       </div>
     </details>
+
+    <details class="ucfd-group" id="ucfd-g-about">
+      <summary>
+        <svg class="ucfd-gicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Licence &amp; credits
+      </summary>
+      <div class="ucfd-body">
+        <div class="ucfd-kv"><span>This release</span><span id="ucfd-release">&mdash;</span></div>
+        <div class="ucfd-note">&copy; Karam Al-Obaidi. The application is licensed <b>MIT</b> and the
+          documentation <b>CC BY 4.0</b> &mdash; use it, adapt it, build on it, for any purpose
+          including commercially. Credit is the only condition.</div>
+        <div class="ucfd-note">A model you analyse here is <b>yours</b>. Neither licence claims
+          anything over your geometry, your results or the images you export.</div>
+        <div class="ucfd-note">No third&#8209;party code is bundled: the solver, the renderer and the
+          interface are all written in this file, and nothing is fetched at run time. The comfort
+          bands follow the Lawson LDDC criteria; the method notes say which document and why the
+          attribution is contested.</div>
+        <div class="ucfd-hint">Quote the <b>version and date above</b> alongside any figure you
+          publish, with the wind direction, the terrain roughness, the resolution preset and the
+          sampled height the panel shows. The solver has changed between releases, and two runs of
+          the same model on different releases can differ.</div>
+        <div class="ucfd-pre" id="ucfd-cite"></div>
+        <div class="ucfd-btnrow"><button class="ucfd-btn" type="button" id="ucfd-cite-copy">Copy the citation</button></div>
+      </div>
+    </details>
   </aside>
 
   <!-- ============================= STAGE ============================= -->
@@ -4575,6 +4600,21 @@ function bindUI() {
   on($('ucfd-shot'), 'click', exportPNG);
   refreshShotSizes();
   $('ucfd-version').textContent = releaseLabel();
+  $('ucfd-release').textContent = releaseLabel();
+  /* The citation is built from the same VERSION constant the rest of the file
+     uses, so it cannot drift from the release it names. */
+  var CITE = 'Al-Obaidi, K. M. (2026). Urban Wind Lab: An interactive\n' +
+             'lattice-Boltzmann tool for wind analysis (Version ' + VERSION + ')\n' +
+             '[Computer software]. Zenodo.\n' +
+             'https://doi.org/10.5281/zenodo.22797137';
+  $('ucfd-cite').textContent = CITE;
+  $('ucfd-cite-copy').addEventListener('click', function () {
+    var btn = this;
+    navigator.clipboard.writeText(CITE).then(function () {
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = 'Copy the citation'; }, 1600);
+    }, function () { btn.textContent = 'Select it and copy'; });
+  });
   on($('ucfd-tourskip'), 'click', closeTour);
   on($('ucfd-tour-optout'), 'change', function (e) { setTourOptOut(e.target.checked); });
   on($('ucfd-tourveil'), 'click', closeTour);
