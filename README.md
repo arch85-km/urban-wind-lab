@@ -105,4 +105,10 @@ relicense; and EPW weather files carry the terms of whoever published them.
 
 The application bundles no third-party code.
 
+**The cube device** used as this project's icon and logo is the author's own
+mark. It is not covered by the MIT licence or by CC BY 4.0, and neither grants
+any right to use it; all rights in it are reserved. Redistribute the work under
+its licences with the mark left intact, but do not adopt it as your own badge or
+use it in a way that suggests your work is this project.
+
 © Karam Al-Obaidi
