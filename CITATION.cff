@@ -21,6 +21,9 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.23108263"
     description: "Version DOI — 1.0.1; 1.1.0's is minted when this release is archived"
+  - type: doi
+    value: "10.5281/zenodo.22797138"
+    description: "Version DOI — 1.0.0"
 version: 1.1.0
 date-released: "2026-10-04"
 license: MIT

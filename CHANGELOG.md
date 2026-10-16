@@ -50,6 +50,7 @@ any figure quoted from 1.0.0 still reproduces.
 
 ## [1.0.0](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.0.0) — 16 September 2026
 
+Version DOI [10.5281/zenodo.22797138](https://doi.org/10.5281/zenodo.22797138).
 First public release.
 
 - A three-dimensional D3Q19 lattice-Boltzmann solve in a Web Worker, with a
