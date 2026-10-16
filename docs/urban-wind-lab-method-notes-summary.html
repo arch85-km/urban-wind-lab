@@ -261,7 +261,6 @@
 /* long addresses in the references break rather than push the page sideways on a phone */
 .cs-doc a{overflow-wrap:anywhere;}
 /* a column of figures has its heading over the figures, not at the far edge */
-.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(1), tbody td.cs-d:nth-child(1)) thead th:nth-child(1),
 .cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(2), tbody td.cs-d:nth-child(2)) thead th:nth-child(2),
 .cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(3), tbody td.cs-d:nth-child(3)) thead th:nth-child(3),
 .cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(4), tbody td.cs-d:nth-child(4)) thead th:nth-child(4),
@@ -269,6 +268,11 @@
 .cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(6), tbody td.cs-d:nth-child(6)) thead th:nth-child(6),
 .cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(7), tbody td.cs-d:nth-child(7)) thead th:nth-child(7),
 .cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(8), tbody td.cs-d:nth-child(8)) thead th:nth-child(8){text-align:right;}
+/* the first column names the row, so it reads from the left like the text, even when it holds a number (unless its heading is marked as a figure) */
+.cs-doc .cs-tbl table:not(:has(thead th.cs-n:first-child)) tr > :first-child{text-align:left;}
+/* the site theme stripes table rows and tints them on hover; the notes keep one even tint */
+.cs-doc .cs-tbl th,.cs-doc .cs-tbl td{background-color:transparent;}
+/* formulas are <pre>, not <div>: the site's HTML minifier leaves <pre> alone but collapses the line breaks in a <div> */
 /* no side padding of its own: the Elementor section sets the margins, so the notes line up with the blocks above them on every screen */
 .cs-doc{padding-left:0;padding-right:0;}
 /* and no width cap of its own: on a wide screen a capped, centred block starts further in than the blocks above it */
