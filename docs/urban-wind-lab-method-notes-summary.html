@@ -262,6 +262,8 @@
 .cs-doc a{overflow-wrap:anywhere;}
 /* no side padding of its own: the Elementor section sets the margins, so the notes line up with the blocks above them on every screen */
 .cs-doc{padding-left:0;padding-right:0;}
+/* and no width cap of its own: on a wide screen a capped, centred block starts further in than the blocks above it */
+.cs-doc,.cs-doc.cs-auto-dark{max-width:none;margin-left:0;margin-right:0;}
 /* text runs the full width of the column, as the exercises do */
 .cs-doc,.cs-doc.cs-auto-dark{--cs-measure:none;}
 /* the title and text as the site's own page headings and body set them */
