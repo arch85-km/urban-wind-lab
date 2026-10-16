@@ -60,6 +60,21 @@ citing any figure.
 | `docs/urban-wind-lab-method-notes.html` | Method notes, styled for an Elementor HTML widget |
 | `docs/urban-wind-lab-method-notes-summary.html` | A short companion to the above, with diagrams for the exercises. Same widget |
 | `docs/urban-wind-lab-technical-notes.md` | The solver, units, boundaries and exercises in Markdown |
+| `tools/check-release-metadata.mjs` | The release guard: the version, date and DOI agree everywhere they are written |
+| `ARCHITECTURE.md` · `DESIGN.md` · `CHANGELOG.md` | How the code is organised, why it is the way it is, and what each release changed |
+
+## How this was developed
+
+I design the application: I define the problem and the scope, and choose the methods and the
+sources. I test it in use, find its bugs, and decide what is released and when. The code is
+written with an AI coding assistant working to my specification and direction: it writes most
+of the code, drafts the documentation for my review, diagnoses bugs and proposes fixes that I
+test, and writes and runs the release checks. I retain full intellectual responsibility for the
+design, the methods and the results, including any errors.
+
+The reasons behind the design are in [`DESIGN.md`](DESIGN.md), the map of the code is in
+[`ARCHITECTURE.md`](ARCHITECTURE.md), and what changed in each release is in
+[`CHANGELOG.md`](CHANGELOG.md).
 
 ## Citing it
 
