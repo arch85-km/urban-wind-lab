@@ -25,8 +25,8 @@ release has not been cut, so there is no version DOI yet.
   both styles, and checks the app's release stamp, the README and every date
   as well: 18 checks.
 - **Docs** — `ARCHITECTURE.md`, `CHANGELOG.md` and `DESIGN.md` added, and a
-  statement of how the app is developed added to the README and the method
-  notes.
+  statement of how the app is developed added to the README, the method notes
+  and a new `.zenodo.json`, which also carries the licence notes to Zenodo.
 
 ## [1.0.1](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.0.1) — 2 October 2026
 

@@ -198,6 +198,7 @@ works without them:
 urban-wind-lab.html          the application (the deliverable)
 README.md                    what it is, how to use and cite it, the licence
 CITATION.cff                 citation metadata: version, date, concept and version DOIs
+.zenodo.json                 the metadata Zenodo archives each release with
 LICENSE                      MIT
 docs/
   urban-wind-lab-method-notes.html          method notes (Elementor HTML widget)
@@ -208,14 +209,16 @@ tools/
 ARCHITECTURE.md · CHANGELOG.md · DESIGN.md
 ```
 
-There is no `.zenodo.json`, so Zenodo builds each record from `CITATION.cff`.
+`.zenodo.json` holds the metadata Zenodo uses for each archived release,
+including the licence notes and how the app was developed. Zenodo reads it in
+preference to `CITATION.cff`, so the guard checks that its version agrees.
 
 ## Testing and release
 
 There is no automated test suite.
 `node tools/check-release-metadata.mjs` is the release guard. It runs 18
 checks that the version, the date and the DOI agree everywhere they are
-written: `CITATION.cff`, the app's `VERSION` and `RELEASED`, the README's
+written: `CITATION.cff`, `.zenodo.json`, the app's `VERSION` and `RELEASED`, the README's
 stamp and citations, and each method-notes page's byline and BibTeX. Until
 Zenodo mints a release's version DOI, the citations must carry the concept
 DOI; the guard derives that rule from the identifier descriptions in

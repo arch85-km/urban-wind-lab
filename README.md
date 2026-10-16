@@ -60,6 +60,7 @@ citing any figure.
 | `docs/urban-wind-lab-method-notes.html` | Method notes, styled for an Elementor HTML widget |
 | `docs/urban-wind-lab-method-notes-summary.html` | A short companion to the above, with diagrams for the exercises. Same widget |
 | `docs/urban-wind-lab-technical-notes.md` | The solver, units, boundaries and exercises in Markdown |
+| `.zenodo.json` | The metadata Zenodo archives each release with, including the licence notes |
 | `tools/check-release-metadata.mjs` | The release guard: the version, date and DOI agree everywhere they are written |
 | `ARCHITECTURE.md` · `DESIGN.md` · `CHANGELOG.md` | How the code is organised, why it is the way it is, and what each release changed |
 

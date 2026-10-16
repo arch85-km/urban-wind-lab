@@ -1,0 +1,23 @@
+{
+  "upload_type": "software",
+  "title": "Urban Wind Lab: An interactive lattice-Boltzmann tool for wind analysis",
+  "version": "1.1.0",
+  "language": "eng",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Al-Obaidi, Karam M.",
+      "affiliation": "Sheffield Hallam University",
+      "orcid": "0000-0002-4379-6964"
+    }
+  ],
+  "description": "<p>Interactive lattice-Boltzmann wind analysis for 3D urban context, built for teaching architecture students. A D3Q19 lattice-Boltzmann solver with a Smagorinsky sub-grid model and an atmospheric boundary layer log-law inlet runs in the browser, reporting wind speed, amplification, pressure coefficient and Lawson pedestrian comfort classes. One self-contained HTML file with no build step and no dependencies.</p>",
+  "notes": "Dual-licensed. The application (urban-wind-lab.html, in its entirety) is released under the MIT Licence. The documentation and teaching material (README.md, docs/, the method notes pages, the exercises and figures) is released under CC BY 4.0. The cube device — the icon and logo — is the author's own mark. It is not covered by the MIT licence or by CC BY 4.0, and neither grants any right to use it; all rights in it are reserved. Keep the mark on a redistributed copy, but do not adopt it as your own badge.\n\nHow this was developed. I designed the application: I defined the problem and the scope, and chose the methods and the sources. I tested it in use, found its bugs, and decided what was released and when. The code was written with an AI coding assistant working to my specification and direction: it wrote most of the code, drafted the documentation for my review, diagnosed bugs and proposed fixes that I then tested, and wrote and ran the release checks. I retain full intellectual responsibility for the design, the methods and the results, including any errors.",
+  "keywords": [
+    "lattice-Boltzmann",
+    "computational fluid dynamics",
+    "pedestrian wind comfort",
+    "urban design",
+    "architecture teaching"
+  ]
+}
