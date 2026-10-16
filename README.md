@@ -65,7 +65,7 @@ citing any figure.
 
 > Al-Obaidi, K. M. (2026). *Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
 > analysis* (Version 1.1.0) [Computer software]. Zenodo.
-> https://doi.org/10.5281/zenodo.23108263
+> https://doi.org/10.5281/zenodo.22797137
 
 ```bibtex
 @software{alobaidi2026urbanwindlab,
@@ -75,7 +75,7 @@ citing any figure.
   year      = {2026},
   version   = {1.1.0},
   publisher = {Zenodo},
-  doi       = {10.5281/zenodo.23108263},
+  doi       = {10.5281/zenodo.22797137},
   url       = {https://karam.me.uk/applications/urban-wind-lab/},
   note      = {Code MIT licensed; accompanying material CC BY 4.0}
 }
