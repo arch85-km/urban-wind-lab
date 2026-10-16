@@ -281,6 +281,15 @@
 .cs-doc .cs-secnum:empty{display:none;}
 /* long addresses in the references break rather than push the page sideways on a phone */
 .cs-doc a{overflow-wrap:anywhere;}
+/* a column of figures has its heading over the figures, not at the far edge */
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(1), tbody td.cs-d:nth-child(1)) thead th:nth-child(1),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(2), tbody td.cs-d:nth-child(2)) thead th:nth-child(2),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(3), tbody td.cs-d:nth-child(3)) thead th:nth-child(3),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(4), tbody td.cs-d:nth-child(4)) thead th:nth-child(4),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(5), tbody td.cs-d:nth-child(5)) thead th:nth-child(5),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(6), tbody td.cs-d:nth-child(6)) thead th:nth-child(6),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(7), tbody td.cs-d:nth-child(7)) thead th:nth-child(7),
+.cs-doc .cs-tbl table:has(tbody td.cs-n:nth-child(8), tbody td.cs-d:nth-child(8)) thead th:nth-child(8){text-align:right;}
 /* no side padding of its own: the Elementor section sets the margins, so the notes line up with the blocks above them on every screen */
 .cs-doc{padding-left:0;padding-right:0;}
 /* and no width cap of its own: on a wide screen a capped, centred block starts further in than the blocks above it */
@@ -374,7 +383,7 @@
         second moment of the non-equilibrium distribution, the Hou et al. formulation, so eddy
         viscosity appears where the flow is sheared:</p>
       <div class="cs-formula">τ = ½( τ₀ + √( τ₀² + 18√2 · C² · |Π| / ρ ) )      <em>C = 0.14</em>
-
+&nbsp;
 τ is clamped to 1.6                              <em>stability guard</em></div>
       <p class="cs-note">There is <b>no wall damping</b> on the Smagorinsky term. Eddy viscosity does
         not vanish correctly at a surface, so near-wall shear is over-damped — one reason ground-level
