@@ -214,12 +214,92 @@
 @media (prefers-reduced-motion:reduce){
   .cs-doc *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
 }
+
+/* ---- Site style ---------------------------------------------------------
+   The rules above are the page's own design system. This block sets it in
+   karam.me.uk's style instead: its palette and red, Poppins headings and
+   labels over Source Serif 4 body text, hairlines rather than boxes, and
+   section titles set as small labels over a hairline, as the applications
+   page sets its tiers ("01 SET UP"). The site has no dark mode, so neither
+   has this page. Monospace is kept for formulas and code only. */
+.cs-doc,
+.cs-doc.cs-auto-dark{
+  --cs-paper:transparent; --cs-surface:#f4f6f9; --cs-surface2:#eceef1;
+  --cs-ink:#12161d; --cs-ink2:#4e5765; --cs-ink3:#5f6875;
+  --cs-rule:rgba(10,12,16,.16); --cs-rule2:rgba(10,12,16,.07);
+  --cs-accent:#b41f1f; --cs-accent-soft:rgba(180,31,31,.07);
+  --cs-ok:#2f6b3f; --cs-ok-soft:transparent;
+  --cs-warn:#8a6410; --cs-warn-soft:transparent;
+  --cs-no:#b41f1f; --cs-no-soft:transparent;
+  --cs-fd:"Poppins",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --cs-fb:"Source Serif 4",Georgia,serif;
+  --cs-fl:"Poppins",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  .cs-doc.cs-auto-dark{
+    --cs-paper:transparent; --cs-surface:#f4f6f9; --cs-surface2:#eceef1;
+    --cs-ink:#333; --cs-ink2:#333; --cs-ink3:#5f6875;
+    --cs-rule:rgba(10,12,16,.16); --cs-rule2:rgba(10,12,16,.07);
+    --cs-accent:#b41f1f; --cs-accent-soft:rgba(180,31,31,.07);
+    --cs-ok:#2f6b3f; --cs-ok-soft:transparent;
+    --cs-warn:#8a6410; --cs-warn-soft:transparent;
+    --cs-no:#b41f1f; --cs-no-soft:transparent;
+  }
+}
+.cs-doc{line-height:1.6;}
+/* labels: small uppercase Poppins, not monospace */
+.cs-doc .cs-eyebrow,.cs-doc .cs-byline,.cs-doc .cs-secnum,.cs-doc h4,.cs-doc .cs-chip,
+.cs-doc .cs-ex-n,.cs-doc .cs-fig figcaption,.cs-doc .cs-tbl thead th,.cs-doc .cs-cite{
+  font-family:var(--cs-fl) !important;}
+.cs-doc .cs-eyebrow{font-size:.72rem;font-weight:500;letter-spacing:.07em;}
+.cs-doc .cs-byline{font-size:.78rem;letter-spacing:0;}
+.cs-doc h4,.cs-doc .cs-tbl thead th{font-weight:500;letter-spacing:.07em;}
+.cs-doc .cs-chip{background:none !important;padding:0;font-weight:500;letter-spacing:.07em;}
+.cs-doc .cs-fig figcaption{text-transform:none;letter-spacing:0;font-size:.8rem;}
+.cs-doc .cs-tbl .cs-n,.cs-doc .cs-tbl .cs-d,.cs-doc .cs-tbl .cs-p{
+  font-family:var(--cs-fb);font-variant-numeric:tabular-nums;}
+.cs-doc h1,.cs-doc h3,.cs-doc .cs-ledger dt{font-weight:500;letter-spacing:-.01em;}
+/* hairlines, not boxes or heavy rules */
+.cs-doc .cs-masthead{border-bottom:1px solid var(--cs-rule);}
+.cs-doc .cs-footer{border-top:1px solid var(--cs-rule);}
+.cs-doc .cs-traps{border:0;background:none;padding:0;}
+.cs-doc .cs-traps h2{font-weight:500;letter-spacing:.07em;color:var(--cs-ink);}
+.cs-doc .cs-ex{border:0;border-top:1px solid var(--cs-rule);background:none;padding:1.3rem 0 0;}
+.cs-doc .cs-ledger{border:0;background:none;}
+.cs-doc .cs-ledger>div{padding:.8rem 0;}
+.cs-doc .cs-tbl{border:0;}
+.cs-doc code{background:var(--cs-surface);color:var(--cs-ink);}
+.cs-doc .cs-fig svg{border:0;background:var(--cs-surface);}
+/* section titles as tier labels: number, title, hairline */
+.cs-doc .cs-sec{padding-top:2.2rem;}
+.cs-doc .cs-sechead{display:flex;gap:10px;align-items:baseline;border-top:0;
+  border-bottom:1px solid var(--cs-rule);padding:0 0 7px;margin-bottom:1.3rem;}
+.cs-doc .cs-secnum{font-size:.72rem;font-weight:600;color:var(--cs-ink);letter-spacing:.04em;}
+.cs-doc .cs-sechead h2{font-family:var(--cs-fl);font-size:.72rem;font-weight:500;
+  letter-spacing:.07em;text-transform:uppercase;line-height:1.4;color:var(--cs-ink3);}
+.cs-doc .cs-secbody{display:block;}
+.cs-doc .cs-secnum:empty{display:none;}
+/* long addresses in the references break rather than push the page sideways on a phone */
+.cs-doc a{overflow-wrap:anywhere;}
+/* text runs the full width of the column, as the exercises do */
+.cs-doc,.cs-doc.cs-auto-dark{--cs-measure:none;}
+/* the title and text as the site's own page headings and body set them */
+.cs-doc,.cs-doc.cs-auto-dark{--cs-ink:#333;--cs-ink2:#333;}
+.cs-doc h1,.cs-doc .cs-title{font-size:2em;font-weight:600;line-height:1.15;letter-spacing:0;color:#333;}
+.cs-doc .cs-standfirst{color:#333;}
+/* each ledger item reads as one block: its tag above its title, not in a side column */
+.cs-doc .cs-ledger>div{grid-template-columns:minmax(0,1fr);}
+.cs-doc .cs-ledger .cs-chip{grid-row:auto;grid-column:1;justify-self:start;margin:0 0 .25rem;}
+.cs-doc .cs-ledger dt,.cs-doc .cs-ledger dd{grid-column:1;}
+/* inline interface terms and figure labels in Poppins too; <code> and formulas stay monospace */
+.cs-doc .cs-mono{font-family:var(--cs-fl);font-size:.9em;}
+.cs-doc .cs-fig svg text{font-family:var(--cs-fl);}
 </style>
 
 <div class="cs-doc">
 
   <div class="cs-masthead">
-    <h1>Urban Wind Lab Method Notes</h1>
+    <h1>Urban Wind Lab &mdash; Method Notes</h1>
     <p class="cs-standfirst">
       What this tool solves, how the solve is scaled to metres and seconds, and — the part that
       matters most when you cite it — <strong>how far the numbers can be trusted</strong>. Treat the
