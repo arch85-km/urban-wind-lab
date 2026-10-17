@@ -311,6 +311,32 @@
 /* inline interface terms and figure labels in Poppins too; <code> and formulas stay monospace */
 .cs-doc .cs-mono{font-family:var(--cs-fl);font-size:.9em;}
 .cs-doc .cs-fig svg text{font-family:var(--cs-fl);}
+/* every section heading in one style, the footer's "Licence": Poppins 500, sentence case,
+   dark, with a hairline under it. The section number, where there is one, matches it in grey. */
+.cs-doc .cs-traps h2,.cs-doc .cs-sechead h2,.cs-doc .cs-footer h3{font-family:var(--cs-fd);
+  font-size:1.32rem;font-weight:500;letter-spacing:-.01em;text-transform:none;color:var(--cs-ink);line-height:1.3;}
+@media (min-width:1280px){.cs-doc .cs-traps h2,.cs-doc .cs-sechead h2,.cs-doc .cs-footer h3{font-size:1.42rem;}}
+.cs-doc .cs-traps h2,.cs-doc .cs-footer h3{border-bottom:1px solid var(--cs-rule);padding-bottom:7px;}
+.cs-doc .cs-secnum{font-family:var(--cs-fd);font-size:1.32rem;font-weight:500;letter-spacing:0;color:var(--cs-ink3);line-height:1.3;}
+@media (min-width:1280px){.cs-doc .cs-secnum{font-size:1.42rem;}}
+/* light grey panels: the three warnings, then every other section, so a long page reads in
+   steps. Each panel reaches a little into the margin, so its text stays in line with the rest;
+   on a phone, where there is no margin to spare, it stays inside the column. */
+.cs-doc .cs-traps,.cs-doc .cs-sec:nth-child(even of .cs-sec){background:var(--cs-surface);border:0;border-radius:4px;
+  margin-left:-1.25rem;margin-right:-1.25rem;padding:1.4rem 1.25rem 1.1rem;}
+/* the same space before every section heading, white or grey: 2rem between sections and
+   1.4rem above the heading inside each */
+.cs-doc .cs-traps,.cs-doc .cs-sec:nth-child(even of .cs-sec){margin-top:2rem;margin-bottom:2rem;}
+.cs-doc .cs-traps,.cs-doc .cs-sec{padding-top:1.4rem;}
+/* and no extra space at the foot of a panel */
+.cs-doc .cs-traps > :last-child,.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-secbody > :last-child{margin-bottom:0;}
+.cs-doc .cs-traps h2,.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-sechead{border-bottom-color:rgba(10,12,16,.12);}
+/* what already sits on grey turns white inside a grey panel, so it still stands out */
+.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-tbl,.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-formula,
+.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-fig svg,.cs-doc .cs-sec:nth-child(even of .cs-sec) code{background:#fff;}
+@media (max-width:700px){
+  .cs-doc .cs-traps,.cs-doc .cs-sec:nth-child(even of .cs-sec){margin-left:0;margin-right:0;padding-left:.9rem;padding-right:.9rem;}
+}
 </style>
 
 <div class="cs-doc">
