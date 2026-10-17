@@ -300,23 +300,25 @@
 @media (min-width:1280px){.cs-doc .cs-secnum{font-size:1.14rem;}}
 /* on the app's page the title sits under the app's own heading, so it names only the notes */
 .cs-doc h1,.cs-doc .cs-title{font-size:1.5em;}
-/* light grey panels: the three warnings, then every other section, so a long page reads in
-   steps. Each panel reaches a little into the margin, so its text stays in line with the rest;
-   on a phone, where there is no margin to spare, it stays inside the column. */
-.cs-doc .cs-traps,.cs-doc .cs-sec:nth-child(even of .cs-sec){background:var(--cs-surface);border:0;border-radius:4px;
+/* light grey panels: the three warnings, then every other section. The exercises always stay
+   white, so their figures keep their own grey and are not a box inside a box. The panels are
+   there so a long page reads in steps. Each panel reaches a little into the margin, so its
+   text stays in line with the rest; on a phone, where there is no margin to spare, it stays
+   inside the column. */
+.cs-doc .cs-traps,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec){background:var(--cs-surface);border:0;border-radius:4px;
   margin-left:-1.25rem;margin-right:-1.25rem;padding:1.4rem 1.25rem 1.1rem;}
 /* the same space before every section heading, white or grey: 2rem between sections and
    1.4rem above the heading inside each */
-.cs-doc .cs-traps,.cs-doc .cs-sec:nth-child(even of .cs-sec){margin-top:2rem;margin-bottom:2rem;}
+.cs-doc .cs-traps,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec){margin-top:2rem;margin-bottom:2rem;}
 .cs-doc .cs-traps,.cs-doc .cs-sec{padding-top:1.4rem;}
 /* and no extra space at the foot of a panel */
-.cs-doc .cs-traps > :last-child,.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-secbody > :last-child{margin-bottom:0;}
-.cs-doc .cs-traps h2,.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-sechead{border-bottom-color:rgba(10,12,16,.12);}
+.cs-doc .cs-traps > :last-child,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec) .cs-secbody > :last-child{margin-bottom:0;}
+.cs-doc .cs-traps h2,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec) .cs-sechead{border-bottom-color:rgba(10,12,16,.12);}
 /* what already sits on grey turns white inside a grey panel, so it still stands out */
-.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-tbl,.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-formula,
-.cs-doc .cs-sec:nth-child(even of .cs-sec) .cs-fig svg,.cs-doc .cs-sec:nth-child(even of .cs-sec) code{background:#fff;}
+.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec) .cs-tbl,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec) .cs-formula,
+.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec) .cs-fig svg,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec) code{background:#fff;}
 @media (max-width:700px){
-  .cs-doc .cs-traps,.cs-doc .cs-sec:nth-child(even of .cs-sec){margin-left:0;margin-right:0;padding-left:.9rem;padding-right:.9rem;}
+  .cs-doc .cs-traps,.cs-doc .cs-sec:not(:has(.cs-ex)):nth-child(even of .cs-sec){margin-left:0;margin-right:0;padding-left:.9rem;padding-right:.9rem;}
 }
 </style>
 
