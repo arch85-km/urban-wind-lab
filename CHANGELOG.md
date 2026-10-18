@@ -31,7 +31,9 @@ release has not been cut, so there is no version DOI yet.
   Microsoft Edge's "Enhance your security on the web" (and Safari's Lockdown
   Mode) does this for sites it does not know, and the solver then runs about
   30 times slower: the field barely develops and a change of wind direction
-  appears to do nothing. Recognised by WebAssembly being hidden. A message
+  appears to do nothing. Recognised by timing plain script work against
+  built-in work, so the computer's own speed cancels (Edge in that mode still
+  provides WebAssembly, so checking for it missed the case). A message
   stays over the 3D view for as long as it lasts, until hidden: in Edge it
   gives the steps (the padlock, "Enhanced security is active for this site",
   turn it off, Refresh); in any other browser in that mode, to use Chrome or

@@ -3832,9 +3832,31 @@ function toast(msg, kind, ms) {
    runs about 30 times slower: a handful of steps a minute, so the field never
    develops and a change of wind direction appears to do nothing. Reported from
    Edge on the live site, reproduced in Chromium with the compiler switched off
-   (236 steps in 30 s, against 7). That mode hides WebAssembly, which is how it
-   is recognised here; the app says so rather than looking broken. */
-var SLOW_SCRIPTS = typeof WebAssembly === 'undefined';
+   (236 steps in 30 s, against 7).
+
+   Recognised by timing, not by a feature. Edge in that mode still provides
+   WebAssembly, so checking for it (the first version of this) missed the very
+   case it was for. Plain script work is timed against built-in work, which
+   runs as native code either way, so the computer's own speed cancels: the
+   ratio was 0.1-0.4 in a normal browser, on a fast machine or one slowed
+   sixfold, and 1.8-3.8 without the compiler. Run once, after the first field,
+   taking about 60 ms (up to half a second without the compiler). */
+function scriptsWithoutCompiler() {
+  if (typeof WebAssembly === 'undefined') { return true; }
+  var best = Infinity;
+  for (var k = 0; k < 2; k++) {
+    var t0 = performance.now(), x = 0;
+    for (var i = 0; i < 2e6; i++) { x = (x + i * 3) | 0; }
+    var js = performance.now() - t0;
+    var a = new Float64Array(200000);
+    for (var j = 0; j < a.length; j++) { a[j] = (j * 7919) % 200003; }
+    t0 = performance.now();
+    a.sort();
+    var nat = performance.now() - t0;
+    if (nat > 0) { best = Math.min(best, (js + (x & 0)) / nat); }
+  }
+  return best > 1;
+}
 /* The padlock steps are Edge's own; any other browser in this mode (Safari's
    Lockdown Mode, a locked-down managed Chrome) gets the short version. */
 var IS_EDGE = /\bEdg(A|iOS)?\//.test(navigator.userAgent || '');
@@ -4012,7 +4034,7 @@ function onSolverMessage(m) {
       state.firstField = true;
       $('ucfd-loading').className = 'ucfd-loading is-done';
       setFootStatus('First field received · ' + (solver.mode === 'worker' ? 'solving in a background worker' : 'solving on the main thread'));
-      if (SLOW_SCRIPTS) {
+      if (scriptsWithoutCompiler()) {
         setFootStatus('Solving about 30× slower than usual: this browser runs scripts without its compiler');
         $('ucfd-slowbar-edge').hidden = !IS_EDGE;
         $('ucfd-slowbar-other').hidden = IS_EDGE;
