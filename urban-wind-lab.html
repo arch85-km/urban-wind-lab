@@ -3761,13 +3761,26 @@ function renderEpwMeta() {
  * 8. State transitions                                                 *
  * ------------------------------------------------------------------ */
 var toastTimer = null;
-function toast(msg, kind) {
+function toast(msg, kind, ms) {
   var el = $('ucfd-toast');
   el.textContent = msg;
   el.className = 'ucfd-toast is-show' + (kind ? ' is-' + kind : '');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(function () { el.className = 'ucfd-toast'; }, kind === 'bad' ? 8000 : 4200);
+  toastTimer = setTimeout(function () { el.className = 'ucfd-toast'; }, ms || (kind === 'bad' ? 8000 : 4200));
 }
+
+/* Microsoft Edge's "Enhance your security on the web" (and Safari's Lockdown
+   Mode) run a site's scripts without the browser's compiler. The solver then
+   runs about 30 times slower: a handful of steps a minute, so the field never
+   develops and a change of wind direction appears to do nothing. Reported from
+   Edge on the live site, reproduced in Chromium with the compiler switched off
+   (236 steps in 30 s, against 7). That mode hides WebAssembly, which is how it
+   is recognised here; the app says so rather than looking broken. */
+var SLOW_SCRIPTS = typeof WebAssembly === 'undefined';
+var SLOW_SCRIPTS_NOTE = 'This browser is running the solver about 30 times slower than usual, so the ' +
+  'wind takes minutes to develop and a change of direction seems to do nothing. In Microsoft Edge ' +
+  'this is “Enhance your security on the web”: add this site under its Exceptions ' +
+  '(Settings → Privacy, search, and services → Security), or use Chrome or Firefox.';
 function setFootStatus(t) { $('ucfd-foot-status').textContent = t; }
 
 function updateChips() {
@@ -3942,6 +3955,10 @@ function onSolverMessage(m) {
       state.firstField = true;
       $('ucfd-loading').className = 'ucfd-loading is-done';
       setFootStatus('First field received · ' + (solver.mode === 'worker' ? 'solving in a background worker' : 'solving on the main thread'));
+      if (SLOW_SCRIPTS) {
+        setFootStatus('Solving about 30× slower than usual: this browser runs scripts without its compiler');
+        toast(SLOW_SCRIPTS_NOTE, 'warn', 30000);
+      }
     }
   } else if (m.type === 'diverged') {
     state.error = true;

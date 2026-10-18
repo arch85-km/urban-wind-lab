@@ -27,6 +27,12 @@ release has not been cut, so there is no version DOI yet.
 - **Docs** — `ARCHITECTURE.md`, `CHANGELOG.md` and `DESIGN.md` added, and a
   statement of how the app is developed added to the README, the method notes
   and a new `.zenodo.json`, which also carries the licence notes to Zenodo.
+- **Added** — a notice when the browser runs the solver without its compiler.
+  Microsoft Edge's "Enhance your security on the web" (and Safari's Lockdown
+  Mode) does this for sites it does not know, and the solver then runs about
+  30 times slower: the field barely develops and a change of wind direction
+  appears to do nothing. Recognised by WebAssembly being hidden; the notice
+  says how to add the site as an exception, or to use Chrome or Firefox.
 
 ## [1.0.1](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.0.1) — 2 October 2026
 
