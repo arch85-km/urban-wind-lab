@@ -31,8 +31,11 @@ release has not been cut, so there is no version DOI yet.
   Microsoft Edge's "Enhance your security on the web" (and Safari's Lockdown
   Mode) does this for sites it does not know, and the solver then runs about
   30 times slower: the field barely develops and a change of wind direction
-  appears to do nothing. Recognised by WebAssembly being hidden; the notice
-  says how to add the site as an exception, or to use Chrome or Firefox.
+  appears to do nothing. Recognised by WebAssembly being hidden. A message
+  stays over the 3D view for as long as it lasts, until hidden: in Edge it
+  gives the steps (the padlock, "Enhanced security is active for this site",
+  turn it off, Refresh); in any other browser in that mode, to use Chrome or
+  Firefox. A pop-up or the footer line was gone before anyone read it.
 - **Changed** — when the guided tour ends, by finishing, skipping or Escape,
   every group in the left panel folds to its heading, as in Solar Lab, rather
   than leaving the whole column of controls open. The results panel on the

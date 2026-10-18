@@ -500,6 +500,26 @@
 #ucfd-root .ucfd-prow { display: flex; justify-content: space-between; gap: 12px; padding: 1.5px 0; }
 #ucfd-root .ucfd-prow span:first-child { color: var(--ucfd-faint); }
 
+/* Stays over the 3D view while the browser runs the solver without its
+   compiler: a pop-up is gone in seconds and the footer line is overwritten by
+   the next status, so neither told a student why nothing was moving. */
+#ucfd-root .ucfd-slowbar {
+  position: absolute; top: 56px; left: 12px; max-width: min(520px, calc(100% - 112px));
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 12px 11px 14px; border-radius: 9px; font-size: 12.5px; line-height: 1.45;
+  background: var(--ucfd-warn-bg); border: 1px solid var(--ucfd-warn-bd); color: var(--ucfd-warn);
+  box-shadow: 0 12px 32px -14px #00000059;
+}
+#ucfd-root .ucfd-slowbar[hidden] { display: none; }
+#ucfd-root .ucfd-slowbar b { font-weight: 650; }
+#ucfd-root .ucfd-slowbar ol { margin: 4px 0 4px; padding-left: 20px; list-style: decimal; }
+#ucfd-root .ucfd-slowbar li { list-style: decimal; }
+#ucfd-root .ucfd-slowbar button {
+  margin-left: auto; flex: none; border: 0; background: none; color: inherit; cursor: pointer;
+  font-size: 16px; line-height: 1; padding: 0 2px; opacity: .75;
+}
+#ucfd-root .ucfd-slowbar button:hover, #ucfd-root .ucfd-slowbar button:focus-visible { opacity: 1; }
+#ucfd-root.ucfd-w-sm .ucfd-slowbar { top: 74px; left: 8px; max-width: calc(100% - 16px); font-size: 12px; }
 #ucfd-root .ucfd-toast {
   position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(8px);
   padding: 9px 15px; border-radius: 8px; font-size: 12px; max-width: min(440px, 88%);
@@ -1004,6 +1024,23 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <button class="ucfd-vbtn" type="button" data-view="plan" aria-pressed="false">Plan</button>
         <button class="ucfd-vbtn" type="button" data-view="section" aria-pressed="false">Section</button>
         <button class="ucfd-vbtn" type="button" data-view="eye" aria-pressed="false">Eye level</button>
+      </div>
+      <div class="ucfd-slowbar" id="ucfd-slowbar" role="status" hidden>
+        <div id="ucfd-slowbar-edge">
+          <b>The wind is solving about 30 times slower than it should.</b>
+          Microsoft Edge is running this site in its enhanced security mode. To fix it:
+          <ol>
+            <li>click the padlock to the left of the address bar;</li>
+            <li>choose <b>Enhanced security is active for this site</b> and turn it off for this site;</li>
+            <li>press <b>Refresh</b>.</li>
+          </ol>
+          Or open the app in Chrome or Firefox instead.
+        </div>
+        <div id="ucfd-slowbar-other" hidden>
+          <b>The wind is solving about 30 times slower than it should.</b>
+          This browser is running the site in a restricted mode. Open the app in Chrome or Firefox.
+        </div>
+        <button type="button" id="ucfd-slowbar-close" aria-label="Hide this message">&times;</button>
       </div>
       <canvas class="ucfd-compass" id="ucfd-compass" width="160" height="160" aria-hidden="true"></canvas>
       <button class="ucfd-vbtn ucfd-drawertab" type="button" id="ucfd-results-tab"
@@ -3798,10 +3835,9 @@ function toast(msg, kind, ms) {
    (236 steps in 30 s, against 7). That mode hides WebAssembly, which is how it
    is recognised here; the app says so rather than looking broken. */
 var SLOW_SCRIPTS = typeof WebAssembly === 'undefined';
-var SLOW_SCRIPTS_NOTE = 'This browser is running the solver about 30 times slower than usual, so the ' +
-  'wind takes minutes to develop and a change of direction seems to do nothing. In Microsoft Edge ' +
-  'this is “Enhance your security on the web”: add this site under its Exceptions ' +
-  '(Settings → Privacy, search, and services → Security), or use Chrome or Firefox.';
+/* The padlock steps are Edge's own; any other browser in this mode (Safari's
+   Lockdown Mode, a locked-down managed Chrome) gets the short version. */
+var IS_EDGE = /\bEdg(A|iOS)?\//.test(navigator.userAgent || '');
 function setFootStatus(t) { $('ucfd-foot-status').textContent = t; }
 
 function updateChips() {
@@ -3978,7 +4014,9 @@ function onSolverMessage(m) {
       setFootStatus('First field received · ' + (solver.mode === 'worker' ? 'solving in a background worker' : 'solving on the main thread'));
       if (SLOW_SCRIPTS) {
         setFootStatus('Solving about 30× slower than usual: this browser runs scripts without its compiler');
-        toast(SLOW_SCRIPTS_NOTE, 'warn', 30000);
+        $('ucfd-slowbar-edge').hidden = !IS_EDGE;
+        $('ucfd-slowbar-other').hidden = IS_EDGE;
+        $('ucfd-slowbar').hidden = false;
       }
     }
   } else if (m.type === 'diverged') {
@@ -4621,6 +4659,7 @@ function bindUI() {
   });
   on($('ucfd-particles'), 'change', function (e) { state.particles = e.target.checked; });
   on($('ucfd-facade'), 'change', function (e) { state.facade = e.target.checked; renderLegend(); });
+  on($('ucfd-slowbar-close'), 'click', function () { $('ucfd-slowbar').hidden = true; });
   on($('ucfd-grid-lines'), 'change', function (e) { state.showGrid = e.target.checked; });
   on($('ucfd-pdensity'), 'input', function (e) {
     state.density = parseInt(e.target.value, 10);
