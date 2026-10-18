@@ -4380,8 +4380,19 @@ function openTour() {
   showTourStep();
 }
 function closeTour() {
+  // Escape calls this whether or not the tour is showing; only a real close folds
+  var wasOpen = $('ucfd-tour').classList.contains('is-open');
   $('ucfd-tour').className = 'ucfd-tour';
   $('ucfd-tour').setAttribute('aria-hidden', 'true');
+  /* Fold every group in the left panel to its heading once the tour is over,
+     however it ends: the tour has walked through them, and leaving them all
+     open left a long column of controls at once (Karam, 18 October 2026, as in
+     Solar Lab). The results panel on the right is left as it is. */
+  if (wasOpen) {
+    var groups = $('ucfd-rail').querySelectorAll('details.ucfd-group');
+    for (var gi = 0; gi < groups.length; gi++) { groups[gi].open = false; }
+    $('ucfd-rail').scrollTop = 0;
+  }
   /* Put the drawers back where the tour found them. Only where they are
      overlays: on a wide screen the rail is a grid column and is-open means
      nothing there. */

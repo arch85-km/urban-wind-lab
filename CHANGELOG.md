@@ -33,6 +33,10 @@ release has not been cut, so there is no version DOI yet.
   30 times slower: the field barely develops and a change of wind direction
   appears to do nothing. Recognised by WebAssembly being hidden; the notice
   says how to add the site as an exception, or to use Chrome or Firefox.
+- **Changed** — when the guided tour ends, by finishing, skipping or Escape,
+  every group in the left panel folds to its heading, as in Solar Lab, rather
+  than leaving the whole column of controls open. The results panel on the
+  right is left as it is.
 
 ## [1.0.1](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.0.1) — 2 October 2026
 
