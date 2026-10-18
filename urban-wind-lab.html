@@ -893,7 +893,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
           <div class="ucfd-hint" id="ucfd-sy-note">y = 0 m from centre</div>
 
           <label class="ucfd-toggle ucfd-ax-z"><input type="checkbox" id="ucfd-sz" checked><span class="ucfd-switch"></span><span class="ucfd-tlabel">Plane normal to Z</span><span class="ucfd-axtag z">XY</span></label>
-          <input type="range" class="ucfd-z" id="ucfd-sz-pos" min="0" max="1" step="0.005" value="0.04" aria-label="Z plane height">
+          <input type="range" class="ucfd-z" id="ucfd-sz-pos" min="0" max="1" step="any" value="0.04" aria-label="Z plane height">
           <div class="ucfd-hint" id="ucfd-sz-note">z = 1.5 m above ground</div>
         </div>
 
@@ -1046,6 +1046,15 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
           <div class="ucfd-ticks" id="ucfd-legend-ticks"><span>0</span><span>&mdash;</span><span>&mdash;</span></div>
           <div class="ucfd-swatches" id="ucfd-legend-swatches" hidden></div>
           <div class="ucfd-hint" id="ucfd-legend-note">Colours are applied to every section plane and to the tracers.</div>
+        </div>
+        <div class="ucfd-legend" id="ucfd-legend-cp" hidden style="margin-top:14px">
+          <div class="ucfd-legendtitle">
+            <span class="ucfd-legendname">Facade pressure</span>
+            <span class="ucfd-legendunit">Cp</span>
+          </div>
+          <div class="ucfd-ramp" id="ucfd-legend-cp-ramp"></div>
+          <div class="ucfd-ticks" id="ucfd-legend-cp-ticks"><span>&minus;1</span><span>0</span><span>+1</span></div>
+          <div class="ucfd-hint">Red where the wind presses on a facade, blue where it pulls (suction); white is the free-stream pressure. Read from the air just outside each surface.</div>
         </div>
       </div>
     </details>
@@ -3326,6 +3335,18 @@ function pickPoint(clientX, clientY) {
  * 6. Panels and readouts                                              *
  * ------------------------------------------------------------------ */
 function renderLegend() {
+  /* The facades carry their own scale, Cp, whatever the planes show; without
+     it the colours on the buildings could not be read (Karam, 18 October 2026). */
+  var cpBox = $('ucfd-legend-cp');
+  if (cpBox) {
+    cpBox.hidden = !state.facade;
+    if (state.facade) {
+      var cr = state.cpRange || [-1, 1];
+      $('ucfd-legend-cp-ramp').style.background = rampCss(diverging, 28);
+      var sg = function (v) { return (v > 0 ? '+' : v < 0 ? '\u2212' : '') + fmt(Math.abs(v), Math.abs(cr[1]) < 3 ? 1 : 0); };
+      $('ucfd-legend-cp-ticks').innerHTML = '<span>' + sg(cr[0]) + '</span><span>0</span><span>' + sg(cr[1]) + '</span>';
+    }
+  }
   var mode = FIELD_MODES[state.mode];
   var ramp = $('ucfd-legend-ramp'), ticks = $('ucfd-legend-ticks');
   var sw = $('ucfd-legend-swatches');
@@ -4579,7 +4600,17 @@ function bindUI() {
       if (e.target.checked) { $('ucfd-s' + ax + '-pos').focus({ preventScroll: true }); }
     });
     on($('ucfd-s' + ax + '-pos'), 'input', function (e) {
-      state.slicePos[ax] = parseFloat(e.target.value);
+      var v = parseFloat(e.target.value);
+      if (ax === 'z') {
+        /* The height in steps of 0.1 m, caught at 1.5 m within 0.3 m. The old
+           step was 0.5% of the 90 m domain, 0.45 m, which jumped from 1.35 m to
+           1.8 m and could never land on the pedestrian level (Karam, 18 October
+           2026). */
+        var lz = state.grid.lz, m = Math.round(v * lz * 10) / 10;
+        if (Math.abs(m - 1.5) < 0.3) { m = 1.5; }
+        v = m / lz;
+      }
+      state.slicePos[ax] = v;
       if (!state.slices[ax]) { $('ucfd-s' + ax).checked = true; state.slices[ax] = true; }
       updateSliceNote(ax);
     });
@@ -4589,7 +4620,7 @@ function bindUI() {
     renderLegend(); updateWindReadouts();
   });
   on($('ucfd-particles'), 'change', function (e) { state.particles = e.target.checked; });
-  on($('ucfd-facade'), 'change', function (e) { state.facade = e.target.checked; });
+  on($('ucfd-facade'), 'change', function (e) { state.facade = e.target.checked; renderLegend(); });
   on($('ucfd-grid-lines'), 'change', function (e) { state.showGrid = e.target.checked; });
   on($('ucfd-pdensity'), 'input', function (e) {
     state.density = parseInt(e.target.value, 10);
@@ -4968,7 +4999,7 @@ function updateSliceNote(ax) {
   } else {
     var z = slicePlaneZ();
     $('ucfd-sz-note').textContent = 'z = ' + fmt(z, 1) + ' m above ground' +
-      (Math.abs(z - 1.5) < 0.35 ? ' (pedestrian level)' : '');
+      (Math.abs(z - 1.5) < 0.05 ? ' (pedestrian level)' : '');
   }
 }
 

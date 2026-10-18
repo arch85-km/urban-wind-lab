@@ -37,6 +37,14 @@ release has not been cut, so there is no version DOI yet.
   every group in the left panel folds to its heading, as in Solar Lab, rather
   than leaving the whole column of controls open. The results panel on the
   right is left as it is.
+- **Added** — a facade pressure scale in the legend, shown while "Facade
+  pressure (Cp)" is on: the diverging ramp with its Cp range, red where the
+  wind presses on a facade and blue where it pulls. The facades were coloured
+  with no scale to read them by.
+- **Fixed** — the height of the horizontal section plane moved in steps of
+  0.45 m (0.5% of the 90 m domain), from 1.35 m to 1.8 m, so it could never be
+  set to the 1.5 m pedestrian level. It now moves in 0.1 m steps and catches
+  at 1.5 m; only 1.5 m is labelled the pedestrian level.
 
 ## [1.0.1](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.0.1) — 2 October 2026
 
