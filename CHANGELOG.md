@@ -38,6 +38,10 @@ release has not been cut, so there is no version DOI yet.
   gives the steps (the padlock, "Enhanced security is active for this site",
   turn it off, Refresh); in any other browser in that mode, to use Chrome or
   Firefox. A pop-up or the footer line was gone before anyone read it.
+- **Docs** — the facade pressure legend and the method notes say that Cp shows
+  the pattern, not reliable values: with buildings present the pressure level
+  of the whole domain drifts during the solve, because nothing at the outflow
+  holds it.
 - **Changed** — when the guided tour ends, by finishing, skipping or Escape,
   every group in the left panel folds to its heading, as in Solar Lab, rather
   than leaving the whole column of controls open. The results panel on the

@@ -364,7 +364,7 @@
   </div>
 
   <div class="cs-traps">
-    <h2>Three things to know before you cite a number</h2>
+    <h2>Four things to know before you cite a number</h2>
     <ol>
       <li><b>The velocities are qualitative, not predictive.</b> The solve never uses the viscosity
         of air. Its viscosity is a lattice quantity, <span class="cs-mono">ν = (τ₀ − ½)/3 = 0.00333</span>,
@@ -387,6 +387,11 @@
         And the comfort classes are Lawson thresholds applied to a <em>mean</em> speed
         for <em>one</em> direction: no gust factor, no exceedance statistics, no directional
         weighting. They are indicative labels, not a Lawson assessment.</li>
+      <li><b>Facade pressure shows the pattern, not the values.</b> Nothing at the outflow holds the
+        pressure level of the domain, so with buildings present it drifts while the solve runs: in the
+        sample district the mean rose from about +1 to about +2.8 (see <a href="#ucfd-s03">the Cp
+        reference</a>). Where a facade is pressed and where it is sucked is reliable; the Cp numbers
+        are not.</li>
     </ol>
   </div>
 
@@ -584,7 +589,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <div><span class="cs-chip is-in">In</span><dt>Streamline tracers</dt><dd>GPU particles advected through the velocity field, 8k to 150k of them, seeded throughout the domain.</dd></div>
         <div><span class="cs-chip is-in">In</span><dt>Section planes and probes</dt><dd>X, Y and Z cutting planes through the field, and a point readout giving speed, ratio, components, Cp and comfort class.</dd></div>
         <div><span class="cs-chip is-part">Partly</span><dt>Lawson comfort class</dt><dd>The seven coded bands are the standard LDDC set: frequent sitting &lt; 2.5, occasional sitting &lt; 4, standing &lt; 6, strolling &lt; 8, business walking &lt; 10, uncomfortable &lt; 15, unsafe ≥ 15 m/s — the last matching the LDDC safety limit for a frail person or cyclist. <b>The thresholds are right; the method is not.</b> The criteria ask whether a threshold is exceeded more than a stated share of the year — 5% for the comfort categories, 0.025% for the safety limit — summed over every wind direction weighted by its annual frequency, using a gust-equivalent rather than a mean speed. This tool applies the numbers to a single instantaneous mean for one direction, with no gust factor and no exceedance statistic at all. The labels are indicative; they are not a Lawson assessment. "Calm area" is separate again: the fraction below an absolute 1.5 m/s.</dd></div>
-        <div><span class="cs-chip is-part">Partly</span><dt>The Cp reference</dt><dd>Referenced to the lattice datum ρ = 1, the density imposed at the inlet — so approximately to the undisturbed inflow, rather than to a measured free-stream static pressure at a stated point.</dd></div>
+        <div><span class="cs-chip is-part">Partly</span><dt>The Cp reference</dt><dd>Referenced to the lattice datum ρ = 1, the density imposed at the inlet — so approximately to the undisturbed inflow, rather than to a measured free-stream static pressure at a stated point. <b>The pattern is reliable; the values are not.</b> The outflow faces fix neither velocity nor pressure, so nothing holds the pressure level of the domain, and with buildings present it drifts. In the sample district at 250° the mean level stayed near +1 for 1 000 steps, then rose to about +2.8 by step 1 600, with the upwind side 3 to 4.7 above the datum; an empty site stays within +0.2. An isolated cube, measured against the air just upstream, reads windward +0.8, roof −0.7, sides −0.6 and leeward −0.4, close to wind-tunnel values; the raw display adds an offset to each. Read Cp for where a facade is pressed or sucked, not for a design pressure.</dd></div>
         <div><span class="cs-chip is-part">Note</span><dt>What amplification is against</dt><dd>The 10 m reference speed, not the undisturbed speed at the same height. A value of 0.8 at pedestrian level therefore does not mean "sheltered": for z₀ = 1 m the undisturbed profile at 1.4 m is already only about 0.36 × U₁₀.</dd></div>
       </dl>
 

@@ -154,6 +154,21 @@ no TKE, no age-of-air, no pollutant transport.
 inlet, so it is approximately referenced to the undisturbed inflow rather than to a measured
 free-stream static pressure at a stated point.
 
+**Cp drifts with buildings present.** The outflow faces copy their interior neighbour, so they fix
+neither velocity nor pressure, and nothing holds the pressure level of the domain. Measured with the
+app's own solver:
+
+| Case | Mean pressure level (Cp) |
+|---|---|
+| Sample district, 250°, steps 200–1000 | about +1.0 |
+| Sample district, 250°, step 1600 | +2.84 (upwind side +4.50, downwind +2.15) |
+| Empty site, 250° or 270°, steps 200–2000 | +0.08 to +0.19 |
+
+An isolated 19 m cube, averaged over steps 850–1600 and measured against the air just upstream,
+reads windward +0.80, roof −0.72, sides −0.60, leeward −0.44, close to wind-tunnel values; the raw
+display adds about +0.28 to each. So the pattern on the facades is reliable and the values are
+indicative. The legend says so.
+
 **Amplification** is against the **10 m reference speed**, not the undisturbed speed at the same
 height. That is the usual convention in wind-comfort work, but it must be stated, because a value
 of 0.8 at pedestrian level does not mean "sheltered" — the undisturbed profile at 1.4 m is already
