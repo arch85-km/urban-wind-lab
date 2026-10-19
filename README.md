@@ -81,7 +81,7 @@ The reasons behind the design are in [`DESIGN.md`](DESIGN.md), the map of the co
 
 > Al-Obaidi, K. M. (2026). *Urban Wind Lab: An interactive lattice-Boltzmann tool for wind
 > analysis* (Version 1.1.0) [Computer software]. Zenodo.
-> https://doi.org/10.5281/zenodo.22797137
+> https://doi.org/10.5281/zenodo.23474525
 
 ```bibtex
 @software{alobaidi2026urbanwindlab,
@@ -91,19 +91,19 @@ The reasons behind the design are in [`DESIGN.md`](DESIGN.md), the map of the co
   year      = {2026},
   version   = {1.1.0},
   publisher = {Zenodo},
-  doi       = {10.5281/zenodo.22797137},
+  doi       = {10.5281/zenodo.23474525},
   url       = {https://karam.me.uk/applications/urban-wind-lab/},
   note      = {Code MIT licensed; accompanying material CC BY 4.0}
 }
 ```
 
-That is the **concept DOI**, which always resolves to the newest version. Each release also
-gets a **version DOI** frozen on it, and that is the better one to cite for a figure someone
-should be able to reproduce. 1.1.0's is minted when this release is archived on Zenodo, and
-this page will name it once it exists; until then, cite the concept DOI and give the version
-number. A figure produced on an earlier build should cite that build, since the solver's outflow
-changed in 1.1.0: 1.0.1 is archived at [10.5281/zenodo.23108263](https://doi.org/10.5281/zenodo.23108263)
-and 1.0.0 at [10.5281/zenodo.22797138](https://doi.org/10.5281/zenodo.22797138).
+That DOI names this release. A figure produced on an earlier build should cite that build, since
+the solver's outflow changed in 1.1.0: 1.0.1 is archived at
+[10.5281/zenodo.23108263](https://doi.org/10.5281/zenodo.23108263) and 1.0.0 at
+[10.5281/zenodo.22797138](https://doi.org/10.5281/zenodo.22797138). To cite the software in general
+rather than version 1.1.0, use the concept DOI
+[10.5281/zenodo.22797137](https://doi.org/10.5281/zenodo.22797137), which always resolves to the
+newest version.
 
 Report the wind direction, the terrain roughness, the resolution preset and the sampled
 height the panel shows alongside any figure taken from the tool. All four change the numbers.

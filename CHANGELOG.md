@@ -7,6 +7,7 @@ resolves to the newest version. The full notes for each release are on the
 
 ## [1.1.0](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.1.0) — 19 October 2026
 
+Version DOI [10.5281/zenodo.23474525](https://doi.org/10.5281/zenodo.23474525).
 A feature and correctness release. The solver's outflow boundary changed, so
 wind speeds, comfort classes and pressures differ from 1.0.1: a figure quoted
 from 1.0.1 does not reproduce here, and should cite 1.0.1's own DOI. One
