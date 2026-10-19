@@ -98,7 +98,7 @@ budget (46 ms of stepping per slice in the Worker, 9 ms inline).
 | Collision | BGK, single relaxation time `TAU0 = 0.51` | Bhatnagar, Gross & Krook (1954) |
 | Sub-grid model | Smagorinsky, `C = 0.14` (`CS2 = 0.0196`), τ raised locally from the non-equilibrium second moment, clamped at 1.6 | Smagorinsky (1963); Hou et al. (1996) |
 | Inlet | Logarithmic atmospheric boundary layer, `log((z + z0)/z0)` normalised to `ZREF = 10` m, at lattice speed `UREF_LAT = 0.045` | — |
-| Boundaries | Inlet on every upwind face, zero-gradient outflow downwind, driven free stream across the top (`applyBoundaries`); half-way bounce-back on solids and the ground | — |
+| Boundaries | Inlet on every upwind face, pressure outlet downwind (Guo, Zheng & Shi 2002), driven free stream across the top (`applyBoundaries`); half-way bounce-back on solids and the ground | — |
 | Terrain | Four roughness classes set `z0` | — |
 
 The full reference list, and how each reference was checked, is in the

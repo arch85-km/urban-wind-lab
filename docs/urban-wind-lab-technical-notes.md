@@ -90,7 +90,7 @@ lowers numerical diffusion; it does not change the domain-size problem in §3.
 | Boundary | Condition in the code |
 |---|---|
 | Upwind faces | Equilibrium at a **logarithmic ABL profile** |
-| Downwind faces | Zero gradient (copy of the interior neighbour) |
+| Downwind faces | **Pressure outlet**: density held at `ρ = 1`, velocity and non-equilibrium part from the interior neighbour (Guo, Zheng & Shi 2002) |
 | Domain top | **Driven free stream** — equilibrium at the same log profile |
 | Ground | Half-way bounce-back (no-slip) |
 | Buildings | Half-way bounce-back on voxelised solids |
@@ -104,7 +104,7 @@ U(z) = U₁₀ · ln((z + z₀)/z₀) / ln((10 + z₀)/z₀)
 with `z₀` selectable as 0.03 / 0.3 / 1.0 / 2.0 m. The `+z₀` offset avoids the singularity at the
 wall. The inlet is applied per cell to **whichever faces face upwind** (`n·w > 0`), so any azimuth
 works without rotating the model — but it means the lateral faces are not symmetry planes: each
-face is either an inlet or a zero-gradient outlet.
+face is either an inlet or a pressure outlet.
 
 **Two things worth stating plainly:**
 
@@ -154,20 +154,25 @@ no TKE, no age-of-air, no pollutant transport.
 inlet, so it is approximately referenced to the undisturbed inflow rather than to a measured
 free-stream static pressure at a stated point.
 
-**Cp drifts with buildings present.** The outflow faces copy their interior neighbour, so they fix
-neither velocity nor pressure, and nothing holds the pressure level of the domain. Measured with the
-app's own solver:
+**Cp carries an offset; it no longer drifts.** The datum `ρ = 1` is held at the inlet and at the
+outlet. Until 19 October 2026 the outlet copied its interior neighbour whole, so it fixed neither
+velocity nor pressure, and with buildings present the pressure level of the domain drifted for as
+long as the solve ran. The outlet now holds the density at the datum and takes the velocity and the
+non-equilibrium part from the neighbour (Guo, Zheng & Shi 2002). Measured with the app's own solver:
 
-| Case | Mean pressure level (Cp) |
-|---|---|
-| Sample district, 250°, steps 200–1000 | about +1.0 |
-| Sample district, 250°, step 1600 | +2.84 (upwind side +4.50, downwind +2.15) |
-| Empty site, 250° or 270°, steps 200–2000 | +0.08 to +0.19 |
+| Case | Zero-gradient outlet (before) | Pressure outlet (now) |
+|---|---|---|
+| District, 250°: domain pressure level, steps 200 → 2000 | 1.07 → 0.87 → 2.84 → 2.38, still moving | 0.65 → 1.15 → 1.17, settled |
+| District, 250°: mean pedestrian speed (`U/U₁₀`), averaged over steps 1500–2000 / 2500–3000 | 0.105 / 0.138 (+31%) | 0.113 / 0.113 |
+| District, 45°: domain pressure level at step 2000 | 4.76, climbing | 0.80 |
+| Detailed preset, 250°: peak speed in the domain (`U/U₁₀`) | 5.3–7.7 | 2.9–3.4 |
+| Empty site, 250°: domain pressure level | +0.19 | +0.08 |
+| Cube: windward / roof / sides / leeward, against the air upstream | +0.79 / −0.73 / −0.61 / −0.45 | +0.81 / −0.68 / −0.56 / −0.40 |
 
-An isolated 19 m cube, averaged over steps 850–1600 and measured against the air just upstream,
-reads windward +0.80, roof −0.72, sides −0.60, leeward −0.44, close to wind-tunnel values; the raw
-display adds about +0.28 to each. So the pattern on the facades is reliable and the values are
-indicative. The legend says so.
+What remains is an offset from confinement: in the sample district at 250° the free stream just
+inside the inlet reads about +2.0, because the air piles up ahead of the buildings in a domain with a
+driven top. The pattern on the facades is reliable; to compare a value with published data,
+subtract the upstream reading. The legend says so.
 
 **Amplification** is against the **10 m reference speed**, not the undisturbed speed at the same
 height. That is the usual convention in wind-comfort work, but it must be stated, because a value

@@ -38,10 +38,21 @@ release has not been cut, so there is no version DOI yet.
   gives the steps (the padlock, "Enhanced security is active for this site",
   turn it off, Refresh); in any other browser in that mode, to use Chrome or
   Firefox. A pop-up or the footer line was gone before anyone read it.
-- **Docs** — the facade pressure legend and the method notes say that Cp shows
-  the pattern, not reliable values: with buildings present the pressure level
-  of the whole domain drifts during the solve, because nothing at the outflow
-  holds it.
+- **Fixed** — the downwind faces copied their interior neighbour, which held
+  neither velocity nor pressure, so with buildings present the pressure level
+  of the whole domain drifted for as long as the solve ran, and the wind at
+  pedestrian level drifted with it: in the sample district the mean
+  pedestrian speed rose 31% between steps 1500–2000 and 2500–3000, and the
+  detailed preset threw speeds up to 7.7 times the reference. They are now a
+  pressure outlet (Guo, Zheng and Shi 2002): the density is held at the
+  datum, the velocity and the non-equilibrium part come from the neighbour.
+  The level settles, the mean pedestrian speed holds within 1% from step 1000
+  to 3000, and an isolated cube's face pressures are unchanged within 0.05.
+- **Docs** — the facade pressure legend and the method notes say that Cp
+  shows the pattern and carries an offset: in the confined domain the air
+  piles up ahead of the buildings, about +2 in the sample district. The
+  method notes and the technical notes give the measurements before and
+  after the outlet change, and cite Guo, Zheng and Shi.
 - **Changed** — when the guided tour ends, by finishing, skipping or Escape,
   every group in the left panel folds to its heading, as in Solar Lab, rather
   than leaving the whole column of controls open. The results panel on the

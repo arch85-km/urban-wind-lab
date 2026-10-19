@@ -362,10 +362,11 @@
         over every direction weighted by its annual frequency, using a gust-equivalent speed. This
         tool applies them to a single instantaneous mean, for one direction, with no gust factor
         and no exceedance statistic.</li>
-      <li><b>Facade pressure shows the pattern, not the values.</b> Nothing at the outflow holds
-        the pressure level of the domain, so with buildings present it drifts while the solve
-        runs: in the sample district the mean rose from about +1 to about +2.8. Where a facade
-        is pressed and where it is sucked is reliable; the Cp numbers are not.</li>
+      <li><b>Facade pressure: read the pattern; the values carry an offset.</b> In the confined
+        domain the air piles up ahead of the buildings: in the sample district the free stream
+        just inside the inlet reads about +2. Where a facade is pressed and where it is sucked is
+        reliable; before comparing a value with published data, place a probe upstream and
+        subtract its reading.</li>
     </ol>
   </div>
 
@@ -782,11 +783,11 @@
     <h3>References</h3>
     <p><b>The source code cites no literature.</b> It contains no bibliography and no reading list
       &mdash; only names: three methods (<span class="cs-mono">D3Q19</span>,
-      <span class="cs-mono">BGK</span>, <span class="cs-mono">Smagorinsky</span>), one author group
-      in a comment (<span class="cs-mono">Hou et al.</span>), one set of comfort criteria
+      <span class="cs-mono">BGK</span>, <span class="cs-mono">Smagorinsky</span>), two author groups
+      in comments (<span class="cs-mono">Hou et al.</span>; <span class="cs-mono">Guo, Zheng and Shi</span>), one set of comfort criteria
       (<span class="cs-mono">Lawson LDDC</span>) and one file format. The entries below are this
       page&rsquo;s identification of where those named things come from, not a record of what was
-      read while the tool was written. Only once does the code name a work at all; everywhere else
+      read while the tool was written. Only twice does the code name a work at all; everywhere else
       the step from a method&rsquo;s name to its paper is an inference made here.</p>
 
     <h4>The solver</h4>
@@ -800,7 +801,12 @@
     <p class="cs-ref">Hou, S., Sterling, J., Chen, S. &amp; Doolen, G. D. (1996). &lsquo;A lattice
       Boltzmann subgrid model for high Reynolds number flows&rsquo;, <i>Fields Institute
       Communications</i>, 6, pp. 151&ndash;166. &mdash; the &tau; formula in the collision step,
-      and the one work the code names.</p>
+      named in the code.</p>
+    <p class="cs-ref">Guo, Z., Zheng, C. &amp; Shi, B. (2002). &lsquo;Non-equilibrium extrapolation
+      method for velocity and pressure boundary conditions in the lattice Boltzmann method&rsquo;,
+      <i>Chinese Physics</i>, 11(4), pp. 366&ndash;374.
+      <a href="https://doi.org/10.1088/1009-1963/11/4/310" target="_blank" rel="noopener">doi:10.1088/1009-1963/11/4/310</a>
+      &mdash; the pressure outlet on the downwind faces, named in the code.</p>
     <h4>Pedestrian comfort</h4>
     <p class="cs-ref">Lawson, T. V. (1990). <i>The determination of the wind environment of a
       building complex before construction</i> (Report TVL 9025). University of Bristol.

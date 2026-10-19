@@ -1091,7 +1091,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
           </div>
           <div class="ucfd-ramp" id="ucfd-legend-cp-ramp"></div>
           <div class="ucfd-ticks" id="ucfd-legend-cp-ticks"><span>&minus;1</span><span>0</span><span>+1</span></div>
-          <div class="ucfd-hint">Red where the wind presses on a facade, blue where it pulls (suction). Read from the air just outside each surface. <b>Read the pattern, not the numbers:</b> the pressure level of the whole model drifts while it solves, so the values are indicative.</div>
+          <div class="ucfd-hint">Red where the wind presses on a facade, blue where it pulls (suction). Read from the air just outside each surface. <b>Read the pattern, not the numbers:</b> in this confined domain the air piles up ahead of the buildings, so every value carries an offset.</div>
         </div>
       </div>
     </details>
@@ -1141,7 +1141,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         <div class="ucfd-subhead">Boundary conditions</div>
         <div class="ucfd-kv"><span>Upwind faces</span><span>ABL log&#8209;law inlet</span></div>
         <div class="ucfd-eq">U(z) = U&#8321;&#8320; &middot; ln((z+z&#8320;)/z&#8320;) / ln((10+z&#8320;)/z&#8320;)</div>
-        <div class="ucfd-kv"><span>Downwind faces</span><span>Zero gradient</span></div>
+        <div class="ucfd-kv"><span>Downwind faces</span><span>Pressure outlet</span></div>
         <div class="ucfd-kv"><span>Domain top</span><span>Driven free stream</span></div>
         <div class="ucfd-kv"><span>Ground &amp; buildings</span><span>Half&#8209;way bounce&#8209;back</span></div>
         <div class="ucfd-hint">The inlet is applied to whichever faces face upwind, so any wind
@@ -2499,8 +2499,8 @@ function SolverBody(scope) {
     S.step++;
   }
 
-  /* Inlet on every upwind face, zero-gradient outflow downwind, and a
-     driven free stream across the top of the domain. */
+  /* Inlet on every upwind face, a pressure outlet downwind, and a driven
+     free stream across the top of the domain. */
   function applyBoundaries() {
     var nx = S.nx, ny = S.ny, nz = S.nz, N = S.N, f = S.f, solid = S.solid;
     var w = S.uWind, i, j, k, q, idx;
@@ -2516,13 +2516,29 @@ function SolverBody(scope) {
       if (inflow || k2 === nz - 1) {
         setEquilibrium(f, idx, w[0] * up, w[1] * up, 0, 1);
       } else {
-        /* copy the interior neighbour: zero-gradient outflow */
+        /* Pressure outlet: the velocity and the non-equilibrium part come
+           from the interior neighbour, the density is held at the datum, 1
+           (Guo, Zheng and Shi 2002). Copying the neighbour whole, as this
+           did, fixed neither velocity nor pressure: with buildings in the
+           domain its pressure level drifted for as long as the solve ran,
+           and the pedestrian wind drifted with it (Karam, 19 October 2026).
+           f = f_src + feq(1, u) - feq(rho_src, u), written out below. */
         var si = i2 + nxn, sj = j2 + nyn, sk = k2;
         if (nxn === 0 && nyn === 0) { sk = k2 - 1; }
         if (si < 0 || si >= nx || sj < 0 || sj >= ny || sk < 0 || sk >= nz) { return; }
         var src = si + nx * (sj + ny * sk);
         if (solid[src]) { return; }
-        for (q = 0; q < Q; q++) { f[q * N + idx] = f[q * N + src]; }
+        var rho = 0, ux = 0, uy = 0, uz = 0, fv;
+        for (q = 0; q < Q; q++) {
+          fv = f[q * N + src];
+          rho += fv; ux += EX[q] * fv; uy += EY[q] * fv; uz += EZ[q] * fv;
+        }
+        ux /= rho; uy /= rho; uz /= rho;
+        var usqr = 1.5 * (ux * ux + uy * uy + uz * uz);
+        for (q = 0; q < Q; q++) {
+          var eu = 3 * (EX[q] * ux + EY[q] * uy + EZ[q] * uz);
+          f[q * N + idx] = f[q * N + src] + (1 - rho) * W[q] * (1 + eu + 0.5 * eu * eu - usqr);
+        }
       }
     }
 

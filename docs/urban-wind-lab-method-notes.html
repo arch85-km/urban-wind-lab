@@ -387,11 +387,12 @@
         And the comfort classes are Lawson thresholds applied to a <em>mean</em> speed
         for <em>one</em> direction: no gust factor, no exceedance statistics, no directional
         weighting. They are indicative labels, not a Lawson assessment.</li>
-      <li><b>Facade pressure shows the pattern, not the values.</b> Nothing at the outflow holds the
-        pressure level of the domain, so with buildings present it drifts while the solve runs: in the
-        sample district the mean rose from about +1 to about +2.8 (see <a href="#ucfd-s03">the Cp
-        reference</a>). Where a facade is pressed and where it is sucked is reliable; the Cp numbers
-        are not.</li>
+      <li><b>Facade pressure: read the pattern; the values carry an offset.</b> Cp is measured from
+        the lattice datum ρ = 1, held at the inlet and at the outlet. In the confined domain the air
+        piles up ahead of the buildings: in the sample district at 250° the free stream just inside
+        the inlet reads about +2 (see <a href="#ucfd-s03">the Cp reference</a>). Where a facade is
+        pressed and where it is sucked is reliable; before comparing a value with published data,
+        place a probe upstream and subtract its reading.</li>
     </ol>
   </div>
 
@@ -520,7 +521,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <thead><tr><th>Boundary</th><th>Condition in the code</th></tr></thead>
         <tbody>
           <tr><td>Upwind faces</td><td>Equilibrium at a <b>logarithmic ABL profile</b></td></tr>
-          <tr><td>Downwind faces</td><td>Zero gradient — a copy of the interior neighbour</td></tr>
+          <tr><td>Downwind faces</td><td><b>Pressure outlet</b> — density held at the datum ρ = 1; velocity and the non-equilibrium part taken from the interior neighbour (Guo, Zheng &amp; Shi 2002)</td></tr>
           <tr><td>Domain top</td><td><b>Driven free stream</b> — equilibrium at the same log profile</td></tr>
           <tr><td>Ground</td><td>Half-way bounce-back, no-slip</td></tr>
           <tr><td>Buildings</td><td>Half-way bounce-back on voxelised solids</td></tr>
@@ -531,7 +532,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         avoids the singularity at the wall. The inlet is applied per cell to whichever faces face
         upwind (<span class="cs-mono">n·w &gt; 0</span>), so any azimuth works without rotating the
         model — but it also means <b>the lateral faces are not symmetry planes</b>. Each face is
-        either an inlet or a zero-gradient outlet.</p>
+        either an inlet or a pressure outlet.</p>
       <p class="cs-note">Two things worth stating plainly. The <b>top of the domain is driven, not
         free</b>: the code writes onto it the same equilibrium log profile it writes onto the inlet
         faces — its own label is “driven free stream” — so the undisturbed wind is being imposed
@@ -589,7 +590,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <div><span class="cs-chip is-in">In</span><dt>Streamline tracers</dt><dd>GPU particles advected through the velocity field, 8k to 150k of them, seeded throughout the domain.</dd></div>
         <div><span class="cs-chip is-in">In</span><dt>Section planes and probes</dt><dd>X, Y and Z cutting planes through the field, and a point readout giving speed, ratio, components, Cp and comfort class.</dd></div>
         <div><span class="cs-chip is-part">Partly</span><dt>Lawson comfort class</dt><dd>The seven coded bands are the standard LDDC set: frequent sitting &lt; 2.5, occasional sitting &lt; 4, standing &lt; 6, strolling &lt; 8, business walking &lt; 10, uncomfortable &lt; 15, unsafe ≥ 15 m/s — the last matching the LDDC safety limit for a frail person or cyclist. <b>The thresholds are right; the method is not.</b> The criteria ask whether a threshold is exceeded more than a stated share of the year — 5% for the comfort categories, 0.025% for the safety limit — summed over every wind direction weighted by its annual frequency, using a gust-equivalent rather than a mean speed. This tool applies the numbers to a single instantaneous mean for one direction, with no gust factor and no exceedance statistic at all. The labels are indicative; they are not a Lawson assessment. "Calm area" is separate again: the fraction below an absolute 1.5 m/s.</dd></div>
-        <div><span class="cs-chip is-part">Partly</span><dt>The Cp reference</dt><dd>Referenced to the lattice datum ρ = 1, the density imposed at the inlet — so approximately to the undisturbed inflow, rather than to a measured free-stream static pressure at a stated point. <b>The pattern is reliable; the values are not.</b> The outflow faces fix neither velocity nor pressure, so nothing holds the pressure level of the domain, and with buildings present it drifts. In the sample district at 250° the mean level stayed near +1 for 1 000 steps, then rose to about +2.8 by step 1 600, with the upwind side 3 to 4.7 above the datum; an empty site stays within +0.2. An isolated cube, measured against the air just upstream, reads windward +0.8, roof −0.7, sides −0.6 and leeward −0.4, close to wind-tunnel values; the raw display adds an offset to each. Read Cp for where a facade is pressed or sucked, not for a design pressure.</dd></div>
+        <div><span class="cs-chip is-part">Partly</span><dt>The Cp reference</dt><dd>Referenced to the lattice datum ρ = 1, the density held at the inlet and at the outlet — not to a measured free-stream static pressure at a stated point. <b>The pattern is reliable; the values carry an offset.</b> In the confined domain the air piles up ahead of the buildings: in the sample district at 250° the free stream just inside the inlet reads about +2.0 and the domain as a whole about +1.1; for a single cube the offset is about +0.14. An isolated cube, measured against the air just upstream, reads windward +0.81, roof −0.68, sides −0.56 and leeward −0.40, close to wind-tunnel values. Until 19 October 2026 the outlet copied its interior neighbour and held no pressure, and with buildings present the level drifted for as long as the solve ran: in the sample district it rose from about +1 to +2.8 between steps 1 000 and 1 600 and kept moving, and the mean pedestrian speed moved with it, from 0.105 U₁₀ averaged over steps 1 500–2 000 to 0.138 U₁₀ over steps 2 500–3 000, 31% more. With the pressure outlet the level settles, and the mean pedestrian speed holds within 1% from step 1 000 to step 3 000. Read Cp for where a facade is pressed or sucked, not for a design pressure.</dd></div>
         <div><span class="cs-chip is-part">Note</span><dt>What amplification is against</dt><dd>The 10 m reference speed, not the undisturbed speed at the same height. A value of 0.8 at pedestrian level therefore does not mean "sheltered": for z₀ = 1 m the undisturbed profile at 1.4 m is already only about 0.36 × U₁₀.</dd></div>
       </dl>
 
@@ -1122,13 +1123,13 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
     <p><b>The source code cites no literature.</b> It contains no bibliography, no citation and no
       reading list. What it does contain are names: three methods
       (<span class="cs-mono">D3Q19</span>, <span class="cs-mono">BGK</span>,
-      <span class="cs-mono">Smagorinsky</span>), one author group in a comment
-      (<span class="cs-mono">Hou et al.</span>), one set of comfort criteria
+      <span class="cs-mono">Smagorinsky</span>), two author groups in comments
+      (<span class="cs-mono">Hou et al.</span>; <span class="cs-mono">Guo, Zheng and Shi 2002</span>), one set of comfort criteria
       (<span class="cs-mono">Lawson LDDC</span>) and one file format
       (<span class="cs-mono">EnergyPlus .epw</span>).</p>
     <p>The entries below are <b>this page's identification of where those named things come from</b>.
       They are not a record of what was read while the tool was written — the code does not say, and
-      neither will this page. Only once does the code name a work at all, as “(Hou et al.)”;
+      neither will this page. Only twice does the code name a work at all, as “(Hou et al.)” and “(Guo, Zheng and Shi 2002)”;
       everywhere else the step from a method's name to its originating paper is an inference made
       here. Neither inference is in serious doubt, but both are inferences. Against each entry is the
       exact term the code uses and where it uses it, so the mapping can be checked rather than
@@ -1149,6 +1150,12 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       subgrid model for high Reynolds number flows. <i>Fields Institute Communications, 6</i>, 151–166.
       Preprint: <a href="https://arxiv.org/abs/comp-gas/9401004" target="_blank" rel="noopener">arXiv:comp-gas/9401004</a><br>
       <span class="cs-mono">— code: “(Hou et al.)”, beside the τ formula in the collision step</span></p>
+
+    <p class="cs-ref">Guo, Z., Zheng, C., &amp; Shi, B. (2002). Non-equilibrium extrapolation method
+      for velocity and pressure boundary conditions in the lattice Boltzmann method.
+      <i>Chinese Physics, 11</i>(4), 366–374.
+      <a href="https://doi.org/10.1088/1009-1963/11/4/310" target="_blank" rel="noopener">https://doi.org/10.1088/1009-1963/11/4/310</a><br>
+      <span class="cs-mono">— code: “(Guo, Zheng and Shi 2002)”, beside the pressure outlet in the boundary routine</span></p>
 
     <p class="cs-ref">Lawson, T. V. (1990). <i>The determination of the wind environment of a
       building complex before construction</i> (Report TVL 9025). Department of Aerospace
