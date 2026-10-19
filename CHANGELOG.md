@@ -48,6 +48,14 @@ release has not been cut, so there is no version DOI yet.
   datum, the velocity and the non-equilibrium part come from the neighbour.
   The level settles, the mean pedestrian speed holds within 1% from step 1000
   to 3000, and an isolated cube's face pressures are unchanged within 0.05.
+- **Changed** — "Fit model to site" is off by default, and the app now says
+  whenever an imported model is not at the size its file gives: by how much it
+  was scaled, and its length and height in the file and on the site. Fitting
+  was on and silent, so a 12.6 × 23.1 × 18.4 m building was drawn 3.52 times
+  larger, 65 m tall: the 1.5 m plane sat below its first step and the wind on
+  it was a 65 m building's. A model too large for the domain is still shrunk
+  to fit, and now says so with the figures. The two exercises that told
+  students to turn fitting off now say to leave it off.
 - **Docs** — the facade pressure legend and the method notes say that Cp
   shows the pattern and carries an offset: in the confined domain the air
   piles up ahead of the buildings, about +2 in the sample district. The

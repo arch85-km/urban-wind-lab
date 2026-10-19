@@ -853,7 +853,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
           </select>
         </div>
         <label class="ucfd-toggle"><input type="checkbox" id="ucfd-obj-yup" checked><span class="ucfd-switch"></span><span class="ucfd-tlabel">Model is Y&#8209;up</span></label>
-        <label class="ucfd-toggle"><input type="checkbox" id="ucfd-obj-fit" checked><span class="ucfd-switch"></span><span class="ucfd-tlabel">Fit model to site</span></label>
+        <label class="ucfd-toggle"><input type="checkbox" id="ucfd-obj-fit"><span class="ucfd-switch"></span><span class="ucfd-tlabel">Fit model to site</span></label>
         <div class="ucfd-note">Massing models work best: closed volumes, no interiors. Geometry is voxelised onto the lattice, so detail below one cell is not resolved.</div>
       </div>
     </details>
@@ -2211,6 +2211,8 @@ function placeMesh(mesh, opts) {
   }
   mesh.bounds = meshBounds(pos);
   mesh.appliedScale = scale * fit;
+  mesh.fitScale = fit;
+  mesh.fileSize = [maxPlan, bb.size[2]];   /* longer plan side and height, metres */
   return mesh;
 }
 
@@ -4191,10 +4193,26 @@ function handleOBJ(file) {
     };
     placeMesh(mesh, opts);
     setGeometry(mesh, file.name.replace(/\.obj$/i, ''));
-    if (mesh.warn) { toast(mesh.warn, 'warn'); }
-    else if (opts.clamped) { toast('Model was larger than the domain and has been scaled to fit.', 'warn'); }
+    var said = scaleNote(mesh, opts);
+    if (said) { setFootStatus(said); }
+    if (mesh.warn) { toast(mesh.warn + (said ? ' ' + said : ''), 'warn', said ? 12000 : 0); }
+    else if (said) { toast(said, 'warn', 12000); }
     else { toast('Imported ' + mesh.triangles.toLocaleString() + ' triangles from ' + file.name); }
   }, 48);
+}
+/* Say so whenever a model is not at the size its file gives. Fitting used to
+   be on by default and silent: a 12.6 x 23.1 x 18.4 m building was drawn 3.52
+   times larger, 65 m tall, so the 1.5 m plane sat below its first step and the
+   wind on it was a 65 m building's (Karam, 19 October 2026). */
+function scaleNote(mesh, opts) {
+  var k = mesh.fitScale;
+  if (!k || Math.abs(k - 1) < 0.005) { return ''; }
+  var L = mesh.fileSize[0], H = mesh.fileSize[1];
+  var m = function (v) { return fmt(v, v < 100 ? 1 : 0) + '\u00a0m'; };
+  var head = opts.clamped ? 'Too large for the domain, so scaled \u00d7' : 'Scaled \u00d7';
+  return head + fmt(k, 2) + (k > 1 ? ' to fill the site' : ' to fit') + ': ' +
+    m(L) + ' long and ' + m(H) + ' tall in the file, ' + m(L * k) + ' and ' + m(H * k) + ' here.' +
+    (k > 1 ? ' Turn off \u201cFit model to site\u201d to keep its real size.' : '');
 }
 function handleEPW(file) {
   setFootStatus('Reading ' + file.name + ' …');
