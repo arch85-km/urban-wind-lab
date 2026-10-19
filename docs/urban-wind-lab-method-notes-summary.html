@@ -63,7 +63,7 @@
 .cs-doc .cs-masthead{padding:2.75rem 0 1.9rem;border-bottom:2px solid var(--cs-ink);}
 .cs-doc .cs-eyebrow{font-family:var(--cs-fm);font-size:.70rem;font-weight:500;
   letter-spacing:.16em;text-transform:uppercase;color:var(--cs-accent);margin:0 0 1.1rem;}
-.cs-doc h1{font-family:var(--cs-fd);font-weight:600;
+.cs-doc h1,.cs-doc .cs-title{font-family:var(--cs-fd);font-weight:600;
   font-size:clamp(1.9rem,5.2vw,2.75rem);line-height:1.04;letter-spacing:-.028em;
   text-wrap:balance;margin:0 0 1.1rem;color:var(--cs-ink);}
 .cs-doc .cs-standfirst{max-width:var(--cs-measure);font-size:1.14rem;line-height:1.6;
@@ -327,7 +327,7 @@
 <div class="cs-doc cs-auto-dark">
 
   <div class="cs-masthead">
-    <h1>Method Notes in Brief</h1>
+    <h2 class="cs-title">Method Notes in Brief</h2>
     <p class="cs-standfirst">The short version: what the tool solves, and <strong>how far the
       numbers can be trusted</strong>. Treat the output as a qualitative picture of flow
       behaviour &mdash; the velocity <i>ratios</i> are meaningful, the absolute speeds are not
