@@ -280,7 +280,7 @@ that comparison.
 | Lattice resolution | Fast / Balanced / Detailed | — | **Balanced** |
 | Colour field | speed, Ux, Uy, Uz, Cp, amplification | — | speed |
 | Section planes X / Y / Z | 0 – 1 across the area of interest | normalised | Z on, at 1.5 m |
-| Legend range | Auto / Lock | — | Auto |
+| Legend range | Auto / Lock (per colour field, and the facade Cp scale) / Custom (typed) | — | Auto |
 | Lawson comfort layer | on / off | — | off |
 | Streamline tracers | on / off | — | on |
 | Tracer density | 8k / 20k / 40k / 80k / 150k | particles | 40k |
@@ -288,7 +288,7 @@ that comparison.
 | Ground grid | on / off | — | on |
 | Scenario presets | Breeze 4 / Prevailing 8 / Storm 18 m/s | m/s | Prevailing |
 | Solver | Pause / Step ×20 / Reset | — | running |
-| OBJ import | units m/mm/cm/ft/in, Y-up toggle, fit-to-site toggle | — | m, Y-up, fit on |
+| OBJ import | units m/mm/cm/ft/in, Y-up toggle, fit-to-site toggle, rotation −180° to +180° in 5° steps; all act at once on the loaded model | — | m, Y-up, fit off, 0° |
 | EPW import | 16-sector rose; apply mean / 90th percentile / peak | — | mean |
 
 Not exposed: domain size, `τ₀`, the Smagorinsky constant, `u_ref`, the reporting interval, the

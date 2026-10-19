@@ -48,6 +48,30 @@ release has not been cut, so there is no version DOI yet.
   datum, the velocity and the non-equilibrium part come from the neighbour.
   The level settles, the mean pedestrian speed holds within 1% from step 1000
   to 3000, and an isolated cube's face pressures are unchanged within 0.05.
+- **Added** — "Rotate model", −180° to +180° in 5° steps, to set an imported
+  model's north to true north. The scale comes from the model as drawn, so
+  turning does not resize it; a model turned so far that it reaches past the
+  domain is drawn smaller, and the footer and a message say so. The exported
+  image's title records the turn and any scaling.
+- **Changed** — the OBJ units, Y-up and fit switches act at once on the model
+  already loaded. They were read only at import, and changing them afterwards
+  did nothing, with nothing on screen to say so. The import message now points
+  out a file that is plainly in the wrong units (594 km across in metres:
+  millimetres) or stands on its edge (a Z-up site imported as Y-up).
+- **Added** — Legend range › Custom: the colour field's scale typed per field,
+  and the facade Cp scale, with a message when a pair is not low-to-high.
+- **Fixed** — Lock held the colour field's scale but not the facades', and one
+  range across all fields: locked on wind speed, Ux was drawn on 0–5 m/s, so
+  every westward flow was the bottom colour. It now holds each field's range
+  and the facade scale.
+- **Changed** — Mean, 90th percentile and Peak apply at once to the sector last
+  clicked; they used to wait for the next click on the rose. A line explains
+  each, and each colour field now has a one-line explanation under its menu.
+- **Fixed** — an OBJ face pointing at a missing vertex stayed in the triangle
+  count and left a blank triangle at the origin, which stretched the model's
+  bounds to it: a 20 m cube 500 km from the origin with one broken face came
+  in as a flat 226 × 180 × 0 m sheet. Only the triangles written are kept now,
+  and a file with no usable faces is refused, leaving the model on screen.
 - **Changed** — "Fit model to site" is off by default, and the app now says
   whenever an imported model is not at the size its file gives: by how much it
   was scaled, and its length and height in the file and on the site. Fitting

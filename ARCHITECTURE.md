@@ -159,8 +159,10 @@ Both are read locally with `FileReader`. Nothing is uploaded.
 - **OBJ** (up to 48 MB): `parseOBJ` reads `v`, `vn` and `f` in any of the four
   face formats, with n-gon fans and negative indices, and ignores materials.
   `placeMesh` converts the units (metres, millimetres, centimetres, feet or
-  inches), can rotate Y-up to Z-up, centres the model, can scale it to fit,
-  and seats it on the ground.
+  inches), can rotate Y-up to Z-up, takes its scale from the model as drawn,
+  turns it about the vertical, centres it and seats it on the ground. The
+  file as read is kept in `state.objSource`, so `applyImport` can place it
+  again whenever the units, Y-up, fit or rotation change.
 - **EPW** (up to 24 MB): `parseEPW` reads the location line and every hourly
   record's wind direction and speed into 16 sectors with mean, 90th
   percentile and peak. Clicking a sector of the rose drives the solve from

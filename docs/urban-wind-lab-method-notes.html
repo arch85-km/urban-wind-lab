@@ -699,7 +699,8 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       </ul>
       <p class="cs-note">The <b>Lock</b> button on the legend exists for exactly this. Locking the
         range across two runs is what turns a picture into a comparison, and comparison is where this
-        tool is trustworthy.</p>
+        tool is trustworthy. Lock holds each colour field&rsquo;s range and the facade Cp range;
+        <b>Custom</b> lets the same ranges be typed, so two classes can work on one agreed scale.</p>
     </div>
   </div>
 
@@ -726,7 +727,7 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
         <tbody>
           <tr><td>Colour field</td><td class="cs-n">speed · Ux · Uy · Uz · Cp · amplification</td><td class="cs-d">speed</td></tr>
           <tr><td>Section planes X / Y / Z</td><td class="cs-n">0 – 1 across the area of interest</td><td class="cs-d">Z at 1.5 m</td></tr>
-          <tr><td>Legend range</td><td class="cs-n">Auto / Lock</td><td class="cs-d">Auto</td></tr>
+          <tr><td>Legend range</td><td class="cs-n">Auto / Lock / Custom (typed, per colour field, and for the facades)</td><td class="cs-d">Auto</td></tr>
           <tr><td>Lawson comfort layer</td><td class="cs-n">on / off</td><td class="cs-d">off</td></tr>
           <tr><td>Streamline tracers</td><td class="cs-n">on / off</td><td class="cs-d">on</td></tr>
           <tr><td>Tracer density</td><td class="cs-n">8k / 20k / 40k / 80k / 150k</td><td class="cs-d">40k</td></tr>
@@ -736,8 +737,14 @@ Ma = u_ref · √3 = 0.078      <em>weak-compressibility error O(Ma²) ≈ 0.6%<
       </table></div>
 
       <h4>Bringing in your own data</h4>
-      <p><b>OBJ import</b> takes units in m, mm, cm, ft or in, with a Y-up toggle and a fit-to-site
-        toggle; the mesh is voxelised on the lattice, as described under <a href="#ucfd-s04">How exact the numbers are</a>. <b>EPW import</b> reads all
+      <p><b>OBJ import</b> takes units in m, mm, cm, ft or in, with a Y-up toggle, a fit-to-site
+        toggle (off by default) and a rotation of &minus;180&deg; to +180&deg; in 5&deg; steps, for
+        setting the model&rsquo;s north to true north. All four act at once on the model already
+        loaded. A model is kept at the size its file gives unless it is larger than the domain, or
+        fitting is asked for; the app then says by how much it was scaled, and a model turned so
+        far that it reaches past the domain is drawn smaller still, which the message also says.
+        Report any rotation and scaling with a result, since both change it. The mesh is voxelised
+        on the lattice, as described under <a href="#ucfd-s04">How exact the numbers are</a>. <b>EPW import</b> reads all
         8 760 hourly records and builds a 16-sector rose, and a sector can be applied at its mean,
         90th-percentile or peak speed.</p>
 

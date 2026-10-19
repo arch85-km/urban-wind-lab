@@ -327,6 +327,14 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums;
 }
 #ucfd-root .ucfd-num:focus { outline: none; border-color: var(--ucfd-accent); }
+#ucfd-root .ucfd-rangeset { display: flex; flex-direction: column; gap: 6px; }
+#ucfd-root .ucfd-rangeset[hidden], #ucfd-root .ucfd-rangerow[hidden] { display: none; }
+#ucfd-root .ucfd-rangerow { display: grid; grid-template-columns: minmax(0, 1fr) 64px auto 64px 34px; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ucfd-dim); }
+#ucfd-root .ucfd-rangerow .ucfd-num { width: 64px; }
+#ucfd-root .ucfd-rangerow .ucfd-num.is-bad { border-color: var(--ucfd-warn); box-shadow: 0 0 0 1px var(--ucfd-warn); }
+#ucfd-root .ucfd-rangeerr { color: var(--ucfd-warn); font-size: 11.5px; }
+#ucfd-root .ucfd-rangeerr[hidden] { display: none; }
+#ucfd-root .ucfd-rangename { flex: 1 1 auto; min-width: 0; color: var(--ucfd-text); }
 #ucfd-root select {
   width: 100%; padding: 7px 28px 7px 9px; font-size: 12px; color: var(--ucfd-text);
   background: var(--ucfd-panel-2) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M2 4.5L6 8.5L10 4.5' fill='none' stroke='%2393a6ba' stroke-width='1.6' stroke-linecap='round'/></svg>") no-repeat right 8px center/12px;
@@ -854,7 +862,12 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
         </div>
         <label class="ucfd-toggle"><input type="checkbox" id="ucfd-obj-yup" checked><span class="ucfd-switch"></span><span class="ucfd-tlabel">Model is Y&#8209;up</span></label>
         <label class="ucfd-toggle"><input type="checkbox" id="ucfd-obj-fit"><span class="ucfd-switch"></span><span class="ucfd-tlabel">Fit model to site</span></label>
-        <div class="ucfd-note">Massing models work best: closed volumes, no interiors. Geometry is voxelised onto the lattice, so detail below one cell is not resolved.</div>
+        <div class="ucfd-field">
+          <div class="ucfd-flabel"><label for="ucfd-obj-rot">Rotate model</label><span class="ucfd-fval ucfd-mono" id="ucfd-obj-rot-val">0&deg;</span></div>
+          <input type="range" id="ucfd-obj-rot" min="-180" max="180" step="5" value="0" disabled title="Import an OBJ to rotate it">
+          <div class="ucfd-hint">Clockwise seen from above, about the model&rsquo;s centre: use it to set the model&rsquo;s north to true north. To try another wind direction, turn the wind instead.</div>
+        </div>
+        <div class="ucfd-note">The units, Y&#8209;up, fit and rotation apply at once to an imported model. Massing models work best: closed volumes, no interiors. Geometry is voxelised onto the lattice, so detail below one cell is not resolved.</div>
       </div>
     </details>
 
@@ -879,6 +892,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
             <button type="button" data-metric="p90" aria-pressed="false">90th %ile</button>
             <button type="button" data-metric="max" aria-pressed="false">Peak</button>
           </div>
+          <div class="ucfd-hint">Click a sector of the rose to run that wind. <b>Mean</b>: the average speed of the hours the wind blew from there, calms under 0.5&nbsp;m/s left out: the everyday wind. <b>90th&nbsp;%ile</b>: exceeded in only one in ten of those hours: a windy day. <b>Peak</b>: the strongest hour of the year from there: a storm check, still an hourly reading, not a gust.</div>
         </div>
       </div>
     </details>
@@ -899,6 +913,7 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
             <option value="cp">Pressure coefficient Cp</option>
             <option value="ratio">Amplification factor U/U&#8321;&#8320;</option>
           </select>
+          <div class="ucfd-hint" id="ucfd-field-note"></div>
         </div>
 
         <div class="ucfd-field">
@@ -935,8 +950,26 @@ html.ucfd-standalone, body.ucfd-standalone { margin: 0; padding: 0; background: 
           <div class="ucfd-seg" id="ucfd-range-mode" role="group" aria-label="Legend range mode">
             <button type="button" data-range="auto" aria-pressed="true">Auto</button>
             <button type="button" data-range="lock" aria-pressed="false">Lock</button>
+            <button type="button" data-range="custom" aria-pressed="false">Custom</button>
           </div>
-          <div class="ucfd-hint">Lock the range to compare two design options on an identical scale.</div>
+          <div class="ucfd-rangeset" id="ucfd-range-custom" hidden>
+            <div class="ucfd-rangerow">
+              <span class="ucfd-rangename" id="ucfd-range-name">Wind speed</span>
+              <input class="ucfd-num" type="number" id="ucfd-range-min" step="any" aria-label="Colour field scale, lowest value">
+              <span>to</span>
+              <input class="ucfd-num" type="number" id="ucfd-range-max" step="any" aria-label="Colour field scale, highest value">
+              <span class="ucfd-hint" id="ucfd-range-unit">m/s</span>
+            </div>
+            <div class="ucfd-rangerow" id="ucfd-range-cprow" hidden>
+              <span class="ucfd-rangename">Facade Cp</span>
+              <input class="ucfd-num" type="number" id="ucfd-cp-min" step="any" aria-label="Facade pressure scale, lowest value">
+              <span>to</span>
+              <input class="ucfd-num" type="number" id="ucfd-cp-max" step="any" aria-label="Facade pressure scale, highest value">
+              <span class="ucfd-hint">Cp</span>
+            </div>
+            <div class="ucfd-rangeerr" id="ucfd-range-err" role="alert" hidden>The first value must be lower than the second; the scale keeps its last good range.</div>
+          </div>
+          <div class="ucfd-hint" id="ucfd-range-note">Auto fits the scale to what is on screen. Lock keeps it as it is, to compare two design options on one scale. Custom lets you type it.</div>
         </div>
       </div>
     </details>
@@ -2174,7 +2207,12 @@ function parseOBJ(text) {
       o += 3;
     }
   }
-  return { positions: pos, normals: nrm, triangles: tri, warn: warn };
+  /* A skipped face used to stay in the count and leave a blank triangle at
+     (0, 0, 0): the triangle count was too high, and the model's bounds were
+     stretched to the origin, so a georeferenced file was centred and scaled
+     wrongly. Keep only the triangles written. */
+  if (o < pos.length) { pos = pos.slice(0, o); nrm = nrm.slice(0, o); }
+  return { positions: pos, normals: nrm, triangles: o / 9, warn: warn };
 }
 
 /* Place an imported mesh onto the site: unit conversion, optional Y-up to
@@ -2193,16 +2231,37 @@ function placeMesh(mesh, opts) {
   }
   for (i = 0; i < pos.length; i++) { pos[i] *= scale; }
 
-  var bb = meshBounds(pos);
+  /* The scale comes from the model as drawn, so turning it does not resize
+     it: worked out after the turn, a 594 m site shrunk to x0.38 at 0 deg went
+     to x0.29 at 45 deg and back, its buildings 18 m tall, then 14 m, then 18 m. */
+  var bb0 = meshBounds(pos);
   var fit = 1;
-  var maxPlan = Math.max(bb.size[0], bb.size[1]) || 1;
+  var maxPlan = Math.max(bb0.size[0], bb0.size[1]) || 1;
   if (opts.fit) {
-    fit = Math.min(SITE * 0.72 / maxPlan, DOMAIN_H * 0.72 / Math.max(bb.size[2], 0.001));
+    fit = Math.min(SITE * 0.72 / maxPlan, DOMAIN_H * 0.72 / Math.max(bb0.size[2], 0.001));
   } else {
     /* even without fitting, refuse to let a model overflow the domain */
-    var over = Math.max(maxPlan / (SITE * 0.94), bb.size[2] / (DOMAIN_H * 0.88));
+    var over = Math.max(maxPlan / (SITE * 0.94), bb0.size[2] / (DOMAIN_H * 0.88));
     if (over > 1) { fit = 1 / over; opts.clamped = true; }
   }
+  mesh.fitScaleDrawn = fit;
+
+  /* turn about the vertical, clockwise seen from above: +Y is north, +X east */
+  if (opts.rotate) {
+    var ra = opts.rotate * Math.PI / 180, ca = Math.cos(ra), sa = Math.sin(ra);
+    for (i = 0; i < pos.length; i += 3) {
+      var px = pos[i], qy = pos[i + 1];
+      pos[i] = px * ca + qy * sa; pos[i + 1] = -px * sa + qy * ca;
+      var nx0 = nrm[i], ny0 = nrm[i + 1];
+      nrm[i] = nx0 * ca + ny0 * sa; nrm[i + 1] = -nx0 * sa + ny0 * ca;
+    }
+  }
+
+  var bb = meshBounds(pos);
+  /* Turned, a wide model can reach past the domain: only then is it made
+     smaller still, and the message says so. */
+  var reach = Math.max(bb.size[0], bb.size[1]) * fit / (SITE * 0.94);
+  if (opts.rotate && reach > 1) { fit /= reach; opts.turnShrunk = true; }
   var cx = (bb.lo[0] + bb.hi[0]) / 2, cy = (bb.lo[1] + bb.hi[1]) / 2, z0 = bb.lo[2];
   for (i = 0; i < pos.length; i += 3) {
     pos[i] = (pos[i] - cx) * fit;
@@ -2212,7 +2271,8 @@ function placeMesh(mesh, opts) {
   mesh.bounds = meshBounds(pos);
   mesh.appliedScale = scale * fit;
   mesh.fitScale = fit;
-  mesh.fileSize = [maxPlan, bb.size[2]];   /* longer plan side and height, metres */
+  /* longer plan side, height and shorter plan side, in metres, as drawn */
+  mesh.fileSize = [maxPlan, bb0.size[2], Math.min(bb0.size[0], bb0.size[1])];
   return mesh;
 }
 
@@ -2712,12 +2772,15 @@ var state = {
   mode: 'speed',
   running: true,
   field: null, solid: null, mesh: null, modelName: 'Sample district',
+  objSource: null,          /* the imported OBJ as read, before units, Y-up, fit and rotation */
   step: 0, residual: 1, msPerStep: 0, umax: 1, converged: false,
   slices: { x: false, y: false, z: true },
   slicePos: { x: 0.5, y: 0.5, z: 1.5 / DOMAIN_H },
   comfort: false, particles: true, facade: false, showGrid: true,
   density: 2, rangeLock: false, range: [0, 1],
-  probes: [], epw: null, epwMetric: 'mean', theme: 'dark',
+  rangeMode: 'auto', customRange: {}, customCp: null,   /* Custom: typed per colour field */
+  lockRange: {},            /* Lock: held per colour field */
+  probes: [], epw: null, epwMetric: 'mean', epwSector: null, theme: 'dark',
   stats: null, pixelRatio: 1
 };
 var DENSITIES = [8000, 20000, 40000, 80000, 150000];
@@ -3238,13 +3301,17 @@ function analyseField() {
   var spHi = pct(samples, 0.99) * U;
   var cpLo = pct(cps, 0.02), cpHi = pct(cps, 0.98);
   var cpA = Math.max(Math.abs(cpLo), Math.abs(cpHi), 0.2);
-  state.cpRange = [-niceCeil(cpA), niceCeil(cpA)];
+  var cpAuto = [-niceCeil(cpA), niceCeil(cpA)];
+  /* Lock used to hold the colour field's scale but not the facades', so two
+     design options were compared on one scale and their facades on two. */
+  if (state.rangeMode === 'custom' && state.customCp) { state.cpRange = state.customCp.slice(); }
+  else if (!state.rangeLock || !state.cpRange) { state.cpRange = cpAuto; }
 
   var mode = state.mode, range;
   if (mode === 'speed') {
     range = [0, Math.max(0.5, niceCeil(spHi))];
   } else if (mode === 'cp') {
-    range = state.cpRange.slice();
+    range = cpAuto.slice();
   } else if (mode === 'ratio') {
     var rHi = pct(ratios, 0.99);
     var amp = Math.max(Math.abs(rHi - 1), 0.35);
@@ -3254,7 +3321,17 @@ function analyseField() {
     var a2 = Math.max(Math.abs(cLo), Math.abs(cHi), 0.25);
     range = [-niceCeil(a2), niceCeil(a2)];
   }
-  if (!state.rangeLock) { state.range = range; }
+  state.autoRange = range;
+  state.autoCp = cpAuto;
+  if (state.rangeMode === 'custom') { state.range = (state.customRange[mode] || range).slice(); }
+  else if (state.rangeMode === 'lock') {
+    /* Held per field: one lock across fields drew Ux on wind speed's 0-5 m/s,
+       so every westward flow was the bottom colour. A field first shown after
+       locking is locked at its own range. */
+    if (!state.lockRange[mode]) { state.lockRange[mode] = range.slice(); }
+    state.range = state.lockRange[mode].slice();
+  }
+  else { state.range = range; }
 
   /* --- pedestrian level statistics --- */
   var k = pedestrianLayer();
@@ -3389,7 +3466,21 @@ function pickPoint(clientX, clientY) {
 /* ------------------------------------------------------------------ *
  * 6. Panels and readouts                                              *
  * ------------------------------------------------------------------ */
+/* What each colour field shows, in a student's terms (Karam, 19 October
+   2026). Red is the top of the diverging ramp, blue the bottom; +X is east and
+   +Y north. */
+var FIELD_NOTES = {
+  speed: 'How fast the air moves, in m/s, whatever its direction. On the 1.5\u00a0m plane this is the wind a pedestrian feels, and what the comfort colours are based on.',
+  ux: 'The east\u2013west part of the wind: red where it blows towards the east (+X), blue towards the west, white where it has none. Blue behind a building in a westerly wind is air flowing back into the wake.',
+  uy: 'The north\u2013south part of the wind: red where it blows towards the north (+Y), blue towards the south. Read it with Ux to see the flow turn round corners and into side streets.',
+  uz: 'The vertical part of the wind: red where the air rises (updraught), blue where it sinks. Blue down the windward face of a tall building is downwash, carrying fast upper air to the street.',
+  cp: 'How hard the air pushes or pulls, as a share of the wind\u2019s own pressure at 10\u00a0m: red where it presses (windward faces), blue where it sucks (roof edges, sides, the wake). +1 is the full wind brought to a stop. Read the pattern; the values carry an offset.',
+  ratio: 'The speed here divided by the reference speed at 10\u00a0m: red above 1, blue below. Open ground at 1.5\u00a0m is already only about 0.4 (z\u2080 = 1\u00a0m), so compare with that: well above it is wind the buildings have sped up, at corners and through gaps.'
+};
 function renderLegend() {
+  var fn = $('ucfd-field-note');
+  if (fn) { fn.textContent = FIELD_NOTES[state.mode] || ''; }
+  syncRangeInputs();
   /* The facades carry their own scale, Cp, whatever the planes show; without
      it the colours on the buildings could not be read (Karam, 18 October 2026). */
   var cpBox = $('ucfd-legend-cp');
@@ -3398,8 +3489,10 @@ function renderLegend() {
     if (state.facade) {
       var cr = state.cpRange || [-1, 1];
       $('ucfd-legend-cp-ramp').style.background = rampCss(diverging, 28);
-      var sg = function (v) { return (v > 0 ? '+' : v < 0 ? '\u2212' : '') + fmt(Math.abs(v), Math.abs(cr[1]) < 3 ? 1 : 0); };
-      $('ucfd-legend-cp-ticks').innerHTML = '<span>' + sg(cr[0]) + '</span><span>0</span><span>' + sg(cr[1]) + '</span>';
+      var cspan = Math.abs(cr[1] - cr[0]), cdec = cspan < 1 ? 2 : (cspan < 6 ? 1 : 0);
+      var sg = function (v) { return (v > 0 ? '+' : v < 0 ? '\u2212' : '') + fmt(Math.abs(v), cdec); };
+      var cmid = (cr[0] + cr[1]) / 2;
+      $('ucfd-legend-cp-ticks').innerHTML = '<span>' + sg(cr[0]) + '</span><span>' + (Math.abs(cmid) < 1e-9 ? '0' : sg(cmid)) + '</span><span>' + sg(cr[1]) + '</span>';
     }
   }
   var mode = FIELD_MODES[state.mode];
@@ -3429,7 +3522,48 @@ function renderLegend() {
   ticks.innerHTML = '<span>' + fmt(r[0], dec) + '</span><span>' + fmt(mid, dec) + '</span><span>' + fmt(r[1], dec) + '</span>';
   var step = contourStep(r);
   $('ucfd-legend-note').textContent = 'Iso-contours every ' + fmt(step, step < 1 ? 2 : 1) + ' ' + mode.unit +
-    '. Tracers are always coloured by speed.' + (state.rangeLock ? ' Range locked.' : '');
+    '. Tracers are always coloured by speed.' + (state.rangeMode === 'custom' ? ' Custom range.' : (state.rangeLock ? ' Range locked.' : ''));
+}
+
+/* Custom legend range: typed per colour field (m/s, Cp or U/U10), and one for
+   the facades. A pair that is not low-to-high is shown in amber and ignored. */
+function syncRangeInputs() {
+  var box = $('ucfd-range-custom');
+  if (!box) { return; }
+  var on = state.rangeMode === 'custom';
+  box.hidden = !on;
+  if (!on) { return; }
+  var mode = FIELD_MODES[state.mode], r = state.customRange[state.mode] || state.range;
+  $('ucfd-range-name').textContent = mode.name;
+  $('ucfd-range-unit').textContent = mode.unit;
+  $('ucfd-range-cprow').hidden = !state.facade;
+  var put = function (id, v) { var el = $(id); if (document.activeElement !== el) { el.value = +v.toFixed(3); } };
+  put('ucfd-range-min', r[0]); put('ucfd-range-max', r[1]);
+  var c = state.customCp || state.cpRange || [-1, 1];
+  put('ucfd-cp-min', c[0]); put('ucfd-cp-max', c[1]);
+  checkRangePairs();
+}
+/* flag a pair that is not low-to-high, from what the boxes show now */
+function checkRangePairs() {
+  var bad = false;
+  [['ucfd-range-min', 'ucfd-range-max'], ['ucfd-cp-min', 'ucfd-cp-max']].forEach(function (p) {
+    var lo = parseFloat($(p[0]).value), hi = parseFloat($(p[1]).value);
+    var ok = isFinite(lo) && isFinite(hi) && hi > lo;
+    $(p[0]).classList.toggle('is-bad', !ok); $(p[1]).classList.toggle('is-bad', !ok);
+    if (!ok && !$(p[0]).closest('[hidden]')) { bad = true; }
+  });
+  $('ucfd-range-err').hidden = !bad;
+}
+function readRangeInputs() {
+  var pair = function (a, b) {
+    var lo = parseFloat($(a).value), hi = parseFloat($(b).value);
+    return isFinite(lo) && isFinite(hi) && hi > lo ? [lo, hi] : null;
+  };
+  var r = pair('ucfd-range-min', 'ucfd-range-max'), c = pair('ucfd-cp-min', 'ucfd-cp-max');
+  if (r) { state.customRange[state.mode] = r; }
+  if (c) { state.customCp = c; }
+  if (r || c) { analyseField(); renderLegend(); }
+  checkRangePairs();
 }
 
 function renderStats() {
@@ -3801,13 +3935,18 @@ function roseClick(ev) {
   if (Math.hypot(px, py) < 0.045) { return; }
   var ang = Math.atan2(px, -py) * 180 / Math.PI;
   if (ang < 0) { ang += 360; }
-  var sec = sectorOf(ang);
+  applySector(sectorOf(ang));
+}
+/* The Mean, 90th percentile and Peak buttons used to choose only what the next
+   click on the rose would apply, so pressing one changed nothing on screen. */
+function applySector(sec) {
   var S4 = state.epw.sectors[sec];
   var spd = state.epwMetric === 'p90' ? S4.p90 : (state.epwMetric === 'max' ? S4.max : S4.mean);
   if (!(spd > 0)) {
     toast('No hours recorded from ' + CARDINALS[sec] + ' in this weather file.', 'warn');
     return;
   }
+  state.epwSector = sec;
   setDirection(sec * 22.5, true);
   setSpeed(clamp(spd, 0.5, 30));
   toast(CARDINALS[sec] + ' · ' + fmt(spd, 1) + ' m/s (' + (state.epwMetric === 'p90' ? '90th percentile' :
@@ -3926,7 +4065,7 @@ function setDirection(deg, skipSolver) {
   state.dir = deg;
   updateWindReadouts();
   drawDial(); drawCompass(); drawRose();
-  if (!skipSolver) { markPreset(null); }
+  if (!skipSolver) { markPreset(null); state.epwSector = null; }
   solver.post({ type: 'wind', dir: state.dir, z0: state.z0 });
   state.converged = false;
   updateChips();
@@ -3963,7 +4102,7 @@ function updateModelInfo() {
   $('ucfd-model-tris').textContent = state.mesh ? state.mesh.triangles.toLocaleString() : '—';
   if (state.mesh && state.mesh.bounds) {
     var b = state.mesh.bounds;
-    $('ucfd-model-size').textContent = fmt(b.size[0], 0) + ' × ' + fmt(b.size[1], 0) + ' × ' + fmt(b.size[2], 0) + ' m';
+    $('ucfd-model-size').textContent = metres(b.size[0]) + ' × ' + metres(b.size[1]) + ' × ' + metres(b.size[2]) + ' m';
   } else {
     $('ucfd-model-size').textContent = '—';
   }
@@ -4186,19 +4325,100 @@ function handleOBJ(file) {
       setFootStatus('OBJ import failed');
       return;
     }
-    var opts = {
-      unitScale: parseFloat($('ucfd-obj-units').value) || 1,
-      yUp: $('ucfd-obj-yup').checked,
-      fit: $('ucfd-obj-fit').checked
-    };
-    placeMesh(mesh, opts);
-    setGeometry(mesh, file.name.replace(/\.obj$/i, ''));
-    var said = scaleNote(mesh, opts);
-    if (said) { setFootStatus(said); }
-    if (mesh.warn) { toast(mesh.warn + (said ? ' ' + said : ''), 'warn', said ? 12000 : 0); }
-    else if (said) { toast(said, 'warn', 12000); }
-    else { toast('Imported ' + mesh.triangles.toLocaleString() + ' triangles from ' + file.name); }
+    /* A file whose faces all point at missing vertices parses to nothing; it
+       used to replace the model on screen with an empty one. */
+    if (!mesh.triangles) {
+      toast('No usable faces in ' + file.name + (mesh.warn ? ': ' + mesh.warn.charAt(0).toLowerCase() + mesh.warn.slice(1) : '.') +
+            ' The model on screen is unchanged.', 'bad');
+      setFootStatus('OBJ import failed: no usable faces');
+      return;
+    }
+    /* Kept as read, so the units, Y-up, fit and rotation can be changed after
+       the import. They were read once, at import, and changing them afterwards
+       did nothing, with nothing on screen to say so (Karam, 19 October 2026). */
+    state.objSource = { positions: mesh.positions.slice(), normals: mesh.normals.slice(),
+                        triangles: mesh.triangles, warn: mesh.warn, file: file.name };
+    setRotation(0, true);
+    applyImport('import');
   }, 48);
+}
+function importOptions() {
+  return {
+    unitScale: parseFloat($('ucfd-obj-units').value) || 1,
+    yUp: $('ucfd-obj-yup').checked,
+    fit: $('ucfd-obj-fit').checked,
+    rotate: parseFloat($('ucfd-obj-rot').value) || 0
+  };
+}
+/* A new file starts as drawn; the sample district cannot be turned. */
+function setRotation(deg, enabled) {
+  var r = $('ucfd-obj-rot');
+  r.value = deg; r.disabled = !enabled;
+  r.title = enabled ? '' : 'Import an OBJ to rotate it';
+  $('ucfd-obj-rot-val').textContent = rotationLabel(deg);
+}
+function scaleText(k) { return k < 0.01 ? k.toPrecision(2) : fmt(k, 2); }
+/* metres to a sensible number of places: 0.13, 2.4, 23 */
+function metres(v) { return fmt(v, v < 1 ? 2 : (v < 10 ? 1 : 0)); }
+function rotationLabel(deg) {
+  if (!deg) { return '0\u00b0'; }
+  return Math.abs(deg) + '\u00b0 ' + (deg > 0 ? 'clockwise' : 'anticlockwise');
+}
+/* Place the imported model again from the copy kept at import. why: 'import'
+   (a new file), 'options' (units, Y-up or fit changed) or 'rotate'. */
+function applyImport(why) {
+  var src = state.objSource;
+  if (!src) { return; }
+  var mesh = { positions: src.positions.slice(), normals: src.normals.slice(),
+               triangles: src.triangles, warn: src.warn };
+  var opts = importOptions();
+  placeMesh(mesh, opts);
+  setGeometry(mesh, src.file.replace(/\.obj$/i, ''));
+  var said = scaleNote(mesh, opts), hint = importHints(mesh, opts);
+  var b = mesh.bounds.size;
+  var size = metres(b[0]) + ' \u00d7 ' + metres(b[1]) + ' \u00d7 ' + metres(b[2]) + '\u00a0m';
+  if (Math.max(b[0], b[1], b[2]) < state.grid.dx) {
+    toast((mesh.warn ? mesh.warn + ' ' : '') + 'The model is ' + size + ', smaller than one lattice cell (' + metres(state.grid.dx) +
+          '\u00a0m), so the solver cannot see it. ' + (hint || 'Check the OBJ units.'), 'warn', 15000);
+    setFootStatus('Model smaller than one cell: check the OBJ units');
+    return;
+  }
+  var turned = opts.rotate ? 'Turned ' + rotationLabel(opts.rotate) + '. ' : '';
+  if (why === 'rotate') {
+    var k = mesh.fitScale, scaled = Math.abs(k - 1) < 0.005 ? '' : ', scaled \u00d7' + scaleText(k);
+    var extra = opts.turnShrunk ? ' At this angle it reaches past the domain, so it is smaller than as drawn (\u00d7' +
+                scaleText(mesh.fitScaleDrawn) + ').' : '';
+    setFootStatus((turned || 'As drawn. ') + 'Now ' + size + ' on the site' + scaled + '.' + extra);
+    if (opts.turnShrunk && !state.turnShrunk) { toast(turned + 'At this angle the model reaches past the domain, so it is drawn smaller: \u00d7' + scaleText(k) + ' instead of \u00d7' + scaleText(mesh.fitScaleDrawn) + '. Its heights change with it.', 'warn', 12000); }
+    state.turnShrunk = !!opts.turnShrunk;
+    return;
+  }
+  state.turnShrunk = !!opts.turnShrunk;
+  if (said || hint) { setFootStatus(hint || turned + said); }
+  var plain = why === 'import' ? 'Imported ' + mesh.triangles.toLocaleString() + ' triangles from ' + src.file + '.'
+                               : 'At the size the file gives: ' + size + '.';
+  var msg = [mesh.warn, hint, turned + (said || plain)].filter(Boolean).join(' ');
+  var loud = !!(mesh.warn || said || hint);
+  toast(msg, loud ? 'warn' : '', hint ? 16000 : (said ? 12000 : 0));
+}
+/* Two mistakes a file makes plain by its proportions. A city exported from
+   SketchUp through a converter came in Z-up and in millimetres: 552 km by
+   594 km, standing on its edge like a wall (Karam, 19 October 2026). */
+function importHints(mesh, opts) {
+  var L = mesh.fileSize[0], H = mesh.fileSize[1], S = mesh.fileSize[2], tips = [];
+  var big = Math.max(L, H), raw = big / (opts.unitScale || 1);
+  if (big > 5000) {
+    var sel = $('ucfd-obj-units'), unit = sel.options[sel.selectedIndex].text.toLowerCase();
+    var guess = [['Millimetres', 0.001], ['Centimetres', 0.01], ['Inches', 0.0254]].filter(function (c) {
+      return c[1] < opts.unitScale && raw * c[1] >= 5 && raw * c[1] <= 5000;
+    })[0];
+    tips.push('At ' + fmt(big / 1000, 0) + '\u00a0km across, this file is probably not in ' + unit +
+              (guess ? ': set \u201cOBJ units\u201d to ' + guess[0] + '.' : '.'));
+  }
+  if (opts.yUp && H > L && L > 0.5 * H && S < 0.25 * H) {
+    tips.push('It stands on its edge, as tall as it is long and thin as a wall: if it is a site or a city, turn off \u201cModel is Y\u2011up\u201d.');
+  }
+  return tips.join(' ');
 }
 /* Say so whenever a model is not at the size its file gives. Fitting used to
    be on by default and silent: a 12.6 x 23.1 x 18.4 m building was drawn 3.52
@@ -4210,7 +4430,7 @@ function scaleNote(mesh, opts) {
   var L = mesh.fileSize[0], H = mesh.fileSize[1];
   var m = function (v) { return fmt(v, v < 100 ? 1 : 0) + '\u00a0m'; };
   var head = opts.clamped ? 'Too large for the domain, so scaled \u00d7' : 'Scaled \u00d7';
-  return head + fmt(k, 2) + (k > 1 ? ' to fill the site' : ' to fit') + ': ' +
+  return head + scaleText(k) + (k > 1 ? ' to fill the site' : ' to fit') + ': ' +
     m(L) + ' long and ' + m(H) + ' tall in the file, ' + m(L * k) + ' and ' + m(H * k) + ' here.' +
     (k > 1 ? ' Turn off \u201cFit model to site\u201d to keep its real size.' : '');
 }
@@ -4226,6 +4446,7 @@ function handleEPW(file) {
       return;
     }
     state.epw = epw;
+    state.epwSector = null;
     drawRose();
     renderEpwMeta();
     $('ucfd-epw-stat').hidden = false;
@@ -4367,7 +4588,11 @@ function exportPNG() {
   ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ctx.fillStyle = SH.title;
   ctx.font = '600 ' + (16 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText('Urban Wind Lab · ' + state.modelName, pad, top + ROW.title * dpr);
+  /* the turn and the scale change the result, so the caption records them */
+  var rot = state.objSource ? parseFloat($('ucfd-obj-rot').value) || 0 : 0;
+  var k = state.objSource && state.mesh ? state.mesh.fitScale : 1;
+  var how = [rot ? 'turned ' + rotationLabel(rot) : '', k && Math.abs(k - 1) >= 0.005 ? 'scaled \u00d7' + scaleText(k) : ''].filter(Boolean).join(', ');
+  ctx.fillText('Urban Wind Lab · ' + state.modelName + (how ? ' (' + how + ')' : ''), pad, top + ROW.title * dpr);
 
   ctx.fillStyle = SH.body;
   ctx.font = '400 ' + (12.5 * dpr) + 'px ui-sans-serif, system-ui, sans-serif';
@@ -4418,7 +4643,7 @@ function exportPNG() {
     ctx.textAlign = 'right';  ctx.fillText(fmt(r[1], dec), pad + rampW, ty);
     ctx.textAlign = 'left';
     if (state.rangeLock) {
-      ctx.fillText('range locked', pad + rampW + 12 * dpr, ty);
+      ctx.fillText(state.rangeMode === 'custom' ? 'custom range' : 'range locked', pad + rampW + 12 * dpr, ty);
     }
   }
 
@@ -4624,8 +4849,8 @@ function showTourStep() {
  * 14. Wiring                                                          *
  * ------------------------------------------------------------------ */
 function bindUI() {
-  on($('ucfd-speed'), 'input', function (e) { setSpeed(e.target.value, 'range'); });
-  on($('ucfd-speed-num'), 'change', function (e) { setSpeed(e.target.value, 'num'); });
+  on($('ucfd-speed'), 'input', function (e) { state.epwSector = null; setSpeed(e.target.value, 'range'); });
+  on($('ucfd-speed-num'), 'change', function (e) { state.epwSector = null; setSpeed(e.target.value, 'num'); });
   on($('ucfd-terrain'), 'change', function (e) { setRoughness(e.target.value); });
 
   var presets = $('ucfd-presets');
@@ -4663,7 +4888,21 @@ function bindUI() {
     if (e.target.files && e.target.files[0]) { handleOBJ(e.target.files[0]); }
     e.target.value = '';
   });
+  /* the import options act on the model already loaded, not only the next one */
+  function reapply() { if (state.objSource) { applyImport('options'); } }
+  on($('ucfd-obj-units'), 'change', reapply);
+  on($('ucfd-obj-yup'), 'change', reapply);
+  on($('ucfd-obj-fit'), 'change', reapply);
+  var rotQueued = false;
+  on($('ucfd-obj-rot'), 'input', function (e) {
+    $('ucfd-obj-rot-val').textContent = rotationLabel(parseFloat(e.target.value) || 0);
+    if (!state.objSource || rotQueued) { return; }
+    rotQueued = true;
+    requestAnimationFrame(function () { rotQueued = false; applyImport('rotate'); });
+  });
   on($('ucfd-obj-reset'), 'click', function () {
+    state.objSource = null;
+    setRotation(0, false);
     setGeometry(boxesToMesh(buildSampleCity()), 'Sample district');
     toast('Reloaded the sample district.');
   });
@@ -4680,6 +4919,7 @@ function bindUI() {
     state.epwMetric = b.getAttribute('data-metric');
     var all = $('ucfd-epw-metric').querySelectorAll('button');
     for (var i = 0; i < all.length; i++) { all[i].setAttribute('aria-pressed', String(all[i] === b)); }
+    if (state.epw && state.epwSector != null) { applySector(state.epwSector); }
   });
   on($('ucfd-rose'), 'click', roseClick);
 
@@ -4714,7 +4954,7 @@ function bindUI() {
     renderLegend(); updateWindReadouts();
   });
   on($('ucfd-particles'), 'change', function (e) { state.particles = e.target.checked; });
-  on($('ucfd-facade'), 'change', function (e) { state.facade = e.target.checked; renderLegend(); });
+  on($('ucfd-facade'), 'change', function (e) { state.facade = e.target.checked; analyseField(); renderLegend(); });
   on($('ucfd-slowbar-close'), 'click', function () { $('ucfd-slowbar').hidden = true; });
   on($('ucfd-grid-lines'), 'change', function (e) { state.showGrid = e.target.checked; });
   on($('ucfd-pdensity'), 'input', function (e) {
@@ -4725,11 +4965,24 @@ function bindUI() {
   on($('ucfd-range-mode'), 'click', function (e) {
     var b = e.target.closest('button');
     if (!b) { return; }
-    state.rangeLock = b.getAttribute('data-range') === 'lock';
+    state.rangeMode = b.getAttribute('data-range');
+    state.rangeLock = state.rangeMode !== 'auto';
     var all = $('ucfd-range-mode').querySelectorAll('button');
     for (var i = 0; i < all.length; i++) { all[i].setAttribute('aria-pressed', String(all[i] === b)); }
-    if (!state.rangeLock) { analyseField(); }
+    state.lockRange = {};
+    if (state.rangeMode === 'lock') { state.lockRange[state.mode] = state.range.slice(); }
+    if (state.rangeMode === 'custom') {
+      /* start from the scale on screen, so typing changes one end at a time */
+      if (!state.customRange[state.mode]) { state.customRange[state.mode] = state.range.slice(); }
+      if (!state.customCp) { state.customCp = (state.cpRange || [-1, 1]).slice(); }
+    }
+    analyseField();
     renderLegend();
+  });
+  ['ucfd-range-min', 'ucfd-range-max', 'ucfd-cp-min', 'ucfd-cp-max'].forEach(function (id) {
+    on($(id), 'input', readRangeInputs);
+    /* leaving a box with a bad value puts back the range in use */
+    on($(id), 'blur', function () { setTimeout(syncRangeInputs, 0); });
   });
 
   /* solver */
