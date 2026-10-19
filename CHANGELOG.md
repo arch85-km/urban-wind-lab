@@ -5,10 +5,12 @@ Each release is archived on Zenodo with its own version DOI. The concept DOI,
 resolves to the newest version. The full notes for each release are on the
 [releases page](https://github.com/arch85-km/urban-wind-lab/releases).
 
-## 1.1.0 — not yet released
+## [1.1.0](https://github.com/arch85-km/urban-wind-lab/releases/tag/v1.1.0) — 19 October 2026
 
-The version is bumped to 1.1.0, dated 4 October 2026, on `main`. The GitHub
-release has not been cut, so there is no version DOI yet.
+A feature and correctness release. The solver's outflow boundary changed, so
+wind speeds, comfort classes and pressures differ from 1.0.1: a figure quoted
+from 1.0.1 does not reproduce here, and should cite 1.0.1's own DOI. One
+default changed: "Fit model to site" is now off.
 
 - **Added** — the licence, the credits and the release are shown inside the
   app: the MIT and CC BY 4.0 terms and what they permit, what the app is

@@ -6,7 +6,7 @@ Interactive lattice-Boltzmann wind analysis for a 3D urban context, built for te
 architecture students. One self-contained HTML file: no build step, no dependencies, no
 network requests. Open it in a browser and it solves.
 
-**Version 1.1.0 · 4 October 2026**
+**Version 1.1.0 · 19 October 2026**
 
 **[Open the tool](https://karam.me.uk/applications/urban-wind-lab/)** ·
 **[Method notes](docs/urban-wind-lab-method-notes.html)**
@@ -101,7 +101,9 @@ That is the **concept DOI**, which always resolves to the newest version. Each r
 gets a **version DOI** frozen on it, and that is the better one to cite for a figure someone
 should be able to reproduce. 1.1.0's is minted when this release is archived on Zenodo, and
 this page will name it once it exists; until then, cite the concept DOI and give the version
-number. Version 1.0.1 remains citable as [10.5281/zenodo.23108263](https://doi.org/10.5281/zenodo.23108263).
+number. A figure produced on an earlier build should cite that build, since the solver's outflow
+changed in 1.1.0: 1.0.1 is archived at [10.5281/zenodo.23108263](https://doi.org/10.5281/zenodo.23108263)
+and 1.0.0 at [10.5281/zenodo.22797138](https://doi.org/10.5281/zenodo.22797138).
 
 Report the wind direction, the terrain roughness, the resolution preset and the sampled
 height the panel shows alongside any figure taken from the tool. All four change the numbers.
